@@ -9,7 +9,7 @@
     
     <meta name="author" content="LinEvan">
     
-    <meta name="description" content="&amp;#x7EE7;&amp;#x627F;&amp;#x662F;C++&amp;#x4E2D;&amp;#x4E00;&amp;#x4E2A;&amp;#x5F88;&amp;#x597D;&amp;#x7684;&amp;#x7279;&amp;#x6027;&amp;#xFF0C;&amp;#x5B83;&amp;#x80FD;&amp;#x591F;&amp;#x4ECE;&amp;#x5DF2;&amp;#x6709;&amp;#x">
+    <meta name="description" content="继承是C++中一个很好的特性，它能够从已有的类派生出新的类，而继承类继承了原有类（称为基类）的特征。继承类有三种，公有继承、保护继承、私有继承。        使用公有继承，基类的公有成员将成为继承类的公有成员，保护成员称为继承类的保护成员，基类的私有部分也将成为继承类的一部分，但只能通过基类的公有">
     
     
     
@@ -76,7 +76,7 @@
     </p>
   <p class="article-time">
     <time datetime="2014-06-04T02:05:05.000Z" itemprop="datePublished">6月 4 2014</time>
-    更新日期:<time datetime="2014-06-04T02:09:32.000Z" itemprop="dateModified">6月 4 2014</time>
+    更新日期:<time datetime="2014-06-04T02:09:34.000Z" itemprop="dateModified">6月 4 2014</time>
     
   </p>
 </header>
@@ -85,11 +85,11 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#&#x603B;&#x7ED3;&#xFF1A;"><span class="toc-number">1.</span> <span class="toc-text">&#x603B;&#x7ED3;&#xFF1A;</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-number">1.</span> <span class="toc-text">总结：</span></a></li></ol>
 		</div>
 		
-		<p>&#x7EE7;&#x627F;&#x662F;C++&#x4E2D;&#x4E00;&#x4E2A;&#x5F88;&#x597D;&#x7684;&#x7279;&#x6027;&#xFF0C;&#x5B83;&#x80FD;&#x591F;&#x4ECE;&#x5DF2;&#x6709;&#x7684;&#x7C7B;&#x6D3E;&#x751F;&#x51FA;&#x65B0;&#x7684;&#x7C7B;&#xFF0C;&#x800C;&#x7EE7;&#x627F;&#x7C7B;&#x7EE7;&#x627F;&#x4E86;&#x539F;&#x6709;&#x7C7B;&#xFF08;&#x79F0;&#x4E3A;&#x57FA;&#x7C7B;&#xFF09;&#x7684;&#x7279;&#x5F81;&#x3002;&#x7EE7;&#x627F;&#x7C7B;&#x6709;&#x4E09;&#x79CD;&#xFF0C;&#x516C;&#x6709;&#x7EE7;&#x627F;&#x3001;&#x4FDD;&#x62A4;&#x7EE7;&#x627F;&#x3001;&#x79C1;&#x6709;&#x7EE7;&#x627F;&#x3002;<br>        &#x4F7F;&#x7528;&#x516C;&#x6709;&#x7EE7;&#x627F;&#xFF0C;&#x57FA;&#x7C7B;&#x7684;&#x516C;&#x6709;&#x6210;&#x5458;&#x5C06;&#x6210;&#x4E3A;&#x7EE7;&#x627F;&#x7C7B;&#x7684;&#x516C;&#x6709;&#x6210;&#x5458;&#xFF0C;&#x4FDD;&#x62A4;&#x6210;&#x5458;&#x79F0;&#x4E3A;&#x7EE7;&#x627F;&#x7C7B;&#x7684;&#x4FDD;&#x62A4;&#x6210;&#x5458;&#xFF0C;&#x57FA;&#x7C7B;&#x7684;&#x79C1;&#x6709;&#x90E8;&#x5206;&#x4E5F;&#x5C06;&#x6210;&#x4E3A;&#x7EE7;&#x627F;&#x7C7B;&#x7684;&#x4E00;&#x90E8;&#x5206;&#xFF0C;&#x4F46;&#x53EA;&#x80FD;&#x901A;&#x8FC7;&#x57FA;&#x7C7B;&#x7684;&#x516C;&#x6709;&#x548C;&#x4FDD;&#x62A4;&#x65B9;&#x6CD5;&#x6765;&#x8BBF;&#x95EE;&#xFF0C;&#x4F46;&#x7EE7;&#x627F;&#x7C7B;&#x4E0D;&#x7EE7;&#x627F;&#x57FA;&#x7C7B;&#x7684;&#x6784;&#x9020;&#x51FD;&#x6570;&#x3001;&#x6790;&#x6784;&#x51FD;&#x6570;&#x548C;&#x8D4B;&#x503C;&#x64CD;&#x4F5C;&#x7B26;&#x3002;<br>        &#x4F7F;&#x7528;&#x4FDD;&#x62A4;&#x7EE7;&#x627F;&#xFF0C;&#x57FA;&#x7C7B;&#x7684;&#x516C;&#x6709;&#x6210;&#x5458;&#x548C;&#x4FDD;&#x62A4;&#x6210;&#x5458;&#x90FD;&#x5C06;&#x6210;&#x4E3A;&#x7EE7;&#x627F;&#x7C7B;&#x7684;&#x4FDD;&#x62A4;&#x6210;&#x5458;&#xFF0C;&#x7531;&#x4E8E;&#x57FA;&#x7C7B;&#x7684;&#x516C;&#x6709;&#x65B9;&#x6CD5;&#x5728;&#x7B2C;&#x4E8C;&#x4EE3;&#x4E3A;&#x4FDD;&#x62A4;&#x6210;&#x5458;&#xFF0C;&#x56E0;&#x6B64;&#x7B2C;&#x4E09;&#x4EE3;&#x7EE7;&#x627F;&#x7C7B;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x3002;<br>        &#x4F7F;&#x7528;&#x79C1;&#x6709;&#x7EE7;&#x627F;&#xFF0C;&#x57FA;&#x7C7B;&#x7684;&#x516C;&#x6709;&#x6210;&#x5458;&#x548C;&#x4FDD;&#x62A4;&#x6210;&#x5458;&#x90FD;&#x5C06;&#x6210;&#x4E3A;&#x7EE7;&#x627F;&#x7C7B;&#x7684;&#x79C1;&#x6709;&#x6210;&#x5458;&#xFF0C;&#x7EE7;&#x627F;&#x7C7B;&#x4E0D;&#x7EE7;&#x627F;&#x57FA;&#x7C7B;&#x7684;&#x63A5;&#x53E3;&#x3002;&#x7B2C;&#x4E09;&#x4EE3;&#x7EE7;&#x627F;&#x7C7B;&#x4E0D;&#x80FD;&#x4F7F;&#x7528;&#x57FA;&#x7C7B;&#x7684;&#x63A5;&#x53E3;&#x3002;&#x4E0B;&#x9762;&#x5C06;&#x901A;&#x8FC7;&#x51E0;&#x4E2A;&#x4F8B;&#x5B50;&#x6765;&#x8BE6;&#x7EC6;&#x9610;&#x8FF0;&#x8FD9;&#x4E09;&#x8005;&#x7684;&#x533A;&#x522B;&#xFF1A;</p>
-<p><strong>&#x7B2C;&#x4E00;&#x4E2A;&#x4F8B;&#x5B50;&#xFF0C;&#x7EE7;&#x627F;&#x7C7B;&#x5F15;&#x7528;&#x57FA;&#x7C7B;&#x6210;&#x5458;</strong><br>1.&#x5F15;&#x7528;&#x57FA;&#x7C7B;&#x516C;&#x6709;&#x6210;&#x5458;&#x548C;&#x4FDD;&#x62A4;&#x6210;&#x5458;&#xFF1A;</p>
+		<p>继承是C++中一个很好的特性，它能够从已有的类派生出新的类，而继承类继承了原有类（称为基类）的特征。继承类有三种，公有继承、保护继承、私有继承。<br>        使用公有继承，基类的公有成员将成为继承类的公有成员，保护成员称为继承类的保护成员，基类的私有部分也将成为继承类的一部分，但只能通过基类的公有和保护方法来访问，但继承类不继承基类的构造函数、析构函数和赋值操作符。<br>        使用保护继承，基类的公有成员和保护成员都将成为继承类的保护成员，由于基类的公有方法在第二代为保护成员，因此第三代继承类可以使用。<br>        使用私有继承，基类的公有成员和保护成员都将成为继承类的私有成员，继承类不继承基类的接口。第三代继承类不能使用基类的接口。下面将通过几个例子来详细阐述这三者的区别：</p>
+<p><strong>第一个例子，继承类引用基类成员</strong><br>1.引用基类公有成员和保护成员：</p>
 <p><figure class="highlight C++"><table><tr><td class="gutter"><pre>1
 2
 3
@@ -169,7 +169,7 @@ class B: public A
 <span class="title">public:</span>
 	void funB()
 	{
-		cout&lt;&lt;iA&lt;&lt;endl; 
+		cout<<iA<<endl; 
 		proA();
 		funA();
 	}	
@@ -180,7 +180,7 @@ class C: protected A
 <span class="title">public:</span>
 	void funC()
 	{
-		cout&lt;&lt;iA&lt;&lt;endl; 
+		cout<<iA<<endl; 
 		proA();
 		funA();
 	}	
@@ -191,14 +191,14 @@ class D: private A
 <span class="title">public:</span>
 	void funD()
 	{
-		cout&lt;&lt;iA&lt;&lt;endl;         //&#x76F4;&#x63A5;&#x8C03;&#x7528;
+		cout<<iA<<endl;         //直接调用
 		proA();
 		funA();
 	}	
 
 	void funD2()
 	{
-		cout&lt;&lt;A::iA&lt;&lt;endl;     //&#x901A;&#x8FC7;&#x201C;&#x57FA;&#x7C7B;&#x540D;+::&#x201D;&#x8C03;&#x7528;
+		cout<<A::iA<<endl;     //通过“基类名+::”调用
 		A::proA();
 		A::funA();
 	}
@@ -218,8 +218,8 @@ int main()
 
 	return 0;
 }
-</pre></td></tr></table></figure><br>&#x7F16;&#x8BD1;&#x901A;&#x8FC7;<br><strong><em>&#x7ED3;&#x8BBA;1&#xFF1A;&#x4E0D;&#x7BA1;&#x662F;&#x516C;&#x6709;&#x3001;&#x4FDD;&#x62A4;&#x8FD8;&#x662F;&#x79C1;&#x6709;&#x7EE7;&#x627F;&#xFF0C;&#x7EE7;&#x627F;&#x7C7B;&#x90FD;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x8BBF;&#x95EE;&#x57FA;&#x7C7B;&#x7684;&#x516C;&#x6709;&#x6210;&#x5458;&#x53CA;&#x4FDD;&#x62A4;&#x6210;&#x5458;&#xFF0C;&#x53EF;&#x5728;&#x7EE7;&#x627F;&#x7C7B;&#x65B9;&#x6CD5;&#x4E2D;&#x76F4;&#x63A5;&#x8C03;&#x7528;&#x6216;&#x8005;&#x901A;&#x8FC7;&#x201C;&#x57FA;&#x7C7B;&#x540D;+::&#x201D;&#x8C03;&#x7528;&#x3002;static&#x6210;&#x5458;&#x7684;&#x5F15;&#x7528;&#x5728;&#x540E;&#x9762;&#x8BA8;&#x8BBA;&#x3002;</em></strong></p>
-<p>2.&#x5F15;&#x7528;&#x57FA;&#x7C7B;&#x79C1;&#x6709;&#x6210;&#x5458;</p>
+</pre></td></tr></table></figure><br>编译通过<br><strong><em>结论1：不管是公有、保护还是私有继承，继承类都可以直接访问基类的公有成员及保护成员，可在继承类方法中直接调用或者通过“基类名+::”调用。static成员的引用在后面讨论。</em></strong></p>
+<p>2.引用基类私有成员</p>
 <p><figure class="highlight C++"><table><tr><td class="gutter"><pre>1
 2
 3
@@ -258,8 +258,8 @@ class B: <span class="keyword">public</span> A
 <span class="keyword">public</span>:
 	<span class="keyword">void</span> <span class="title">funB</span>()
 	{
-		cout&lt;&lt;iA&lt;&lt;endl; 
-		cout&lt;&lt;A::iA&lt;&lt;endl; 
+		cout<<iA<<endl; 
+		cout<<A::iA<<endl; 
 	}
 };
 
@@ -272,8 +272,8 @@ class B: <span class="keyword">public</span> A
 
 	<span class="keyword">return</span> <span class="number">0</span>;
 }
-</pre></td></tr></table></figure><br>&#x7F16;&#x8BD1;&#x51FA;&#x9519;<br>error C2248: &#x201C;A::iA&#x201D;: &#x65E0;&#x6CD5;&#x8BBF;&#x95EE; private &#x6210;&#x5458;(&#x5728;&#x201C;A&#x201D;&#x7C7B;&#x4E2D;&#x58F0;&#x660E;)<br><strong><em>&#x7ED3;&#x8BBA;2&#xFF1A;&#x516C;&#x6709;&#x3001;&#x79C1;&#x6709;&#x548C;&#x4FDD;&#x62A4;&#x7EE7;&#x627F;&#x90FD;&#x65E0;&#x6CD5;&#x8BBF;&#x95EE;&#x57FA;&#x7C7B;&#x7684;&#x79C1;&#x6709;&#x6210;&#x5458;&#xFF0C;&#x53EA;&#x80FD;&#x901A;&#x8FC7;&#x57FA;&#x7C7B;&#x7684;&#x516C;&#x6709;&#x6210;&#x5458;&#x548C;&#x4FDD;&#x62A4;&#x6210;&#x5458;&#x8BBF;&#x95EE;</em></strong></p>
-<p><strong>&#x7B2C;&#x4E8C;&#x4E2A;&#x4F8B;&#x5B50;&#xFF0C;&#x7EE7;&#x627F;&#x7C7B;&#x5BF9;&#x8C61;&#x5F15;&#x7528;&#x57FA;&#x7C7B;&#x6210;&#x5458;</strong><br>1.&#x516C;&#x6709;&#x7EE7;&#x627F;&#xFF1A;</p>
+</pre></td></tr></table></figure><br>编译出错<br>error C2248: “A::iA”: 无法访问 private 成员(在“A”类中声明)<br><strong><em>结论2：公有、私有和保护继承都无法访问基类的私有成员，只能通过基类的公有成员和保护成员访问</em></strong></p>
+<p><strong>第二个例子，继承类对象引用基类成员</strong><br>1.公有继承：</p>
 <p><figure class="highlight"><table><tr><td class="gutter"><pre>1
 2
 3
@@ -317,15 +317,15 @@ class B: <span class="keyword">public</span> A{};
 	A a;
 	B b;
 
-	cout&lt;&lt;b.priA&lt;&lt;endl;    <span class="comment">//&#x516C;&#x6709;&#x7EE7;&#x627F;&#x65E0;&#x6CD5;&#x5F15;&#x7528;&#x57FA;&#x7C7B;&#x79C1;&#x6709;&#x6570;&#x636E;</span>
-	b.proA();              <span class="comment">//&#x516C;&#x6709;&#x7EE7;&#x627F;&#x65E0;&#x6CD5;&#x5F15;&#x7528;&#x57FA;&#x7C7B;&#x4FDD;&#x62A4;&#x65B9;&#x6CD5;</span>
-	cout&lt;&lt;b.iA&lt;&lt;endl;      <span class="comment">//&#x516C;&#x6709;&#x7EE7;&#x627F;&#x53EF;&#x4EE5;&#x5F15;&#x7528;&#x57FA;&#x7C7B;&#x516C;&#x6709;&#x6570;&#x636E;</span>
-	b.funA();              <span class="comment">//&#x516C;&#x6709;&#x7EE7;&#x627F;&#x53EF;&#x4EE5;&#x5F15;&#x7528;&#x57FA;&#x7C7B;&#x516C;&#x6709;&#x65B9;&#x6CD5;</span>
+	cout<<b.priA<<endl;    <span class="comment">//公有继承无法引用基类私有数据</span>
+	b.proA();              <span class="comment">//公有继承无法引用基类保护方法</span>
+	cout<<b.iA<<endl;      <span class="comment">//公有继承可以引用基类公有数据</span>
+	b.funA();              <span class="comment">//公有继承可以引用基类公有方法</span>
 
 	<span class="keyword">return</span> <span class="number">0</span>;
 }
-</pre></td></tr></table></figure><br>&#x7F16;&#x8BD1;&#x51FA;&#x9519;&#xFF1A;<br>error C2248: &#x201C;A::priA&#x201D;: &#x65E0;&#x6CD5;&#x8BBF;&#x95EE; private &#x6210;&#x5458;(&#x5728;&#x201C;A&#x201D;&#x7C7B;&#x4E2D;&#x58F0;&#x660E;)<br>error C2248: &#x201C;A::proA&#x201D;: &#x65E0;&#x6CD5;&#x8BBF;&#x95EE; protected &#x6210;&#x5458;(&#x5728;&#x201C;A&#x201D;&#x7C7B;&#x4E2D;&#x58F0;&#x660E;)<br><strong><em>&#x7ED3;&#x8BBA;3&#xFF1A;&#x516C;&#x6709;&#x7EE7;&#x627F;&#x7684;&#x5BF9;&#x8C61;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;&#x57FA;&#x7C7B;&#x7684;&#x516C;&#x6709;&#x6210;&#x5458;&#xFF0C;&#x4F46;&#x65E0;&#x6CD5;&#x8BBF;&#x95EE;&#x57FA;&#x7C7B;&#x7684;&#x79C1;&#x6709;&#x6210;&#x5458;&#x548C;&#x4FDD;&#x62A4;&#x6210;&#x5458;</em></strong></p>
-<p>2&#x3001;&#x5BF9;&#x4E8E;&#x79C1;&#x6709;&#x7EE7;&#x627F;&#x548C;&#x4FDD;&#x62A4;&#x7EE7;&#x627F;</p>
+</pre></td></tr></table></figure><br>编译出错：<br>error C2248: “A::priA”: 无法访问 private 成员(在“A”类中声明)<br>error C2248: “A::proA”: 无法访问 protected 成员(在“A”类中声明)<br><strong><em>结论3：公有继承的对象可以访问基类的公有成员，但无法访问基类的私有成员和保护成员</em></strong></p>
+<p>2、对于私有继承和保护继承</p>
 <p><figure class="highlight"><table><tr><td class="gutter"><pre>1
 2
 3
@@ -375,17 +375,17 @@ class D: <span class="keyword">private</span> A{};
 	C c;
 	D d;
 
-	cout&lt;&lt;c.iA&lt;&lt;endl;
+	cout<<c.iA<<endl;
 	c.funA();
 
-	cout&lt;&lt;d.iA&lt;&lt;endl;
+	cout<<d.iA<<endl;
 	d.funA();
 
-	system(<span class="string">&quot;pause&quot;</span>);
+	system(<span class="string">"pause"</span>);
 	<span class="keyword">return</span> <span class="number">0</span>;
 }
-</pre></td></tr></table></figure><br>&#x7F16;&#x8BD1;&#x51FA;&#x9519;&#xFF1A;<br>error C2247: &#x201C;A::iA&#x201D;&#x4E0D;&#x53EF;&#x8BBF;&#x95EE;&#xFF0C;&#x56E0;&#x4E3A;&#x201C;C&#x201D;&#x4F7F;&#x7528;&#x201C;protected&#x201D;&#x4ECE;&#x201C;A&#x201D;&#x7EE7;&#x627F;<br>error C2247: &#x201C;A::funA&#x201D;&#x4E0D;&#x53EF;&#x8BBF;&#x95EE;&#xFF0C;&#x56E0;&#x4E3A;&#x201C;C&#x201D;&#x4F7F;&#x7528;&#x201C;protected&#x201D;&#x4ECE;&#x201C;A&#x201D;&#x7EE7;&#x627F;<br>error C2247: &#x201C;A::iA&#x201D;&#x4E0D;&#x53EF;&#x8BBF;&#x95EE;&#xFF0C;&#x56E0;&#x4E3A;&#x201C;D&#x201D;&#x4F7F;&#x7528;&#x201C;private&#x201D;&#x4ECE;&#x201C;A&#x201D;&#x7EE7;&#x627F;<br>error C2247: &#x201C;A::funA&#x201D;&#x4E0D;&#x53EF;&#x8BBF;&#x95EE;&#xFF0C;&#x56E0;&#x4E3A;&#x201C;D&#x201D;&#x4F7F;&#x7528;&#x201C;private&#x201D;&#x4ECE;&#x201C;A&#x201D;&#x7EE7;&#x627F;<br><strong><em>&#x7ED3;&#x8BBA;4&#xFF1A;&#x4FDD;&#x62A4;&#x7EE7;&#x627F;&#x548C;&#x79C1;&#x6709;&#x7EE7;&#x627F;&#x7684;&#x5BF9;&#x8C61;&#x4E0D;&#x80FD;&#x8BBF;&#x95EE;&#x57FA;&#x7C7B;&#x7684;&#x516C;&#x6709;&#x3001;&#x4FDD;&#x62A4;&#x53CA;&#x79C1;&#x6709;&#x6210;&#x5458;</em></strong></p>
-<p><strong>&#x7B2C;&#x4E09;&#x4E2A;&#x4F8B;&#x5B50;&#xFF0C;&#x7EE7;&#x627F;&#x7C7B;&#x548C;&#x5BF9;&#x8C61;&#x5F15;&#x7528;&#x57FA;&#x7C7B;static&#x6210;&#x5458;</strong></p>
+</pre></td></tr></table></figure><br>编译出错：<br>error C2247: “A::iA”不可访问，因为“C”使用“protected”从“A”继承<br>error C2247: “A::funA”不可访问，因为“C”使用“protected”从“A”继承<br>error C2247: “A::iA”不可访问，因为“D”使用“private”从“A”继承<br>error C2247: “A::funA”不可访问，因为“D”使用“private”从“A”继承<br><strong><em>结论4：保护继承和私有继承的对象不能访问基类的公有、保护及私有成员</em></strong></p>
+<p><strong>第三个例子，继承类和对象引用基类static成员</strong></p>
 <p><figure class="highlight"><table><tr><td class="gutter"><pre>1
 2
 3
@@ -424,16 +424,16 @@ class D: <span class="keyword">private</span> A{};
 {
 	B b;
 
-	<span class="built_in">cout</span>&lt;&lt;B::siA&lt;&lt;endl;
+	<span class="built_in">cout</span><<B::siA<<endl;
 	B::funA();
 
-	<span class="built_in">cout</span>&lt;&lt;b.siA&lt;&lt;endl;
+	<span class="built_in">cout</span><<b.siA<<endl;
 	b.funA();
 
 	<span class="keyword">return</span> <span class="number">0</span>;
 }
-</pre></td></tr></table></figure><br>&#x7F16;&#x8BD1;&#x901A;&#x8FC7;<br><strong><em>&#x7ED3;&#x8BBA;5&#xFF1A;&#x516C;&#x6709;&#x7EE7;&#x627F;&#x901A;&#x8FC7;&#x7C7B;&#x6216;&#x5BF9;&#x8C61;&#x90FD;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;&#x57FA;&#x7C7B;&#x7684;&#x516C;&#x6709;static&#x6210;&#x5458;&#xFF0C;&#x901A;&#x8FC7;&#x201C;&#x7C7B;+::&#x201D;&#x8C03;&#x7528;&#x6216;&#x8005;&#x201C;&#x5BF9;&#x8C61;+.&#x201D;&#x8C03;&#x7528;&#x3002;&#x79C1;&#x6709;&#x7EE7;&#x627F;&#x548C;&#x4FDD;&#x62A4;&#x7EE7;&#x627F;&#x7684;&#x7C7B;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;&#x57FA;&#x7C7B;&#x516C;&#x6709;static&#x6210;&#x5458;&#xFF0C;&#x4F46;&#x7C7B;&#x5BF9;&#x8C61;&#x4E0D;&#x80FD;&#x8BBF;&#x95EE;&#x3002;&#x5BF9;&#x4E8E;&#x7C7B;&#x4E2D;static&#x6210;&#x5458;&#x7684;&#x5177;&#x4F53;&#x4F7F;&#x7528;&#x53EF;&#x53C2;&#x8003;<a href="http://blog.csdn.net/hustlinevan/article/details/23975509" target="_blank" rel="external">C++&#x7C7B;&#x4E2D;static&#x6210;&#x5458;&#x53D8;&#x91CF;&#x53CA;&#x51FD;&#x6570;&#x4F7F;&#x7528;</a> </em></strong></p>
-<p><strong>&#x7B2C;&#x56DB;&#x4E2A;&#x4F8B;&#x5B50;&#xFF0C;&#x7B2C;&#x4E09;&#x4EE3;&#x7C7B;</strong></p>
+</pre></td></tr></table></figure><br>编译通过<br><strong><em>结论5：公有继承通过类或对象都可以访问基类的公有static成员，通过“类+::”调用或者“对象+.”调用。私有继承和保护继承的类可以访问基类公有static成员，但类对象不能访问。对于类中static成员的具体使用可参考<a href="http://blog.csdn.net/hustlinevan/article/details/23975509" target="_blank" rel="external">C++类中static成员变量及函数使用</a> </em></strong></p>
+<p><strong>第四个例子，第三代类</strong></p>
 <p><figure class="highlight"><table><tr><td class="gutter"><pre>1
 2
 3
@@ -542,16 +542,16 @@ class DD: <span class="keyword">private</span> D
 
 	<span class="keyword">return</span> <span class="number">0</span>;
 }
-</pre></td></tr></table></figure><br>&#x7F16;&#x8BD1;&#x51FA;&#x9519;<br>error C2248: &#x201C;A::proA&#x201D;: &#x65E0;&#x6CD5;&#x8BBF;&#x95EE; &#x65E0;&#x6CD5;&#x8BBF;&#x95EE;&#x7684; &#x6210;&#x5458;(&#x5728;&#x201C;A&#x201D;&#x7C7B;&#x4E2D;&#x58F0;&#x660E;)<br>error C2247: &#x201C;A::funA&#x201D;&#x4E0D;&#x53EF;&#x8BBF;&#x95EE;&#xFF0C;&#x56E0;&#x4E3A;&#x201C;D&#x201D;&#x4F7F;&#x7528;&#x201C;private&#x201D;&#x4ECE;&#x201C;A&#x201D;&#x7EE7;&#x627F;<br><strong><em>&#x7ED3;&#x8BBA;6&#xFF1A;&#x4F7F;&#x7528;&#x516C;&#x6709;&#x7EE7;&#x627F;&#x65F6;&#xFF0C;&#x7B2C;&#x4E09;&#x4EE3;&#x7C7B;&#x548C;&#x5BF9;&#x8C61;&#x90FD;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x57FA;&#x7C7B;&#x7684;&#x516C;&#x6709;&#x65B9;&#x6CD5;&#xFF1B;&#x4F7F;&#x7528;&#x4FDD;&#x62A4;&#x7EE7;&#x627F;&#x65F6;&#xFF0C;&#x57FA;&#x7C7B;&#x7684;&#x516C;&#x6709;&#x65B9;&#x6CD5;&#x5728;&#x7B2C;&#x4E8C;&#x4EE3;&#x4E3A;&#x4FDD;&#x62A4;&#x6210;&#x5458;&#xFF0C;&#x56E0;&#x6B64;&#x7B2C;&#x4E09;&#x4EE3;&#x7C7B;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#xFF0C;&#x4F46;&#x7B2C;&#x4E09;&#x7C7B;&#x7684;&#x5BF9;&#x8C61;&#x4E0D;&#x80FD;&#x4F7F;&#x7528;&#xFF1B;&#x4F7F;&#x7528;&#x79C1;&#x6709;&#x7EE7;&#x627F;&#x65F6;&#xFF0C;&#x7B2C;&#x4E09;&#x4EE3;&#x7C7B;&#x548C;&#x5BF9;&#x8C61;&#x5C06;&#x4E0D;&#x80FD;&#x4F7F;&#x7528;&#x57FA;&#x7C7B;&#x7684;&#x6240;&#x6709;&#x65B9;&#x6CD5;&#x3002;</em></strong></p>
-<h2 id="&#x603B;&#x7ED3;&#xFF1A;">&#x603B;&#x7ED3;&#xFF1A;</h2>
+</pre></td></tr></table></figure><br>编译出错<br>error C2248: “A::proA”: 无法访问 无法访问的 成员(在“A”类中声明)<br>error C2247: “A::funA”不可访问，因为“D”使用“private”从“A”继承<br><strong><em>结论6：使用公有继承时，第三代类和对象都可以使用基类的公有方法；使用保护继承时，基类的公有方法在第二代为保护成员，因此第三代类可以使用，但第三类的对象不能使用；使用私有继承时，第三代类和对象将不能使用基类的所有方法。</em></strong></p>
+<h2 id="总结：">总结：</h2>
 <ol>
-<li>&#x516C;&#x6709;&#x3001;&#x79C1;&#x6709;&#x548C;&#x4FDD;&#x62A4;&#x7EE7;&#x627F;&#x90FD;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x8BBF;&#x95EE;&#x57FA;&#x7C7B;&#x7684;&#x516C;&#x6709;&#x6210;&#x5458;&#x4EE5;&#x53CA;&#x4FDD;&#x62A4;&#x6210;&#x5458;</li>
-<li>&#x516C;&#x6709;&#x3001;&#x79C1;&#x6709;&#x548C;&#x4FDD;&#x62A4;&#x7EE7;&#x627F;&#x90FD;&#x65E0;&#x6CD5;&#x76F4;&#x63A5;&#x8BBF;&#x95EE;&#x57FA;&#x7C7B;&#x7684;&#x79C1;&#x6709;&#x6210;&#x5458;&#xFF0C;&#x53EA;&#x80FD;&#x901A;&#x8FC7;&#x57FA;&#x7C7B;&#x7684;&#x516C;&#x6709;&#x6210;&#x5458;&#x548C;&#x4FDD;&#x62A4;&#x6210;&#x5458;&#x8BBF;&#x95EE;</li>
-<li>&#x516C;&#x6709;&#x7EE7;&#x627F;&#x7684;&#x5BF9;&#x8C61;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;&#x57FA;&#x7C7B;&#x7684;&#x516C;&#x6709;&#x6210;&#x5458;&#xFF0C;&#x4F46;&#x65E0;&#x6CD5;&#x8BBF;&#x95EE;&#x57FA;&#x7C7B;&#x7684;&#x79C1;&#x6709;&#x6210;&#x5458;&#x548C;&#x4FDD;&#x62A4;&#x6210;&#x5458;&#x3002;&#x79C1;&#x6709;&#x7EE7;&#x627F;&#x548C;&#x4FDD;&#x62A4;&#x7EE7;&#x627F;&#x7684;&#x5BF9;&#x8C61;&#x4E0D;&#x80FD;&#x76F4;&#x63A5;&#x8BBF;&#x95EE;&#x57FA;&#x7C7B;&#x7684;&#x4EFB;&#x4F55;&#x6210;&#x5458;</li>
-<li>&#x516C;&#x6709;&#x7EE7;&#x627F;&#x7684;&#x7C7B;&#x6216;&#x5BF9;&#x8C61;&#x90FD;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;&#x57FA;&#x7C7B;&#x7684;&#x516C;&#x6709;static&#x6210;&#x5458;&#x3002;&#x79C1;&#x6709;&#x7EE7;&#x627F;&#x548C;&#x4FDD;&#x62A4;&#x7EE7;&#x627F;&#x7684;&#x7C7B;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;&#x57FA;&#x7C7B;&#x516C;&#x6709;static&#x6210;&#x5458;&#xFF0C;&#x4F46;&#x7C7B;&#x5BF9;&#x8C61;&#x4E0D;&#x80FD;&#x8BBF;&#x95EE;&#x3002;</li>
-<li>&#x4F7F;&#x7528;&#x516C;&#x6709;&#x7EE7;&#x627F;&#x65F6;&#xFF0C;&#x7B2C;&#x4E09;&#x4EE3;&#x7C7B;&#x548C;&#x5BF9;&#x8C61;&#x90FD;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x57FA;&#x7C7B;&#x7684;&#x516C;&#x6709;&#x65B9;&#x6CD5;&#xFF1B;&#x4F7F;&#x7528;&#x4FDD;&#x62A4;&#x7EE7;&#x627F;&#x65F6;&#xFF0C;&#x57FA;&#x7C7B;&#x7684;&#x516C;&#x6709;&#x65B9;&#x6CD5;&#x5728;&#x7B2C;&#x4E8C;&#x4EE3;&#x4E3A;&#x4FDD;&#x62A4;&#x6210;&#x5458;&#xFF0C;&#x56E0;&#x6B64;&#x7B2C;&#x4E09;&#x4EE3;&#x7C7B;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#xFF0C;&#x4F46;&#x7B2C;&#x4E09;&#x7C7B;&#x7684;&#x5BF9;&#x8C61;&#x4E0D;&#x80FD;&#x4F7F;&#x7528;&#xFF1B;&#x4F7F;&#x7528;&#x79C1;&#x6709;&#x7EE7;&#x627F;&#x65F6;&#xFF0C;&#x7B2C;&#x4E09;&#x4EE3;&#x7C7B;&#x548C;&#x5BF9;&#x8C61;&#x5C06;&#x4E0D;&#x80FD;&#x4F7F;&#x7528;&#x57FA;&#x7C7B;&#x7684;&#x6240;&#x6709;&#x65B9;&#x6CD5;</li>
+<li>公有、私有和保护继承都可以直接访问基类的公有成员以及保护成员</li>
+<li>公有、私有和保护继承都无法直接访问基类的私有成员，只能通过基类的公有成员和保护成员访问</li>
+<li>公有继承的对象可以访问基类的公有成员，但无法访问基类的私有成员和保护成员。私有继承和保护继承的对象不能直接访问基类的任何成员</li>
+<li>公有继承的类或对象都可以访问基类的公有static成员。私有继承和保护继承的类可以访问基类公有static成员，但类对象不能访问。</li>
+<li>使用公有继承时，第三代类和对象都可以使用基类的公有方法；使用保护继承时，基类的公有方法在第二代为保护成员，因此第三代类可以使用，但第三类的对象不能使用；使用私有继承时，第三代类和对象将不能使用基类的所有方法</li>
 </ol>
-<p><em>PS:&#x7801;&#x4E00;&#x7BC7;&#x6587;&#x7AE0;&#x8FD8;&#x771F;TM&#x7D2F;&#xFF0C;&#x8D70;&#x8FC7;&#x8DEF;&#x8FC7;&#x7684;&#x4E0D;&#x8981;&#x9519;&#x8FC7;</em></p>
+<p><em>PS:码一篇文章还真TM累，走过路过的不要错过</em></p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -579,14 +579,6 @@ class DD: <span class="keyword">private</span> D
 </div>
 
 
-<div class="next">
-<a href="/2014/06/03/hello-world/"  title="Hello World">
- <strong>NEXT:</strong><br/> 
- <span>Hello World
-</span>
-</a>
-</div>
-
 </nav>
 
 	
@@ -595,7 +587,7 @@ class DD: <span class="keyword">private</span> D
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#&#x603B;&#x7ED3;&#xFF1A;"><span class="toc-number">1.</span> <span class="toc-text">&#x603B;&#x7ED3;&#xFF1A;</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-number">1.</span> <span class="toc-text">总结：</span></a></li></ol>
   </div>
 
 <div id="asidepart">
