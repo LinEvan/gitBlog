@@ -4,12 +4,13 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>test | LinEvan&#39;s blog</title>
+    <title>Leetcode | Reverse Words in a String | 抛砖引玉 | LinEvan&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="LinEvan">
     
-    <meta name="description" content="Life is going on!">
+    <meta name="description" content="Reverse Words in a String  Total Accepted: 10990 Total Submissions: 79751Given an input string, reverse the string word by word.
+For example,Given s =">
     
     
     
@@ -68,7 +69,7 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/06/04/my-new-post/" title="test" itemprop="url">test</a>
+      <a href="/2014/06/04/my-new-post/" title="Leetcode | Reverse Words in a String | 抛砖引玉" itemprop="url">Leetcode | Reverse Words in a String | 抛砖引玉</a>
   </h1>
   <p class="article-author">By
     
@@ -76,7 +77,7 @@
     </p>
   <p class="article-time">
     <time datetime="2014-06-04T02:05:05.000Z" itemprop="datePublished">6月 4 2014</time>
-    更新日期:<time datetime="2014-06-04T02:13:18.000Z" itemprop="dateModified">6月 4 2014</time>
+    更新日期:<time datetime="2014-06-09T06:22:45.000Z" itemprop="dateModified">6月 9 2014</time>
     
   </p>
 </header>
@@ -88,7 +89,46 @@
 		
 		</div>
 		
-		<p>Life is going on!</p>
+		<p>Reverse Words in a String  Total Accepted: 10990 Total Submissions: 79751<br>Given an input string, reverse the string word by word.</p>
+<p>For example,<br>Given s = “the sky is blue”,<br>return “blue is sky the”.</p>
+<p>click to show clarification.</p>
+<p>Clarification:<br>What constitutes a word?<br>A sequence of non-space characters constitutes a word.<br>Could the input string contain leading or trailing spaces?<br>Yes. However, your reversed string should not contain leading or trailing spaces.<br>How about multiple spaces between two words?<br>Reduce them to a single space in the reversed string.</p>
+<p>第一次在leetcode上做题，时间复杂度和空间复杂度就没怎么考虑。简单介绍下思路：<br>1  从前往后遍历，过滤空格，读取单词<br>2  把读到的单词放到栈中<br>3  将栈中元素拷贝到string，单词间添加空格<br>Tips：考察边界情况，特别是空字符串（””）和空格字符串（”   “）以及一个字符的情况（”a“）。另外，首尾的空格也要过滤。</p>
+<p>源码：<br>[cpp] view plaincopy在CODE上查看代码片派生到我的代码片<br>void reverseWords(string &s) {<br>    stack<string> sta;<br>    int i,j,k;<br>    int size;  </string></p>
+<pre><code><span class="keyword">size</span> = s.<span class="keyword">size</span>();  
+<span class="keyword">if</span>(<span class="keyword">size</span> == <span class="number">0</span>)               <span class="comment">//空字符串处理  </span>
+    <span class="keyword">return</span>;  
+
+i=<span class="number">0</span>;  
+j=<span class="keyword">size</span>-<span class="number">1</span>;  
+<span class="keyword">while</span>(i <= j && s[i] == <span class="string">' '</span>)  
+    i++;  
+<span class="keyword">while</span>(j >= i && s[j] == <span class="string">' '</span>)  
+    j--;  
+
+<span class="keyword">while</span>(i<=j)                 <span class="comment">//考虑单个字符的情况  </span>
+{  
+    k = i;  
+    <span class="keyword">while</span>(i <= j && s[i] != <span class="string">' '</span>)  
+        i++;  
+    sta.push(s.substr(k, i-k));   
+    <span class="keyword">if</span>(i >= j)     
+        <span class="keyword">break</span>;  
+    <span class="keyword">while</span>(i <= j && s[i] == <span class="string">' '</span>)  
+        i++;  
+}  
+
+<span class="keyword">string</span> tmp=<span class="string">""</span>;  
+<span class="keyword">while</span>(!sta.empty())        <span class="comment">//空格字符串不进入此循环  </span>
+{  
+    <span class="keyword">if</span>(!tmp.empty())  
+        tmp.push_back(<span class="string">' '</span>);  
+    tmp.append(sta.top());  
+    sta.pop();  
+}  
+s = tmp;  
+</code></pre><p>}  </p>
+<p>写完之后网上查了一下，发现有很多写得比楼主牛逼多了，不得不感慨下自己的码渣水平。<br>算是多提供一种思路：<a href="http://www.tuicool.com/articles/uQ3E7b" target="_blank" rel="external">http://www.tuicool.com/articles/uQ3E7b</a></p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -103,7 +143,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://yoursite.com/2014/06/04/my-new-post/" data-title="test | LinEvan&#39;s blog" data-tsina="null" class="share clearfix">
+  <div data-url="http://yoursite.com/2014/06/04/my-new-post/" data-title="Leetcode | Reverse Words in a String | 抛砖引玉 | LinEvan&#39;s blog" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
