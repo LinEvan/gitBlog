@@ -4,13 +4,13 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Leetcode | Reverse Words in a String | 抛砖引玉 | LinEvan&#39;s blog</title>
+    <title>通过GitHub和Hexo搭建个人博客遇到的问题 | LinEvan&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="LinEvan">
     
-    <meta name="description" content="Reverse Words in a String  Total Accepted: 10990 Total Submissions: 79751Given an input string, reverse the string word by word.
-For example,Given s =">
+    <meta name="description" content="网上一搜教程一大堆，很多已经写得很好了，我就不凑这个热闹了。推荐一篇博文：如何搭建一个独立博客——简明Github Pages与Hexo教程，讲得相当详细，博主也是根据这篇博文搭建的，一天轻松搞定个人博客。本文就谈谈我在搭建博客遇到的一些问题，如果你没遇到最好，遇到了希望对你有帮助。
+问题1 god">
     
     
     
@@ -69,15 +69,15 @@ For example,Given s =">
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/06/04/my-new-post/" title="Leetcode | Reverse Words in a String | 抛砖引玉" itemprop="url">Leetcode | Reverse Words in a String | 抛砖引玉</a>
+      <a href="/2014/06/17/通过GitHub和Hexo搭建个人博客遇到的问题/" title="通过GitHub和Hexo搭建个人博客遇到的问题" itemprop="url">通过GitHub和Hexo搭建个人博客遇到的问题</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://yoursite.com" title="LinEvan">LinEvan</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-06-04T02:05:05.000Z" itemprop="datePublished">6月 4 2014</time>
-    更新日期:<time datetime="2014-06-09T06:22:45.000Z" itemprop="dateModified">6月 9 2014</time>
+    <time datetime="2014-06-17T14:24:09.000Z" itemprop="datePublished">6月 17 2014</time>
+    更新日期:<time datetime="2014-06-17T14:24:57.000Z" itemprop="dateModified">6月 17 2014</time>
     
   </p>
 </header>
@@ -86,49 +86,36 @@ For example,Given s =">
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		
+		<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#问题1_godaddy问题"><span class="toc-number">1.</span> <span class="toc-text">问题1 godaddy问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题2_搭建本地hexo博客时，访问localhost:4000显示乱码"><span class="toc-number">2.</span> <span class="toc-text">问题2  搭建本地hexo博客时，访问localhost:4000显示乱码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题3_搭建成功后，刚开始可以访问，过一段时间又无法登陆"><span class="toc-number">3.</span> <span class="toc-text">问题3 搭建成功后，刚开始可以访问，过一段时间又无法登陆</span></a></li></ol>
 		</div>
 		
-		<p>Reverse Words in a String  Total Accepted: 10990 Total Submissions: 79751<br>Given an input string, reverse the string word by word.</p>
-<p>For example,<br>Given s = “the sky is blue”,<br>return “blue is sky the”.</p>
-<p>click to show clarification.</p>
-<p>Clarification:<br>What constitutes a word?<br>A sequence of non-space characters constitutes a word.<br>Could the input string contain leading or trailing spaces?<br>Yes. However, your reversed string should not contain leading or trailing spaces.<br>How about multiple spaces between two words?<br>Reduce them to a single space in the reversed string.</p>
-<p>第一次在leetcode上做题，时间复杂度和空间复杂度就没怎么考虑。简单介绍下思路：<br>1  从前往后遍历，过滤空格，读取单词<br>2  把读到的单词放到栈中<br>3  将栈中元素拷贝到string，单词间添加空格<br>Tips：考察边界情况，特别是空字符串（””）和空格字符串（”   “）以及一个字符的情况（”a“）。另外，首尾的空格也要过滤。</p>
-<p>源码：<br>[cpp] view plaincopy在CODE上查看代码片派生到我的代码片<br>void reverseWords(string &s) {<br>    stack<string> sta;<br>    int i,j,k;<br>    int size;  </string></p>
-<pre><code><span class="keyword">size</span> = s.<span class="keyword">size</span>();  
-<span class="keyword">if</span>(<span class="keyword">size</span> == <span class="number">0</span>)               <span class="comment">//空字符串处理  </span>
-    <span class="keyword">return</span>;  
+		<p>网上一搜教程一大堆，很多已经写得很好了，我就不凑这个热闹了。推荐一篇博文：<a href="http://cnfeat.com/2014/05/10/2014-05-11-how-to-build-a-blog/" target="_blank" rel="external">如何搭建一个独立博客——简明Github Pages与Hexo教程</a>，讲得相当详细，博主也是根据这篇博文搭建的，一天轻松搞定个人博客。<br>本文就谈谈我在搭建博客遇到的一些问题，如果你没遇到最好，遇到了希望对你有帮助。</p>
+<h3 id="问题1_godaddy问题">问题1 godaddy问题</h3>
+<p>Q：通过优惠通道登陆godaddy网站在支付时没有支付宝，或者网站选择显示文字为中文也没有支付宝。怎么破？<br>A: 清理浏览器cookies，直接登陆godaddy官网，显示文字改为英文，在付款时输入优惠码，比如CJCNEW2，即可得到优惠。不同的优惠码价格不一样。</p>
+<h3 id="问题2_搭建本地hexo博客时，访问localhost:4000显示乱码">问题2  搭建本地hexo博客时，访问localhost:4000显示乱码</h3>
+<p>Q: 搭建时执行了如下命令：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+</pre></td><td class="code"><pre>npm install hexo -g
+hexo init blog
+hexo g
+hexo <span class="keyword">server</span>
+</pre></td></tr></table></figure><br>A: 查了hexo官网，才知道少敲了npm install命令<br><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre>npm install hexo -g
+hexo init blog
+hexo g
+npm install   <span class="comment">//就是你了。。。。</span>
+hexo <span class="keyword">server</span>
+</pre></td></tr></table></figure>
 
-i=<span class="number">0</span>;  
-j=<span class="keyword">size</span>-<span class="number">1</span>;  
-<span class="keyword">while</span>(i <= j && s[i] == <span class="string">' '</span>)  
-    i++;  
-<span class="keyword">while</span>(j >= i && s[j] == <span class="string">' '</span>)  
-    j--;  
-
-<span class="keyword">while</span>(i<=j)                 <span class="comment">//考虑单个字符的情况  </span>
-{  
-    k = i;  
-    <span class="keyword">while</span>(i <= j && s[i] != <span class="string">' '</span>)  
-        i++;  
-    sta.push(s.substr(k, i-k));   
-    <span class="keyword">if</span>(i >= j)     
-        <span class="keyword">break</span>;  
-    <span class="keyword">while</span>(i <= j && s[i] == <span class="string">' '</span>)  
-        i++;  
-}  
-
-<span class="keyword">string</span> tmp=<span class="string">""</span>;  
-<span class="keyword">while</span>(!sta.empty())        <span class="comment">//空格字符串不进入此循环  </span>
-{  
-    <span class="keyword">if</span>(!tmp.empty())  
-        tmp.push_back(<span class="string">' '</span>);  
-    tmp.append(sta.top());  
-    sta.pop();  
-}  
-s = tmp;  
-</code></pre><p>}  </p>
-<p>写完之后网上查了一下，发现有很多写得比楼主牛逼多了，不得不感慨下自己的码渣水平。<br>算是多提供一种思路：<a href="http://www.tuicool.com/articles/uQ3E7b" target="_blank" rel="external">http://www.tuicool.com/articles/uQ3E7b</a></p>
+<h3 id="问题3_搭建成功后，刚开始可以访问，过一段时间又无法登陆">问题3 搭建成功后，刚开始可以访问，过一段时间又无法登陆</h3>
+<p>Q: 绑定域名与GitHub Pages时我使用方法一：直接在github的Repository的根目录下面新建CNAME文件，刚开始可以访问。但本地没有创建CNAME文件，当我将本地文件deploy到github时CNAME文件会被删除，导致无法访问。<br>A: 本地创建CNAME文件（注意没有后缀），然后放到source下通过hexo命令传到github上。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -143,7 +130,7 @@ s = tmp;
 
 <div class="article-share" id="share">
 
-  <div data-url="http://yoursite.com/2014/06/04/my-new-post/" data-title="Leetcode | Reverse Words in a String | 抛砖引玉 | LinEvan&#39;s blog" data-tsina="null" class="share clearfix">
+  <div data-url="http://yoursite.com/2014/06/17/通过GitHub和Hexo搭建个人博客遇到的问题/" data-title="通过GitHub和Hexo搭建个人博客遇到的问题 | LinEvan&#39;s blog" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -152,19 +139,11 @@ s = tmp;
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2014/06/06/hello-world/" title="Hello World">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  Hello World</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2014/06/04/1/"  title="C++中三种继承类的成员继承关系">
+<a href="/2014/06/06/hello-world/"  title="Hello World">
  <strong>NEXT:</strong><br/> 
- <span>C++中三种继承类的成员继承关系
+ <span>Hello World
 </span>
 </a>
 </div>
@@ -181,7 +160,7 @@ s = tmp;
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  
+  <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#问题1_godaddy问题"><span class="toc-number">1.</span> <span class="toc-text">问题1 godaddy问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题2_搭建本地hexo博客时，访问localhost:4000显示乱码"><span class="toc-number">2.</span> <span class="toc-text">问题2  搭建本地hexo博客时，访问localhost:4000显示乱码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题3_搭建成功后，刚开始可以访问，过一段时间又无法登陆"><span class="toc-number">3.</span> <span class="toc-text">问题3 搭建成功后，刚开始可以访问，过一段时间又无法登陆</span></a></li></ol>
   </div>
 
 <div id="asidepart">
