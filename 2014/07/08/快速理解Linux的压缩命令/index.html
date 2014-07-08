@@ -78,7 +78,7 @@
     </p>
   <p class="article-time">
     <time datetime="2014-07-08T13:10:05.000Z" itemprop="datePublished">7月 8 2014</time>
-    更新日期:<time datetime="2014-07-08T13:27:07.000Z" itemprop="dateModified">7月 8 2014</time>
+    更新日期:<time datetime="2014-07-08T13:29:00.000Z" itemprop="dateModified">7月 8 2014</time>
     
   </p>
 </header>
@@ -90,7 +90,7 @@
 		<ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#0-_前言"><span class="toc-number">1.</span> <span class="toc-text">0. 前言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-_gzip，zcat"><span class="toc-number">2.</span> <span class="toc-text">1. gzip，zcat</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-_打包命令tar"><span class="toc-number">3.</span> <span class="toc-text">3. 打包命令tar</span></a></li></ol>
 		</div>
 		
-		<p><code>[TOC]</code></p>
+		<p>[TOC]</p>
 <h4 id="0-_前言">0. 前言</h4>
 <p>在Linux的环境中，压缩文件的扩展名大多是：<code>『*.tar, *.tar.gz, *.tgz, *.gz, *.bz2』</code>，相对应的命令有tar、gz、bz2。命令比较多，而且每条命令的参数也很多，每次碰到都不得不google百度之。此文帮你快速的理清这些命令的简单用法，至于更复杂的用法可自行man page。</p>
 <h4 id="1-_gzip，zcat">1. gzip，zcat</h4>
@@ -160,7 +160,7 @@ man.config:      <span class="number">56.1</span>% -- replaced with man.config.g
 范例四：由于 man.config 是文字文件，可将范例一的压缩文件的内容读出来！
 [root@www tmp]<span class="preprocessor"># zcat man.config.gz</span>
 <span class="preprocessor"># 此时萤幕上会显示 man.config.gz 解压缩之后的文件内容！</span>
-</pre></td></tr></table></figure><br>cat 可以读取纯文字文件，zcat 则可以读取纯文字文件被压缩后的压缩文件！<br><br>#### 2.bzip2，bzcat<br>若说 gzip 是为了取代 compress 并提供更好的压缩比而成立的，那么 bzip2 则是为了取代 gzip 并提供更佳的压缩比而来的。<br>bzip2 的用法几乎与 gzip 相同。<br>bzcat功能和用法和zcat相同。<br>不信看看：<br><figure class="highlight c"><table><tr><td class="gutter"><pre>1
+</pre></td></tr></table></figure><br>cat 可以读取纯文字文件，zcat 则可以读取纯文字文件被压缩后的压缩文件！<br><br>#### 2.bzip2,bzcat<br>若说 gzip 是为了取代 compress 并提供更好的压缩比而成立的，那么 bzip2 则是为了取代 gzip 并提供更佳的压缩比而来的。<br>bzip2 的用法几乎与 gzip 相同。<br>bzcat功能和用法和zcat相同。<br>不信看看：<br><figure class="highlight c"><table><tr><td class="gutter"><pre>1
 2
 3
 4
