@@ -76,7 +76,7 @@
     </p>
   <p class="article-time">
     <time datetime="2014-05-22T12:51:28.000Z" itemprop="datePublished">5月 22 2014</time>
-    更新日期:<time datetime="2014-07-22T12:59:07.000Z" itemprop="dateModified">7月 22 2014</time>
+    更新日期:<time datetime="2014-07-22T13:02:02.000Z" itemprop="dateModified">7月 22 2014</time>
     
   </p>
 </header>
@@ -90,7 +90,7 @@
 		
 		<p>在C++中，static成员属于整个类而不是某个对象。不管类创建了多少对象，static成员只存储一份供所有对象使用。<br>在使用static成员时，对于它的声明、初始化和使用经常感到困惑，在此结合例子说明，希望能加深读者对于static成员的理解。<br>类中static成员有两种，一是static成员变量，一是static成员函数。首先，先分析一下static成员变量。</p>
 <p><strong>第一个例子：static、static const、const和枚举的初始化</strong></p>
-<p><figure class="highlight C++"><table><tr><td class="gutter"><pre>1
+<p><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
 2
 3
 4
@@ -113,13 +113,13 @@
 21
 22
 23
-</pre></td><td class="code"><pre>class classA
+</pre></td><td class="code"><pre><span class="keyword">class</span> classA
 {
 	<span class="keyword">const</span> <span class="keyword">int</span> ciNum;
 	<span class="keyword">enum</span>{eNum=<span class="number">10</span>};                <span class="comment">//枚举在类声明时初始化</span>
 	<span class="keyword">int</span> arr[eNum];                 
 <span class="keyword">public</span>:
-	classA():<span class="title">ciNum</span>(10){}           <span class="comment">//const变量只能在构造函数初始化列表中初始化</span>
+	classA():ciNum(<span class="number">10</span>){}           <span class="comment">//const变量只能在构造函数初始化列表中初始化</span>
 	<span class="keyword">static</span> <span class="keyword">int</span> siNum;
 	<span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">int</span> sciNum=<span class="number">10</span>;    <span class="comment">//static const可在类声明时初始化</span>
 	<span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">int</span> sciNumOut;
@@ -131,9 +131,9 @@
 
 <span class="keyword">int</span> main()
 {
-	cout<<classA::siNum<<endl;
-	cout<<classA::sciNum<<endl;
-	cout<<classA::sciNumOut<<endl;
+	<span class="built_in">cout</span> << classA::siNum << endl;
+	<span class="built_in">cout</span> << classA::sciNum << endl;
+	<span class="built_in">std</span>::<span class="built_in">cout</span><<classA::sciNumOut<<endl;
     <span class="keyword">return</span> <span class="number">0</span>;
 }
 </pre></td></tr></table></figure><br>编译通过<br><strong><em>结论1：枚举在类声明时初始化；static const可在类声明中初始化，也可在类外面初始化；const和引用在构造函数初始化列表中初始化；static成员变量只能在类外面初始化</em></strong></p>
