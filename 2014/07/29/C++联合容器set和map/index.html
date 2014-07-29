@@ -1,0 +1,474 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>C++联合容器set和map | LinEvan&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="LinEvan">
+    
+    <meta name="description" content="联合容器联合容器将值与关键字关联在一起，使用关键字来查找值。联合容器的长处在于，它提供了对元素的快速访问。与序列相似，联合容器也允许插入新元素，不过不能指定元素的插入位置。原来是联合容器通常包含用于确定数据放置位置的算法，以便能够很快检索信息。STL提供4种容器：set，multiset，map，m">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="LinEvan&#39;s blog" title="LinEvan&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="LinEvan&#39;s blog">LinEvan&#39;s blog</a></h1>
+				<h2 class="blog-motto">Stay hungry stay foolish</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/07/29/C++联合容器set和map/" title="C++联合容器set和map" itemprop="url">C++联合容器set和map</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://yoursite.com" title="LinEvan">LinEvan</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-07-29T08:09:43.000Z" itemprop="datePublished">7月 29 2014</time>
+    更新日期:<time datetime="2014-07-29T08:10:29.000Z" itemprop="dateModified">7月 29 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+		</div>
+		
+		<ol>
+<li><p>联合容器<br>联合容器将值与关键字关联在一起，使用关键字来查找值。联合容器的长处在于，它提供了对元素的快速访问。与序列相似，联合容器也允许插入新元素，不过不能指定元素的插入位置。原来是联合容器通常包含用于确定数据放置位置的算法，以便能够很快检索信息。<br>STL提供4种容器：set，multiset，map，multimap。一般地当我们只想知道一个值是否存在时，set 最有用处；希望存储也可能修改一个相关的值时，map 最为有用。</p>
+</li>
+<li><p>set</p>
+<ul>
+<li>STL set是多个概念的模型，它是一个联合集合，可反转，可排序，关键字是唯一的，所以它只能存储同一种类型的值。其值的类型与关键相同，关键字是唯一的，对于set而言，值就是关键字。头文件为<set>。</set></li>
+<li>定义set<figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="stl_container"><span class="built_in">set</span><<span class="built_in">string</span>></span> A(s1, s1+A)
+<span class="stl_container"><span class="built_in">set</span><<span class="built_in">string</span>></span> exclusion_set;
+</pre></td></tr></table></figure></li>
+<li>插入<br><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>exclusion_set.<span class="operator"><span class="keyword">insert</span>( <span class="string">"the"</span> );</span>
+exclusion_set.<span class="operator"><span class="keyword">insert</span>( <span class="string">"and"</span> );</span>
+</pre></td></tr></table></figure><br>我们可以通过向<code>insert()</code>提供一对iterator 以便插入一个元素序列</li>
+<li>查找<br>查询set 对象中是否存在一个值的两个操作是<code>find()</code>和<code>count()</code>。如果元素存在则<code>find()</code>返回指向这个元素的iterator，否则返回一个等于<code>end()</code>的iterator表示该元素不存在。如果找到元素<code>count()</code>返回1 如果元素不存在则返回0。</li>
+<li>迭代<figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="stl_container"><span class="built_in">set</span>< <span class="keyword">short</span> ></span> occurrence_lines;
+ploc::iterator liter = ploc->begin(),
+ploc::iterator liter_end = ploc->end();
+<span class="keyword">while</span> ( liter != liter_end ) {
+occurrence_lines.insert( occurrence_lines.end(),
+(*liter).first );
+++liter;
+}
+</pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>map</p>
+<ul>
+<li>对于map类型来说，值的类型与关键字不同，关键字是唯一的，每个关键字只对应一个值。</li>
+<li>为定义map对象我们至少要指明键和值的类型，例如<figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="stl_container"><span class="built_in">map</span><<span class="built_in">string</span>, <span class="keyword">int</span>></span> word_count;
+<span class="keyword">class</span> employee;
+<span class="stl_container"><span class="built_in">map</span><<span class="keyword">int</span>, employee*></span> personnel;
+</pre></td></tr></table></figure></li>
+<li>加入键/值元素对<br><code>word_count[ string("Anna") ] = 1;</code><br>用下标操作符把map初始化至一组元素集合，会使每个值都被初始化为缺省值。然后再被赋值为显式的值，如果元素是类对象而且它的缺省初始化和赋值的运算量都很大，就会影响程序的性能。可以直接插入：<br><code>word_count.insert(map<string,int>::value_type( string("Anna"), 1 ));</code><br>或者<figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="keyword">typedef</span> <span class="stl_container"><span class="built_in">map</span><<span class="built_in">string</span>,<span class="keyword">int</span>></span>::value_type valType;
+word_count.insert( valType( <span class="built_in">string</span>(<span class="string">"Anna"</span>), <span class="number">1</span> ));
+</pre></td></tr></table></figure><br>其作用是创建一个pair对象，接着将其直接插入map。<br>为插入一定范围内的键/值元素，我们可以用另一个版本的insert()方法。它用一对iterator作为参数。<br><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="stl_container"><span class="built_in">map</span>< <span class="built_in">string</span>, <span class="keyword">int</span> ></span> word_count_two;
+word_count_two.insert(word_count.begin(),word_count.end());
+</pre></td></tr></table></figure></li>
+<li>查找并获取map 中的元素<br>下标操作符给出了获取一个值的最简单方法例如：<br><code>int count = word_count[ "wrinkles" ];</code><br>但是只有当map 中存在这样一个键的实例时该代码才会表现正常如果不存在这样的实例使用下标操作符会引起插入一个实例在本例中键/值对<code>string( "wrinkles" ), 0</code><br>有两个map 操作能够发现一个键元素是否存在而且在键元素不存在时也不会引起插入实例:<br>（1） count(keyValue)<br>返回map 中keyValue 出现的次数当然对于map而言返回值只能是0 或1。<figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="keyword">int</span> <span class="keyword">count</span> = <span class="number">0</span>;
+<span class="keyword">if</span> ( word_count.<span class="keyword">count</span>( <span class="string">"wrinkles"</span> ))
+<span class="keyword">count</span> = word_count[ <span class="string">"wrinkles"</span> ];
+</pre></td></tr></table></figure><br>（2） Find(keyValue) 如果实例存在则find()返回指向该实例的iterator，如果不存在则返回等于end()的iterator。例如<br><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+</pre></td><td class="code"><pre><span class="keyword">int</span> count = <span class="number">0</span>;
+<span class="stl_container"><span class="built_in">map</span><<span class="built_in">string</span>,<span class="keyword">int</span>></span>::iterator it = word_count.find( <span class="string">"wrinkles"</span> );
+<span class="keyword">if</span> ( it != word_count.end() )
+    count = (*it).second;
+</pre></td></tr></table></figure></li>
+<li>对map进行迭代<br>我们可以通过对由begin()和end()两个迭代器标记的所有元素进行迭代来做到这一点。指向map中元素的iterator指向一个pair对象其中first拥有键，second拥有值。<figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="keyword">typedef</span> <span class="stl_container"><span class="built_in">map</span><<span class="built_in">string</span>,<span class="keyword">int</span>></span> tmap;
+tmap::iterator iter = text_map->begin(),
+tmap::iterator iter_end = text_map->end();
+<span class="keyword">while</span> ( iter != iter_end )
+{
+        <span class="built_in">cout</span> << <span class="string">"word: "</span> << (*iter).first << <span class="string">" ("</span> << (*iter).second <<<span class="string">")"</span>;
+        iter ++;
+}
+</pre></td></tr></table></figure></li>
+<li>删除<br>从map 中删除元素的erase()操作有三种变化形式。为了删除一个独立的元素我们传递给erase()一个键值或iterator, 为了删除一列元素我们传递给erase()一对lieator。</li>
+</ul>
+</li>
+<li><p>multiset和multimap</p>
+<ul>
+<li>multiset与set类似，但前者有多个值的关键字相同。multimap类型与map相似，只是一个关键字可以与多个值关联。</li>
+<li>声明：<br><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="preprocessor"># include <map></span>
+<span class="stl_container"><span class="built_in">multimap</span>< key_type, value_type ></span> multimapName;
+<span class="stl_container"><span class="built_in">multimap</span>< <span class="built_in">string</span>, <span class="stl_container"><span class="built_in">list</span>< <span class="built_in">string</span> ></span> ></span> synonyms;
+<span class="preprocessor"># include <set></span>
+<span class="stl_container"><span class="built_in">multiset</span>< type ></span> multisetName;
+</pre></td></tr></table></figure><br><code>multimap<int, string> codes;</code><br>int表关键字类型，string是存储值的类型。可选的第三个参数是比较函数，默认用less<>。</li>
+<li>插入<br>为将关键字和值结合为一对，定义了<code>pair<class T, class U></code>，如果keytype是关键字类型，datatype是被存储的数据类型，则值类型为<code>pair<const keytype, datatype></code>。<br>举例：<br><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>pair<<span class="keyword">const</span> <span class="keyword">int</span>, <span class="keyword">string</span>> item(<span class="number">213</span>, <span class="string">"Los Angeles"</span>);
+code.insert(item);
+</pre></td></tr></table></figure><br>或者创建一个匿名的pair对象，<br><code>code.insert( pair<const int, string>(213, "Los Angeles") )</code><br>有了pair对象后，可以使用first和second来访问这两个部分，如<br><code>item.first，item.second</code>。</li>
+<li>其它接口<br>对于multimap 或multiset ,一种迭代策略是联合使用由find()返回的iterator (指向第一个实例)和由count()返回的值.这样做能奏效因为我们可以保证实例在容器中是连续出现的。<br><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="stl_container"><span class="built_in">multimap</span>< <span class="built_in">string</span>, <span class="built_in">string</span> ></span> authors;
+<span class="built_in">string</span> search_item( <span class="string">"Alain de Botton"</span> );
+<span class="comment">// ...</span>
+<span class="keyword">int</span> number = authors.count( search_item );
+<span class="stl_container"><span class="built_in">multimap</span>< <span class="built_in">string</span>,<span class="built_in">string</span> ></span>::iterator iter;
+iter = authors.find( search_item );
+<span class="keyword">for</span> ( <span class="keyword">int</span> cnt = <span class="number">0</span>; cnt < number; ++cnt, ++iter )
+        do_something( *iter );
+</pre></td></tr></table></figure><br>更精彩的策略是使用由multiset 和multimap 的特殊操作<code>equal_range()</code>返回的iterator 对值。如果这个值存在，则第一个iterator 指向该值的第一个实例。且第二个iterator 指向这个值的最后实例的下一位置。如果最后的实例是multiset 的末元素，则第二个iterator 等于<code>end()</code>。<br><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="keyword">typedef</span> <span class="keyword">int</span> Keytype;
+<span class="stl_container"><span class="built_in">multimap</span><<span class="keyword">int</span>, <span class="built_in">string</span>></span> codes;
+pair<<span class="stl_container"><span class="built_in">multimap</span><Keytype, <span class="built_in">string</span>></span>::iterator, <span class="stl_container"><span class="built_in">multimap</span><Keytype, <span class="built_in">string</span>></span>::iterator> range=code.equal_range(<span class="number">718</span>)
+<span class="keyword">for</span>(it=range.first; it!=range.second;++it)
+    <span class="built_in">cout</span><<(*it).second<<endl;
+</pre></td></tr></table></figure><br>插入和删除操作与关联容器set 和map 相同equal_range()可以用来提供iterator 对以便标记出要被删除的多个元素的范围。<br>其它成员函数包括<code>lower_bound()</code>和<code>upper_bound()</code>将关键字作为参数。</li>
+</ul>
+</li>
+<li><p>内部数据结构<br>C++ STL中标准关联容器set, multiset, map, multimap内部采用的就是一种非常高效的平衡检索二叉树：红黑树，也成为RB树(Red-Black Tree)。RB树的统计性能要好于一般的平衡二叉树。这也就能解决以下几个问题<br>（1）为何map和set的插入删除效率比用其他序列容器高？<br>很简单，因为对于关联容器来说，不需要做内存拷贝和内存移动。map和set容器内所有元素都是以节点的方式来存储，其节点结构和链表差不多，指向父节点和子节点。<br>（2）为何每次insert之后，以前保存的iterator不会失效？<br>因此插入的时候只需要稍做变换，把节点的指针指向新的节点就可以了。删除的时候类似，稍做变换后把指向删除节点的指针指向其他节点就OK了。这里的一切操作就是指针换来换去，和内存移动没有关系。iterator这里就相当于指向节点的指针，内存没有变，指向内存的指针怎么会失效呢(当然 被删除的那个元素本身已经失效了)。<br>（3）map和set的插入和查找速度变化如何？<br>在map和set中查找是使用二分查找，插入和查找速度为logN。</p>
+</li>
+</ol>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/c++,-STL/">c++, STL</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2014/07/29/C++联合容器set和map/" data-title="C++联合容器set和map | LinEvan&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2014/07/29/TCP握手协议和状态变迁/"  title="TCP握手协议和状态变迁">
+ <strong>NEXT:</strong><br/> 
+ <span>TCP握手协议和状态变迁
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/TCPIP/" title="TCP/IP">TCP/IP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Tech/" title="Tech">Tech<sup>6</sup></a></li>
+		
+			<li><a href="/tags/c++/" title="c++">c++<sup>3</sup></a></li>
+		
+			<li><a href="/tags/c++,-STL/" title="c++, STL">c++, STL<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+      <li><a href="http://www.linkedin.com/profile/view?id=130233431&trk=nav_responsive_tab_profile_pic" target="_blank" title="Hexo">LinkedIn</a></li>		  
+      <li><a href="http://blog.csdn.net/hustLinEvan" target="_blank" title="YangJian">CSDN</a></li>
+      <li><a href="http://music.163.com/#/user/home?id=9764968" target="_blank" title="Hexo">网易云音乐</a></li>
+      <li><a href="http://www.douban.com/people/63180864/" target="_blank" title="Hexo">豆瓣</a></li>	  
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1811833191" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/linevan" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		
+		<a href="http://yoursite.com" target="_blank" title="LinEvan">LinEvan</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"linevan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>
