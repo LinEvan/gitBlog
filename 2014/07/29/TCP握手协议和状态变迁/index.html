@@ -9,11 +9,10 @@
     
     <meta name="author" content="LinEvan">
     
-    <meta name="description" content="TCP状态变迁图 -CLOSED: 这个没什么好说的了，表示初始状态。
+    <meta name="description" content="TCP状态变迁图
+CLOSED: 这个没什么好说的了，表示初始状态。
 LISTEN: 这个也是非常容易理解的一个状态，表示服务器端的某个SOCKET处于监听状态，可以接受连接了。
-
-
-SYN_RCVD: 这个状态表示接受到了SYN报文，在正常情况下，这个状态是服务器端的SOCKET在建立TCP连接">
+SYN_RCVD: 这个状态表示接受到了SYN报文，在正常情况下，这个状态是服务器端的SOCKET在建立TCP连接时的三">
     
     
     
@@ -80,7 +79,7 @@ SYN_RCVD: 这个状态表示接受到了SYN报文，在正常情况下，这个�
     </p>
   <p class="article-time">
     <time datetime="2014-07-29T02:43:27.000Z" itemprop="datePublished">7月 29 2014</time>
-    更新日期:<time datetime="2014-07-29T11:20:42.000Z" itemprop="dateModified">7月 29 2014</time>
+    更新日期:<time datetime="2014-07-29T11:21:48.000Z" itemprop="dateModified">7月 29 2014</time>
     
   </p>
 </header>
@@ -93,10 +92,9 @@ SYN_RCVD: 这个状态表示接受到了SYN报文，在正常情况下，这个�
 		</div>
 		
 		<ol>
-<li>TCP状态变迁图<br><img src="/img/TCP状态转换图.png" alt="Alt text"><br> -CLOSED: 这个没什么好说的了，表示初始状态。<ul>
+<li>TCP状态变迁图<br><img src="/img/TCP状态转换图.png" alt="Alt text"><ul>
+<li>CLOSED: 这个没什么好说的了，表示初始状态。</li>
 <li>LISTEN: 这个也是非常容易理解的一个状态，表示服务器端的某个SOCKET处于监听状态，可以接受连接了。</li>
-</ul>
-<ul>
 <li>SYN_RCVD: 这个状态表示接受到了SYN报文，在正常情况下，这个状态是服务器端的SOCKET在建立TCP连接时的三次握手会话过程中的一个中间状态，很短暂，基本 上用netstat你是很难看到这种状态的，除非你特意写了一个客户端测试程序，故意将三次TCP握手过程中最后一个ACK报文不予发送。因此这种状态 时，当收到客户端的ACK报文后，它会进入到ESTABLISHED状态。</li>
 <li>SYN_SENT: 这个状态与SYN_RCVD遥想呼应，当客户端SOCKET执行CONNECT连接时，它首先发送SYN报文，因此也随即它会进入到了   SYN_SENT状 态，并等待服务端的发送三次握手中的第2个报文。SYN_SENT状态表示客户端已发送SYN报文。</li>
 <li>ESTABLISHED：这个容易理解了，表示连接已经建立了。</li>
