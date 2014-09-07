@@ -1,0 +1,530 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Effective C++(一)习惯C++ | LinEvan&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="LinEvan">
+    
+    <meta name="description" content="导读
+
+std::size_t，这表示类型size_t位于命名空间std内。继承自C的符号有可能存在于global作用域或std内，甚或两者兼具，取决于哪个头文件被含入。size_t只是一个typedef，是C++计算个数时用的某种不带正负号(unsigned)类型。它也是vector,queue和">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="LinEvan&#39;s blog" title="LinEvan&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="LinEvan&#39;s blog">LinEvan&#39;s blog</a></h1>
+				<h2 class="blog-motto">Stay hungry stay foolish</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/09/07/Effective-C++(一)习惯C++/" title="Effective C++(一)习惯C++" itemprop="url">Effective C++(一)习惯C++</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://yoursite.com" title="LinEvan">LinEvan</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-09-07T06:55:26.000Z" itemprop="datePublished">9月 7 2014</time>
+    更新日期:<time datetime="2014-09-07T07:11:59.000Z" itemprop="dateModified">9月 7 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#导读"><span class="toc-number">1.</span> <span class="toc-text">导读</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1_让自己习惯C++"><span class="toc-number">2.</span> <span class="toc-text">1   让自己习惯C++</span></a></li></ol>
+		</div>
+		
+		<h1 id="导读">导读</h1>
+<ol>
+<li>std::size_t，这表示类型size_t位于命名空间std内。继承自C的符号有可能存在于global作用域或std内，甚或两者兼具，取决于哪个头文件被含入。size_t只是一个typedef，是C++计算个数时用的某种不带正负号(unsigned)类型。它也是vector,queue和string内的operator[]函数接受的参数类型。</li>
+<li>签名式：每个函数的声明，也就是参数和返回类型；<br>定义式：定义式任务是提供编译器一些声明式所遗漏的细节。对对象(例如int)而言，定义式是编译器为此对象拨发内存的地点。对function或function temple而言，定义式提供了代码本体。对class或class temple而言，定义式列出它们的成员；<br>初始化：是“给予对象初值”的过程。对用户自定义类型的对象而言，初始化由构造函数执行。</li>
+<li>copy构造函数被用来“以同型对象初始化自我对象”，copy assignment操作符被用来“从另一个同型对象中拷贝其值到自我对象”<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="class"><span class="keyword">class</span> <span class="title">Widget</span>{};</span>
+<span class="constant">Widget</span> w1;      <span class="regexp">//default</span>调用函数
+<span class="constant">Widget</span> w2(w1);  <span class="regexp">//copy</span>构造函数
+w1 = w2;        <span class="regexp">//copy</span> assignment
+<span class="constant">Widget</span> w3 = w2; <span class="regexp">//copy</span>构造函数
+</pre></td></tr></table></figure><br>如果一个新对象被定义，一定会有个构造函数被调用，不可能调用赋值操作。如果没有新对象被定义，就不会有构造函数被调用，那么当然就是赋值操作符被调用。PS(from c++ primer plus)：初始化总是会调用赋值构造函数，而是用=操作符也可能调用赋值操作符</li>
+<li>不明确（未定义）行为的结果是不可预期的。如对一个NULL指针取值。</li>
+<li>TR1（”Technical Report1”）是一份规范，描述加入C++标准程序库的诸多新机能，这些机能以新的class templates和function temlpates形式体现，针对的题目有hash tables, reference-counting smart pointers, regular expression, 以及更多。所有TR1组件被置于命名空间tr1，后者嵌套于命名空间std内。</li>
+</ol>
+<h1 id="1_让自己习惯C++">1   让自己习惯C++</h1>
+<ol>
+<li>条款01：视C++为一个语言联邦<ul>
+<li>C++是个多重范式编程语言(multiparadigm programming language)，一个同时支持过程形式(procedural)、面向对象形式(object-oriented)、函数形式(functional)、泛型形式(generic)、元编程形式(metaprogramming)的语言。</li>
+<li>理解C++的几个次语言：<ul>
+<li>C。高效编程守则照出C语言的局限：没有模板、没有异常、没有重载···</li>
+<li>Object-oriented C++。classes(包括构造函数和析构函数)、封装(encapsulation)、继承(inheritance)、多态(polymorphism)、virtual函数（动态绑定）···等等。</li>
+<li>Template C++。泛型编程部分。模板元编程（TMP）</li>
+<li>STL。template程序库</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>条款02：尽量以const，enum，inline替换#define</p>
+<ul>
+<li>宁可以编译器替换预处理器。#define或许不被视为语言的一部分。</li>
+<li><code>#define ASPECT_RATION 1.653</code>。ASPECT_RATION没有进入记号表(symbol table)内，不好追踪。解决方法是用一个常量替换宏：<code>const double AspectRatio = 1.653;</code>AspectRatio会进入记号表。此外对浮点常量而言，使用常量可能比使用#define导致较小量的码，因为预处理器“盲目的将宏名称ASPECT_RATION替换为1.653”可能导致目标码出现多分1.653，若改用常量AspectRatio绝不会出现这种情况</li>
+<li>有两种特殊情况要说说。第一是定义常量指针。由于常量定义式常被放在头文件内，因此有必要将指针声明为const。string通常比其前辈char *-based合适。第二个值得注意的是class专属常量。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="class"><span class="keyword">class</span> <span class="title">GamePlayer</span>{</span>
+<span class="keyword">private</span>:
+    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">int</span> NumTurns = <span class="number">5</span>;
+    <span class="keyword">int</span> scores[NumTurns];
+};
+</pre></td></tr></table></figure><br>然后这里的NumTurns的声明式并非定义式。通常C++要求你对你所使用的任何东西提供一个定义式，但如果它是个class专属常量又是static且为整数类型（例如int,char,bool），则需要特殊处理。只要不取它们的地址，你可以声明并使用它们而无须提供定义式。但如果你取某个class专属常量的地址，或纵使你不取而你的编译器坚持要看到一个定义式，你就要提供定义式如下:<code>const int GamePlayer::NumTurns;//没有给予数值</code>。将这个式子放在实现文件而非头文件。由于class中已获得初值，因此定义时不可以再设初值。我们无法用#define创建一个class专属常量，因为#define并不重视作用域。一旦宏被定义，它就在其后的编译过程中有效（除非在某处被#undef）。</li>
+<li>所谓的“in-class初值设定”只允许对整数常量进行。如果你的编译器不支持上述语法，你可以将初始放在定义式：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="class"><span class="keyword">class</span> <span class="title">CostEstimate</span> {</span>
+privete:
+    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">double</span> FudgeFactor;        <span class="comment">//static class常量声明位于头文件内</span>
+};
+<span class="keyword">const</span> <span class="keyword">double</span> CostEstimate::FudgeFactor = <span class="number">1.35</span>; <span class="comment">//static class常量定义位于实现文件内</span>
+</pre></td></tr></table></figure><br>而编译器坚持必须在编译器期间知道数组大小，而编译器不允许“static整数型class常量”完成“in class常量设定”，可用“the enum hack”补偿做法。理论基础是“一个属于枚举类型的数值可权充ints被使用”，于是GamePlay定义如下：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="class"><span class="keyword">class</span> <span class="title">GamePlayer</span>{</span>
+<span class="keyword">private</span>:
+    <span class="keyword">enum</span> { NumTurns = <span class="number">5</span> };
+    <span class="keyword">int</span> scores[NumTurns];
+}
+</pre></td></tr></table></figure><br>第一，enum hack的行为在某方面说像#define而不像const。例如取一个const地址是合法的，取一个enum地址就不合法，而取一个#define的地址也不合法。第二个理由纯粹是为了实用主义。</li>
+<li>另一个常用的#define语用情况是以它实现宏。宏看起来像函数，但不会招致函数调用带来的额外的开销。<code>#define CALL_WITH_MAX(a,b)  f((a) > (b) ? (a) : (b))</code>。你必须记住为宏中的所有实参加上小括号，否则会遇到麻烦。但即使这样，看看下面不可思议的事情：<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="keyword">int</span> a=<span class="number">5</span>, b=<span class="number">0</span>;
+CALL_WITH_MAX(++a, b);      <span class="comment">//a被累加二次</span>
+CALL_WITH_MAX(++a, b+<span class="number">10</span>);   <span class="comment">//a被累加一次</span>
+</pre></td></tr></table></figure><br>在这里，调用f之前，a的递增次数竟然取决于“它被拿来和谁比较”！解决办法，你可以写出template inline函数：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="keyword">template</span> <<span class="keyword">typename</span> T>
+<span class="keyword">inline</span> <span class="keyword">void</span> callWithMax(<span class="keyword">const</span> T& a, <span class="keyword">const</span> T& b)
+{   
+     f(a>b ? a:b);
+}
+</pre></td></tr></table></figure></li>
+<li>请记住<ul>
+<li>对于单纯常量，最好以const对象或enum替换#define</li>
+<li>对于形似函数的宏，最好改用inline函数替换#define</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>条款03：尽可能使用const</p>
+<ul>
+<li>声明迭代器为const就像声明指针为const一样（即声明一个T *const指针），表示这个迭代器不得不指向不同的东西，但它所指的东西的值是可以改动的。如果你希望迭代器所指的东西不可被改动，你需要的是const_iterator.</li>
+<li>const最具威力的用法是面对函数声明时的应用，在一个函数声明式内，const可以和函数返回值、各参数、函数自身产生关联。另函数返回一个常量值，往往可以降低因客户错误而造成的意外，而又不至于放弃安全性和高效性。</li>
+<li>const成员函数。确认该成员函数可作用于const对象。它们使“操作const对象”称为可能。</li>
+<li>两个成员函数如果只是常量性不同，可以被重载，这是一个重要的C++特性。</li>
+<li>如果函数的返回类型是个内置类型，那么改动函数返回值从来就不合法。</li>
+<li>mutable(可变的)变量，mutable释放掉non-static成员变量的bitwise constness约束。在const成员函数内也能改变变量。</li>
+<li>在const和non-const成员函数中避免重复。另其中一个调用另一个，这促使我们将常量性转除。<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="code"><pre><span class="keyword">class</span> TextBlock {
+<span class="keyword">public</span>:
+         <span class="keyword">const</span> <span class="keyword">char</span> & <span class="keyword">operator</span>[] (<span class="built_in">std</span>::size_t position) <span class="keyword">const</span>
+         {
+              ...
+                 <span class="keyword">return</span> text[position];
+         }
+         <span class="keyword">char</span> & <span class="keyword">operator</span>[] (<span class="built_in">std</span>::size_t position)
+         {
+            <span class="keyword">return</span> <span class="keyword">const_cast</span><<span class="keyword">char</span>&>(<span class="keyword">static_cast</span><<span class="keyword">const</span> TextBlock&>(*<span class="keyword">this</span>)[position]);
+         };
+};
+</pre></td></tr></table></figure></li>
+<li>const成员函数承诺绝不改变其对象的逻辑状态，non-const成员函数却没有这般承诺。</li>
+<li>请记住：<ul>
+<li>const可被施加于任何作用域内的对象、函数参数、函数返回类型、成员函数本体。</li>
+<li>编译器强制实施bitwise constness，但你编写程序时应该使用“概念上的常量性”</li>
+<li>当const和con-const成员函数有着实质等价的实现时，令non-const版本调用const版本可避免代码重复。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>条款04：确定对象被使用前已先被初始化</p>
+<ul>
+<li>如果你使用C part of C++而且初始化可能招致运行期成本，那么就不保证初始化。一旦进入non-C parts of C++，规则有些变化。最佳的处理办法就是：永远在使用对象之前先将它初始化。对于无任何成员的内置类型，你必须手工完成。至于内置类型以外的任何其他东西，由构造函数完成。每一个构造函数都将对象的每一个成员初始化。</li>
+<li>C++规定，对象的成员变量的初始化动作发生在进入构造函数本体之前。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre>A::A(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &name)
+{
+        theName = name; <span class="comment">// std::string theName;  </span>
+        num = <span class="number">0</span>;    <span class="comment">//int num;</span>
+}
+</pre></td></tr></table></figure><br>初始化的发生时间发生于成员的default构造函数被自动调用之时。但对内置类型来说，不保证一定在你看到的那个赋值动作的时间点之前获得初值。构造函数的较佳写法是：成员初值列，这样效率更高。基于赋值的初始化首先调用default函数为theName设初值，然后立刻再对他们赋予新值，default构造函数所做的就浪费了。而成员初值列避免了这一问题，因为初值列中针对各个成员变量而设的实参，被拿去作为各成员变量之构造函数的实参。对大多数类型而言，比起先调用default构造函数然后再调用copy assignment操作符，单只调用一次copy构造函数是比较高效的，有时甚至高效得多。对于内置类型如num，其初始化和赋值的成本相同，但为了一致性最好还是通过成员初值列来初始化。</li>
+<li>有些情况下即使面对的成员变量属于内置类型，也一定得使用初值列。是的，如果成员变量是const或reference，它们就一定需要初值，不能被赋值。最简单的做法就是：总是使用成员初值列。</li>
+<li>多分成员初值列的存在就会导致重复。可以合理的在初值列中遗漏那些“赋值表现像初始化一样的”成员变量，改用赋值，并移往某个函数（通常是private），供所有构造函数调用。这种做法在“成员变量的初值系由文件或数据库读入”时特别有用</li>
+<li>C++的class成员变量总是以其声明次序被初始化，所以最好总是以其声明次序为次序。</li>
+<li>不同编译单元内定义之non-local static对象的初始化次序问题。<ul>
+<li>static对象，包括global对象、定义于namespace作用域内的对象、在classes内、在函数内、以及在file作用域内被声明为static的对象。函数内的static对象称为local static其他的static对象称为non-local static对象</li>
+<li>编译单元是指产出单一目标文件的那些编码。基本上它是单一源码文件加上其所含入的头文件（#include）。</li>
+<li>如果某编译单元内的某个non-local static对象的初始化动作使用了另一编译单元内的某个non-local static对象，它所用到的这个对象可能尚未被初始化，因为C++对“定义于不同编译单元内的non-local static对象”的初始化次序并无明确定义。解决办法是：将每个non-local static对象搬到自己的专属函数内（该对象在此函数内被声明为static）这些函数返回一个reference指向它所含的对象。然后用户调用这些函数，而不直接指涉这些对象。也就是说，non-local static对象被local static对象替换了。这是Singleton模式的常见实现手法。这个手法基础在于：C++保证，函数内的local static对象会在“该函数被调用期间”“首次遇上该对象之定义式”时被初始化。<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="class"><span class="keyword">class</span> <span class="title">FileSystem</span>;
+<span class="title">FileSystem</span> &<span class="title">tfs</span>()
+{</span>
+    <span class="keyword">static</span> FileSystem fs;
+    <span class="keyword">return</span> fs;
+}
+</pre></td></tr></table></figure></li>
+<li>任何一种non-const static对象，无论它是local或non-local，在多线程环境下“等待某事发生”都会有麻烦处理这个麻烦的一种做法是：在程序的单线程启动阶段手工调用reference-returning函数，这可消除与初始化有关的“竞速形势”。当然，运用reference-returning函数防止“初始化次序问题”。前提是其中有着一个对对象而言合理的初始化次序。</li>
+</ul>
+</li>
+<li>避免在对象初始化之前过早地使用它们，你要做：<ul>
+<li>第一，手工初始化内置型non-member对象</li>
+<li>第二，使用成员初值列对付对象的所有成分</li>
+<li>最后，在“初始化次序不确定性”氛围下加强你的设计</li>
+</ul>
+</li>
+<li>请记住：<ul>
+<li>为内置型对象进行手工初始化，因为C++不保证初始化它们</li>
+<li>构造函数最好使用成员初值列，而不要在构造函数本体内使用赋值操作。初值列列出的成员变量，其排列次序应该和它们在class中的声明次序相同。</li>
+<li>为免除“跨编译单元之初始化次序”问题，请以local static对象替换non-local static对象</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Tech/">Tech</a><a href="/tags/c++/">c++</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2014/09/07/Effective-C++(一)习惯C++/" data-title="Effective C++(一)习惯C++ | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/09/07/Effective C++(二)构造析构赋值运算/" title="Effective C++(二)构造析构赋值运算">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  Effective C++(二)构造析构赋值运算</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/07/29/C++联合容器set和map/"  title="C++联合容器set和map">
+ <strong>NEXT:</strong><br/> 
+ <span>C++联合容器set和map
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#导读"><span class="toc-number">1.</span> <span class="toc-text">导读</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1_让自己习惯C++"><span class="toc-number">2.</span> <span class="toc-text">1   让自己习惯C++</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/STL/" title="STL">STL<sup>1</sup></a></li>
+		
+			<li><a href="/tags/TCPIP/" title="TCP/IP">TCP/IP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Tech/" title="Tech">Tech<sup>9</sup></a></li>
+		
+			<li><a href="/tags/c++/" title="c++">c++<sup>6</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+      <li><a href="http://www.linkedin.com/profile/view?id=130233431&trk=nav_responsive_tab_profile_pic" target="_blank" title="Hexo">LinkedIn</a></li>		  
+      <li><a href="http://blog.csdn.net/hustLinEvan" target="_blank" title="YangJian">CSDN</a></li>
+      <li><a href="http://music.163.com/#/user/home?id=9764968" target="_blank" title="Hexo">网易云音乐</a></li>
+      <li><a href="http://www.douban.com/people/63180864/" target="_blank" title="Hexo">豆瓣</a></li>	  
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1811833191" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/linevan" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		
+		<a href="http://yoursite.com" target="_blank" title="LinEvan">LinEvan</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"linevan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+<div id="totop" style="position:fixed;bottom:150px;right:50px;cursor: pointer;">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+<script src="/js/totop.js"></script>
+  </body>
+</html>

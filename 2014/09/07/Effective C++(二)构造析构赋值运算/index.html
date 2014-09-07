@@ -1,0 +1,514 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Effective C++(二)构造析构赋值运算 | LinEvan&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="LinEvan">
+    
+    <meta name="description" content="2 构造/析构/赋值运算
+
+条款05：了解C++默默编写并调用哪些函数
+
+请记住：编译器可以暗自为class创建default构造函数、copy构造函数、copy assignment操作符，以及析构函数。所有这些函数都是public且inline。
+唯有当这些函数被需要（被调用），它们才会被编译器">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="LinEvan&#39;s blog" title="LinEvan&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="LinEvan&#39;s blog">LinEvan&#39;s blog</a></h1>
+				<h2 class="blog-motto">Stay hungry stay foolish</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/09/07/Effective C++(二)构造析构赋值运算/" title="Effective C++(二)构造析构赋值运算" itemprop="url">Effective C++(二)构造析构赋值运算</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://yoursite.com" title="LinEvan">LinEvan</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-09-07T07:08:27.000Z" itemprop="datePublished">9月 7 2014</time>
+    更新日期:<time datetime="2014-09-07T07:14:03.000Z" itemprop="dateModified">9月 7 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#2_构造/析构/赋值运算"><span class="toc-number">1.</span> <span class="toc-text">2 构造/析构/赋值运算</span></a></li></ol>
+		</div>
+		
+		<h1 id="2_构造/析构/赋值运算">2 构造/析构/赋值运算</h1>
+<ol>
+<li><p>条款05：了解C++默默编写并调用哪些函数</p>
+<ul>
+<li>请记住：编译器可以暗自为class创建default构造函数、copy构造函数、copy assignment操作符，以及析构函数。所有这些函数都是public且inline。</li>
+<li>唯有当这些函数被需要（被调用），它们才会被编译器创建出来。default构造函数和析构函数主要是给编译器一个地方用来放置“藏身幕后”的代码，像是调用base classes和non-static成员变量的构造函数和析构函数。注意，编译器产生的析构函数是个non-vitual，除非这个class的base class自身声明有virtual析构函数。</li>
+<li>至于copy构造函数和copy assignment操作符，编译器创建的版本只是单纯地将来源对象的每一个non-static成员变量拷贝到目标对象。</li>
+<li>只要声明了一个构造函数，编译器就不再为它创建default构造函数。</li>
+<li>如果你打算在一个“内涵reference成员”的class内支持赋值操作，你必须自己定义copy assignment操作符。面对“内含const成员”的classed，编译器的反应也一样。</li>
+<li>如果某个base classes将copy assignment操作符声明为private，编译器将拒绝为其derived classed生成一个copy assignment操作符。</li>
+</ul>
+</li>
+<li><p>条款06：若不想使用编译器自动生成的函数，就该明确拒绝</p>
+<ul>
+<li>请记住：为驳回编译器自动提供的功能，可将相应的成员函数声明为private并且不予实现。使用像Uncopyable这样的base classed也是一种做法。</li>
+<li>所有编译器产生的函数都是public。如果你不想使用copy构造函数或copy assignment操作符，你可以将copy构造函数或copy assignment操作符声明为private。借由明确声明一个成员函数，你阻止了编译器创建其专属版本；而令其为private，使你成功阻止人们调用它。但是因为member函数和friend还是可以调用private函数。你可以不去定义它们，那么如果某些人不慎调用任何一个，会获得一个连接错误（linkage error）。</li>
+<li>将连接错误移至编译器是可能的，可以继承一个专门为了阻止copying动作而设计的base class:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre>class Uncopyable{
+<span class="keyword">protected</span>:
+    <span class="title">Uncopyable</span>(){}
+    ~Uncopyable(){}
+<span class="keyword">private</span>:
+    <span class="title">Uncopyable</span>(<span class="keyword">const</span> Uncopyable &);
+    Uncopyable & <span class="keyword">operator</span>=(<span class="keyword">const</span> Uncopyable &);
+};
+</pre></td></tr></table></figure><br>继承Uncopyable，编译器尝试着生成一个copy构造函数和copy assignment操作符，而正如条款12所说，这些函数的“编译器生成版”会尝试调用其base class的对应兄弟，那么调用会被编译器拒绝。</li>
+</ul>
+</li>
+<li><p>条款07：为多态基类声明virtual析构函数</p>
+<ul>
+<li>请记住：<ul>
+<li>polymorphic(带多态性质)的base classed应该声明一个virtual析构函数。如果class带有virtual函数，它就应该拥有一个virtual析构函数</li>
+<li>Classes的设计目的如果不是作为base classe使用，或不是为了具备多态性质，就不该声明virtual析构函数</li>
+</ul>
+</li>
+<li>当derived class对象经由一个base class指针被删除，而该base class带着一个non-virtual析构函数，其结果过未有定义——实际执行时通常发生的是对象的derived成分没被销毁。于是造成了诡异的“局部销毁”对象。这会可形成资源泄露，败坏之数据结构。解决办法是给base class一个virtual析构函数。</li>
+<li>当class不企图被当做base class，令其析构函数为virtual不好。欲实现virtual函数，对象必须携带某些信息，主要用来在运行期间决定哪一个virtual函数该被调用。这份信息由包含一个所谓vptr（virtual table pointer）指针指出。vptr指向一个由函数指针构成的数组，称为vtbl（virtual table）。所以，只有当class内含至少virtual函数，才为它声明virtual析构函数。</li>
+<li>标准string不含任何virtual函数，有些程序员会错误地把它当做base class</li>
+<li>相同的分析适用于任何不带virtual析构函数的class，包括所有STL容器如vector,list,set,tr1::unordered_map</li>
+<li>有时候令class带一个pure virtual析构函数，可能颇为便利。pure virtual函数可能导致abstract classed——不能被实体化。然而，你必须为这个pure virtual析构函数提供一份定义。</li>
+<li>并非所有的base classes的设计目的都是为了多态用途。</li>
+</ul>
+</li>
+<li><p>条款08：别让异常逃离析构函数</p>
+<ul>
+<li>请记住：<ul>
+<li>析构函数绝对不要吐出异常。如果一个被析构函数调用的函数可能抛出异常，析构函数应该捕捉任何异常，然后吞下它们（不传播）或结束程序。</li>
+<li>如果客户需要对某个操作函数运行期间抛出的异常做出反应，那么class应该提供一个普通函数（而非在析构函数中）执行该操作。</li>
+</ul>
+</li>
+<li>如果析构函数抛出异常，那么有两个办法可以避免这个问题：<ul>
+<li>如果close抛出异常就结束程序，通常通过调用abort完成。abort可以抢先制“不明确行为”于死地。</li>
+<li>吞下调用close而发生的异常</li>
+</ul>
+</li>
+<li>如果某个操作可能在失败时抛出异常，而又存在某种需要必须处理该异常，那么这个异常必须来自析构函数以外的某个函数</li>
+</ul>
+</li>
+<li><p>条款09：绝不在构造和析构过程中调用virtual函数</p>
+<ul>
+<li>请记住：在构造和析构期间不要调用virtual函数，因为这类调用从不下降至derived class（比起当前执行构造函数和析构函数那层）</li>
+<li>在base class构造期间，virtual函数不是virtual函数。在derived class对象的base class构造期间，对象的类型是base class而不是derived class。不只virtual函数会被编译器解析至base class，若使用运行期间类型信息（如dynamic_cast和typeid），也会把对象视为base class类型。对象在derived class构造函数开始执行前不会成为一个derived class对象</li>
+<li>一旦derived class析构函数开始执行，对象内的derived class成员变量便呈现未定义值，所以C++视它们仿佛不再存在。进入base class析构函数后对象就成为一个base class对象</li>
+<li>确定你的构造函数和析构函数都没有调用virtual函数，而它们调用的所有函数也都服从同一约束。</li>
+<li>一种做法是在class Transaction内将logTransaction函数改为non-virtual，然后要求derived class构造函数传递必要信息给Transaction构造函数，而后那个构造函数便可安全的调用non-virtual logTransaction。</li>
+<li>由于你无法使用virtual函数从base classes向下调用，在构造期间，你可以借由“令derived classes将必要的构造信息向上传递至base class构造函数”替换之而加以弥补。</li>
+<li>利用辅助函数创建一个值传给base class构造函数往往比较方便。令此函数为static，也就不可能意外指向“初期成熟之BuyTransaction”对象内尚未初始化的成员变量。所以，“在base class构造和析构期间调用的virtual函数不可下降至derived classes”</li>
+</ul>
+</li>
+<li><p>条款10：令operator=返回一个reference to *this</p>
+<ul>
+<li>请记住：令赋值操作符返回一个reference to *this</li>
+<li>然后这份协议被所有内置类型和标准程序库提供的类型如string, vector, complex, tr1::shared_ptr或即将提供的类型共同蹲守</li>
+</ul>
+</li>
+<li><p>条款11：在operator=处理“自我赋值”</p>
+<ul>
+<li>请记住：<ul>
+<li>确保当对象自我赋值时operator=有良好行为。其中技术包括比较“来源对象”和“目标对象”的地址、精心周到的语句顺序、以及copy-and-swap</li>
+<li>确定任何函数如果操作一个以上的对象，而其中多个对象是同一对象时，其行为仍然正确</li>
+</ul>
+</li>
+<li>“证同测试”以达到“自我赋值”的检验目的：<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="code"><pre>Widget & Widget::<span class="keyword">operator</span>=(<span class="keyword">const</span> Widget & rhs)
+{
+    <span class="keyword">if</span>( <span class="keyword">this</span> == &rhs)   <span class="keyword">return</span> *<span class="keyword">this</span>;
+    <span class="keyword">delete</span> pb;
+    pb = <span class="keyword">new</span> Bitmap(*rhs.pb);
+    <span class="keyword">return</span> *<span class="keyword">this</span>;
+}
+</pre></td></tr></table></figure></li>
+<li>注意在复制pb所指东西之前别删除pb：<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="code"><pre>Widget & Widget::<span class="keyword">operator</span>=(<span class="keyword">const</span> Widget & rhs)
+{
+    Bitmap * pOrig = pb;
+    pb = <span class="keyword">new</span> Bitmap(*rhs.pb);
+    <span class="keyword">delete</span> pOrig;
+    <span class="keyword">return</span> *<span class="keyword">this</span>;
+}
+</pre></td></tr></table></figure></li>
+<li>使用copy and swap技术<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="code"><pre><span class="class"><span class="keyword">class</span> <span class="type">Widget</span>{
+    void swap<span class="container">(<span class="type">Widget</span> &<span class="title">rhs</span>)</span>;
+};
+<span class="type">Widget</span> & <span class="type">Widget</span>::operator=<span class="container">(<span class="title">const</span> <span class="type">Widget</span> & <span class="title">rhs</span>)</span>
+{
+    <span class="type">Widget</span> temp<span class="container">(<span class="title">rhs</span>)</span>;
+    swap<span class="container">(<span class="title">temp</span>)</span>;
+    return *this;
+}</span>
+</pre></td></tr></table></figure><br>(1)某class的copy assignment操作符可能被声明为“以by value方式接受实参”；（2）以by value方式传递东西会造成一份复件/副本<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre>Widget & Widget::<span class="keyword">operator</span>=(Widget rhs)
+{
+    swap(rhs);
+    <span class="keyword">return</span> *<span class="keyword">this</span>;
+}
+</pre></td></tr></table></figure><br>将”copying动作”从函数本体内移至“函数参数构造阶段”却可编译器有时生成更高效的代码</li>
+</ul>
+</li>
+<li><p>条款12：复制对象时勿忘其每一个成分</p>
+<ul>
+<li>请记住：<ul>
+<li>Copying函数应该确保复制“对象内的所有成员变量”及“所有base class成分”</li>
+<li>不要尝试以某个copying函数实现另一个copying函数。应该将共同机能放进第三个函数中，并由两个copying函数共同调用。</li>
+</ul>
+</li>
+<li>为derived class撰写copying函数，必须很小心地复制器base class成本。你应该让derived class的copying函数调用相应的base class函数</li>
+<li>当你编写一个copying函数，请确保：（1）复制所有local成员变量；（2）调用所有base classes内的适当copying函数</li>
+<li>你不该令copy assignment操作符调用copy构造函数</li>
+<li>构造函数用来初始化新对象，而assignment操作符只施行于已初始化对象身上。</li>
+<li>如果你发现你的copy assignment操作符和copy构造函数有相近的代码，消除重复代码的做法是：建立一个新的成员函数给两者调用。这样的函数往往是private而且常被命名为init。</li>
+</ul>
+</li>
+</ol>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Tech/">Tech</a><a href="/tags/c++/">c++</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2014/09/07/Effective C++(二)构造析构赋值运算/" data-title="Effective C++(二)构造析构赋值运算 | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/09/07/2/" title="2">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  2</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/09/07/Effective-C++(一)习惯C++/"  title="Effective C++(一)习惯C++">
+ <strong>NEXT:</strong><br/> 
+ <span>Effective C++(一)习惯C++
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#2_构造/析构/赋值运算"><span class="toc-number">1.</span> <span class="toc-text">2 构造/析构/赋值运算</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/STL/" title="STL">STL<sup>1</sup></a></li>
+		
+			<li><a href="/tags/TCPIP/" title="TCP/IP">TCP/IP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Tech/" title="Tech">Tech<sup>9</sup></a></li>
+		
+			<li><a href="/tags/c++/" title="c++">c++<sup>6</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+      <li><a href="http://www.linkedin.com/profile/view?id=130233431&trk=nav_responsive_tab_profile_pic" target="_blank" title="Hexo">LinkedIn</a></li>		  
+      <li><a href="http://blog.csdn.net/hustLinEvan" target="_blank" title="YangJian">CSDN</a></li>
+      <li><a href="http://music.163.com/#/user/home?id=9764968" target="_blank" title="Hexo">网易云音乐</a></li>
+      <li><a href="http://www.douban.com/people/63180864/" target="_blank" title="Hexo">豆瓣</a></li>	  
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1811833191" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/linevan" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		
+		<a href="http://yoursite.com" target="_blank" title="LinEvan">LinEvan</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"linevan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+<div id="totop" style="position:fixed;bottom:150px;right:50px;cursor: pointer;">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+<script src="/js/totop.js"></script>
+  </body>
+</html>
