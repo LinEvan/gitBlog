@@ -87,45 +87,6 @@ set_new_handler允许客户指定一个函数，在内存分</p>
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/2014/09/07/Effective C++(三)内存与资源管理/" title="Effective C++(三)资源管理" itemprop="url">
-  
-    <h1 itemprop="name">Effective C++(三)资源管理</h1>
-    
-     
-           <p itemprop="description" >内存是必须管理的众多资源之一，其他常见的资源还包括文件描述起、互斥锁、图形界面中的字型和笔刷、数据库连接、以及网络sockets。
-
-以对象管理资源
-
-请记住：
-为防止资源泄露，请使用RAII对象，它们在构造函数中获得资源并在析构函数中释放资源
-两个常被使用的RAII class</p>
-        
-    
-    <time datetime="2014-09-07T07:08:33.000Z" itemprop="datePublished">9月 7 2014</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2014/09/07/Effective C++(七)模板与泛型编程/" title="Effective C++(七)模板与泛型编程" itemprop="url">
-  
-    <h1 itemprop="name">Effective C++(七)模板与泛型编程</h1>
-    
-     
-           <p itemprop="description" >条款41：了解隐式接口和编译器多态
-
-请记住：
-classes和Templates都支持隐式接口（interfaces）和多态（polymorphism）
-对classes而言接口是显式的，以函数签名为中心。多态则是通过virtual函数发生于运行期
-对templates参数而言</p>
-        
-    
-    <time datetime="2014-09-07T07:08:33.000Z" itemprop="datePublished">9月 7 2014</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
     <a href="/2014/09/07/Effective C++(六)继承与面向对象设计/" title="Effective C++(六)继承与面向对象设计" itemprop="url">
   
     <h1 itemprop="name">Effective C++(六)继承与面向对象设计</h1>
@@ -136,6 +97,26 @@ classes和Templates都支持隐式接口（interfaces）和多态（polymorphism
 条款32：确定你的public继承塑模出is-a关系
 
 请记住：“public继承”意味is-a。适用于base classes身上的每一件事情一定也适用于derived clas</p>
+        
+    
+    <time datetime="2014-09-07T07:08:33.000Z" itemprop="datePublished">9月 7 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2014/09/07/Effective C++(三)资源管理/" title="Effective C++(三)资源管理" itemprop="url">
+  
+    <h1 itemprop="name">Effective C++(三)资源管理</h1>
+    
+     
+           <p itemprop="description" >内存是必须管理的众多资源之一，其他常见的资源还包括文件描述起、互斥锁、图形界面中的字型和笔刷、数据库连接、以及网络sockets。
+
+条款13：以对象管理资源
+
+请记住：
+为防止资源泄露，请使用RAII对象，它们在构造函数中获得资源并在析构函数中释放资源
+两个常被使用的RAII </p>
         
     
     <time datetime="2014-09-07T07:08:33.000Z" itemprop="datePublished">9月 7 2014</time>
@@ -181,18 +162,17 @@ tr1::shared_</p>
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/2014/09/07/Effective C++(三)资源管理/" title="Effective C++(三)资源管理" itemprop="url">
+    <a href="/2014/09/07/Effective C++(七)模板与泛型编程/" title="Effective C++(七)模板与泛型编程" itemprop="url">
   
-    <h1 itemprop="name">Effective C++(三)资源管理</h1>
+    <h1 itemprop="name">Effective C++(七)模板与泛型编程</h1>
     
      
-           <p itemprop="description" >内存是必须管理的众多资源之一，其他常见的资源还包括文件描述起、互斥锁、图形界面中的字型和笔刷、数据库连接、以及网络sockets。
-
-条款13：以对象管理资源
+           <p itemprop="description" >条款41：了解隐式接口和编译器多态
 
 请记住：
-为防止资源泄露，请使用RAII对象，它们在构造函数中获得资源并在析构函数中释放资源
-两个常被使用的RAII </p>
+classes和Templates都支持隐式接口（interfaces）和多态（polymorphism）
+对classes而言接口是显式的，以函数签名为中心。多态则是通过virtual函数发生于运行期
+对templates参数而言</p>
         
     
     <time datetime="2014-09-07T07:08:33.000Z" itemprop="datePublished">9月 7 2014</time>
@@ -246,6 +226,23 @@ std::size_t，这表示类型size_t位于命名空间std内。继承自C的符�
   </a>
 </section>
 
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2014/07/29/TCP握手协议和状态变迁/" title="TCP握手协议和状态变迁" itemprop="url">
+  
+    <h1 itemprop="name">TCP握手协议和状态变迁</h1>
+    
+     
+           <p itemprop="description" >TCP状态变迁图
+CLOSED: 这个没什么好说的了，表示初始状态。
+LISTEN: 这个也是非常容易理解的一个状态，表示服务器端的某个SOCKET处于监听状态，可以接受连接了。
+SYN_RCVD: 这个状态表示接受到了SYN报文，在正常情况下，这个状态是服务器端的SOCKET在</p>
+        
+    
+    <time datetime="2014-07-29T02:43:27.000Z" itemprop="datePublished">7月 29 2014</time>
+  </a>
+</section>
+
 
   <nav id="page-nav" class="clearfix">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -271,9 +268,9 @@ std::size_t，这表示类型size_t位于命名空间std内。继承自C的符�
 		
 			<li><a href="/tags/TCPIP/" title="TCP/IP">TCP/IP<sup>1</sup></a></li>
 		
-			<li><a href="/tags/Tech/" title="Tech">Tech<sup>16</sup></a></li>
+			<li><a href="/tags/Tech/" title="Tech">Tech<sup>15</sup></a></li>
 		
-			<li><a href="/tags/c++/" title="c++">c++<sup>13</sup></a></li>
+			<li><a href="/tags/c++/" title="c++">c++<sup>12</sup></a></li>
 		
 		</ul>
 </div>
