@@ -10,7 +10,8 @@
     <meta name="author" content="LinEvan">
     
     <meta name="description" content="导读
-1. std::size_t，这表示类型size_t位于命名空间std内。继承自C的符号有可能存在于global作用域或std内，甚或两者兼具，取决于哪个头文件被含入。size_t只是一个typedef，是C++计算个数时用的某种不带正负号(unsigned)类型。它也是vector,queu">
+
+std::size_t，这表示类型size_t位于命名空间std内。继承自C的符号有可能存在于global作用域或std内，甚或两者兼具，取决于哪个头文件被含入。size_t只是一个typedef，是C++计算个数时用的某种不带正负号(unsigned)类型。它也是vector,queue和">
     
     
     
@@ -77,7 +78,7 @@
     </p>
   <p class="article-time">
     <time datetime="2014-09-07T06:55:26.000Z" itemprop="datePublished">9月 7 2014</time>
-    更新日期:<time datetime="2014-09-07T06:57:06.000Z" itemprop="dateModified">9月 7 2014</time>
+    更新日期:<time datetime="2014-09-07T07:00:38.000Z" itemprop="dateModified">9月 7 2014</time>
     
   </p>
 </header>
@@ -86,608 +87,955 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#导读"><span class="toc-number">1.</span> <span class="toc-text">导读</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1_让自己习惯C++"><span class="toc-number">2.</span> <span class="toc-text">1   让自己习惯C++</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2_构造/析构/赋值运算"><span class="toc-number">3.</span> <span class="toc-text">2 构造/析构/赋值运算</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3_资源管理"><span class="toc-number">4.</span> <span class="toc-text">3 资源管理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4_设计与声明"><span class="toc-number">5.</span> <span class="toc-text">4 设计与声明</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5_实现"><span class="toc-number">6.</span> <span class="toc-text">5 实现</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6_继承与面向对象设计"><span class="toc-number">7.</span> <span class="toc-text">6 继承与面向对象设计</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#7_模板和泛型编程"><span class="toc-number">8.</span> <span class="toc-text">7 模板和泛型编程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#8_定制new和delete"><span class="toc-number">9.</span> <span class="toc-text">8 定制new和delete</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#9_杂项讨论"><span class="toc-number">10.</span> <span class="toc-text">9 杂项讨论</span></a></li></ol>
 		</div>
 		
-		<p>导读</p>
-<pre><code><span class="number">1.</span> <span class="built_in">std</span>::size_t，这表示类型size_t位于命名空间<span class="built_in">std</span>内。继承自C的符号有可能存在于global作用域或<span class="built_in">std</span>内，甚或两者兼具，取决于哪个头文件被含入。size_t只是一个<span class="keyword">typedef</span>，是C++计算个数时用的某种不带正负号(<span class="keyword">unsigned</span>)类型。它也是<span class="built_in">vector</span>,<span class="built_in">queue</span>和<span class="built_in">string</span>内的<span class="keyword">operator</span>[]函数接受的参数类型。
-<span class="number">2.</span> 签名式：每个函数的声明，也就是参数和返回类型；
-</code></pre><p>定义式：定义式任务是提供编译器一些声明式所遗漏的细节。对对象(例如int)而言，定义式是编译器为此对象拨发内存的地点。对function或function temple而言，定义式提供了代码本体。对class或class temple而言，定义式列出它们的成员；<br>初始化：是“给予对象初值”的过程。对用户自定义类型的对象而言，初始化由构造函数执行。</p>
-<pre><code><span class="number">3</span>. <span class="keyword">copy</span>构造函数被用来“以同型对象初始化自我对象”，<span class="keyword">copy</span> assignment操作符被用来“从另一个同型对象中拷贝其值到自我对象”
-</code></pre><p>class Widget{};<br>Widget w1;      //default调用函数<br>Widget w2(w1);  //copy构造函数<br>w1 = w2;        //copy assignment<br>Widget w3 = w2; //copy构造函数<br>如果一个新对象被定义，一定会有个构造函数被调用，不可能调用赋值操作。如果没有新对象被定义，就不会有构造函数被调用，那么当然就是赋值操作符被调用。PS(from c++ primer plus)：初始化总是会调用赋值构造函数，而是用=操作符也可能调用赋值操作符</p>
-<pre><code><span class="number">4.</span> 不明确（未定义）行为的结果是不可预期的。如对一个<span class="constant">NULL</span>指针取值。
-<span class="number">5.</span> TR1（<span class="string">"Technical Report1"</span>）是一份规范，描述加入C++标准程序库的诸多新机能，这些机能以新的class templates和<span class="function"><span class="keyword">function</span> <span class="title">temlpates</span>形式体现，针对的题目有<span class="title">hash</span> <span class="title">tables</span>, <span class="title">reference-counting</span> <span class="title">smart</span> <span class="title">pointers</span>, <span class="title">regular</span> <span class="title">expression</span>, 以及更多。所有<span class="title">TR1</span>组件被置于命名空间<span class="title">tr1</span>，后者嵌套于命名空间<span class="title">std</span>内。</span>
-</code></pre><p>1 让自己习惯C++</p>
-<pre><code><span class="number">1.</span> 条款<span class="number">01</span>：视C++为一个语言联邦
-
-    * C++是个多重范式编程语言(multiparadigm programming language)，一个同时支持过程形式(procedural)、面向对象形式(<span class="keyword">object</span>-oriented)、函数形式(functional)、泛型形式(generic)、元编程形式(metaprogramming)的语言。
-    * 理解C++的几个次语言：
-
-        * C。高效编程守则照出C语言的局限：没有模板、没有异常、没有重载···
-        * Object-oriented C++。classes(包括构造函数和析构函数)、封装(encapsulation)、继承(inheritance)、多态(polymorphism)、<span class="keyword">virtual</span>函数（动态绑定）···等等。
-        * Template C++。泛型编程部分。模板元编程（TMP）
-        * STL。template程序库
-
-
-<span class="number">2.</span> 条款<span class="number">02</span>：尽量以<span class="keyword">const</span>，<span class="keyword">enum</span>，inline替换<span class="preprocessor">#<span class="keyword">define</span></span>
-
-    * 宁可以编译器替换预处理器。<span class="preprocessor">#<span class="keyword">define</span>或许不被视为语言的一部分。</span>
-    * <span class="preprocessor">#<span class="keyword">define</span> ASPECT_RATION 1.653。ASPECT_RATION没有进入记号表(symbol table)内，不好追踪。解决方法是用一个常量替换宏：const double AspectRatio = 1.653;AspectRatio会进入记号表。此外对浮点常量而言，使用常量可能比使用#<span class="keyword">define</span>导致较小量的码，因为预处理器“盲目的将宏名称ASPECT_RATION替换为1.653”可能导致目标码出现多分1.653，若改用常量AspectRatio绝不会出现这种情况</span>
-    * 有两种特殊情况要说说。第一是定义常量指针。由于常量定义式常被放在头文件内，因此有必要将指针声明为<span class="keyword">const</span>。<span class="keyword">string</span>通常比其前辈<span class="keyword">char</span> *-based合适。第二个值得注意的是class专属常量。
-</code></pre><p>class GamePlayer{<br>private:<br>static const int NumTurns = 5;<br>int scores[NumTurns];<br>};</p>
-<p>然后这里的NumTurns的声明式并非定义式。通常C++要求你对你所使用的任何东西提供一个定义式，但如果它是个class专属常量又是static且为整数类型（例如int,char,bool），则需要特殊处理。只要不取它们的地址，你可以声明并使用它们而无须提供定义式。但如果你取某个class专属常量的地址，或纵使你不取而你的编译器坚持要看到一个定义式，你就要提供定义式如下:const int GamePlayer::NumTurns;//没有给予数值。将这个式子放在实现文件而非头文件。由于class中已获得初值，因此定义时不可以再设初值。我们无法用#define创建一个class专属常量，因为#define并不重视作用域。一旦宏被定义，它就在其后的编译过程中有效（除非在某处被#undef）。</p>
-<pre><code>    * 所谓的“<span class="keyword">in</span>-<span class="class"><span class="keyword">class</span>初值设定”只允许对整数常量进行。如果你的编译器不支持上述语法，你可以将初始放在定义式：</span>
-</code></pre><p>class CostEstimate {<br>privete:<br>static const double FudgeFactor;        //static class常量声明位于头文件内<br>};<br>const double CostEstimate::FudgeFactor = 1.35; //static class常量定义位于实现文件内<br>而编译器坚持必须在编译器期间知道数组大小，而编译器不允许“static整数型class常量”完成“in class常量设定”，可用“the enum hack”补偿做法。理论基础是“一个属于枚举类型的数值可权充ints被使用”，于是GamePlay定义如下：<br>class GamePlayer{<br>private:<br>enum { NumTurns = 5 };<br>int scores[NumTurns];<br>}</p>
-<p>第一，enum hack的行为在某方面说像#define而不像const。例如取一个const地址是合法的，取一个enum地址就不合法，而取一个#define的地址也不合法。第二个理由纯粹是为了实用主义。</p>
-<pre><code>    * 另一个常用的<span class="preprocessor">#<span class="keyword">define</span>语用情况是以它实现宏。宏看起来像函数，但不会招致函数调用带来的额外的开销。#<span class="keyword">define</span> CALL_WITH_MAX(a,b) f((a) > (b) ? (a) : (b))。你必须记住为宏中的所有实参加上小括号，否则会遇到麻烦。但即使这样，看看下面不可思议的事情：</span>
-</code></pre><p>int a=5, b=0;<br>CALL_WITH_MAX(++a, b);      //a被累加二次<br>CALL_WITH_MAX(++a, b+10);   //a被累加一次<br>在这里，调用f之前，a的递增次数竟然取决于“它被拿来和谁比较”！解决办法，你可以写出template inline函数：<br>template <typename t=""><br>inline void callWithMax(const T& a, const T& b)<br>{<br>f(a>b ? a:b);<br>}</typename></p>
-<pre><code>    * 请记住
-
-        * 对于单纯常量，最好以<span class="keyword">const</span>对象或<span class="keyword">enum</span>替换<span class="preprocessor">#define</span>
-        * 对于形似函数的宏，最好改用<span class="keyword">inline</span>函数替换<span class="preprocessor">#define</span>
-
-
-<span class="number">3.</span> 条款<span class="number">03</span>：尽可能使用<span class="keyword">const</span>
-
-    * 声明迭代器为<span class="keyword">const</span>就像声明指针为<span class="keyword">const</span>一样（即声明一个T *<span class="keyword">const</span>指针），表示这个迭代器不得不指向不同的东西，但它所指的东西的值是可以改动的。如果你希望迭代器所指的东西不可被改动，你需要的是const_iterator.
-    * <span class="keyword">const</span>最具威力的用法是面对函数声明时的应用，在一个函数声明式内，<span class="keyword">const</span>可以和函数返回值、各参数、函数自身产生关联。另函数返回一个常量值，往往可以降低因客户错误而造成的意外，而又不至于放弃安全性和高效性。
-    * <span class="keyword">const</span>成员函数。确认该成员函数可作用于<span class="keyword">const</span>对象。它们使“操作<span class="keyword">const</span>对象”称为可能。
-    * 两个成员函数如果只是常量性不同，可以被重载，这是一个重要的C++特性。
-    * 如果函数的返回类型是个内置类型，那么改动函数返回值从来就不合法。
-    * <span class="keyword">mutable</span>(可变的)变量，<span class="keyword">mutable</span>释放掉non-<span class="keyword">static</span>成员变量的bitwise constness约束。在<span class="keyword">const</span>成员函数内也能改变变量。
-    * 在<span class="keyword">const</span>和non-<span class="keyword">const</span>成员函数中避免重复。另其中一个调用另一个，这促使我们将常量性转除。
-</code></pre><p>class TextBlock {<br>public:<br>   const char & operator[] (std::size_t position) const<br>   {<br>        …<br>           return text[position];<br>   }<br>   char & operator[] (std::size_t position)<br>   {<br>      return const_cast<char&>(static_cast<const textblock&="">(*this)[position]);<br>   };<br>};</const></char&></p>
-<pre><code>    * <span class="keyword">const</span>成员函数承诺绝不改变其对象的逻辑状态，non-<span class="keyword">const</span>成员函数却没有这般承诺。
-    * 请记住：
-
-        * <span class="keyword">const</span>可被施加于任何作用域内的对象、函数参数、函数返回类型、成员函数本体。
-        * 编译器强制实施bitwise constness，但你编写程序时应该使用“概念上的常量性”
-        * 当<span class="keyword">const</span>和con-<span class="keyword">const</span>成员函数有着实质等价的实现时，令non-<span class="keyword">const</span>版本调用<span class="keyword">const</span>版本可避免代码重复。
-
-
-<span class="number">4.</span> 条款<span class="number">04</span>：确定对象被使用前已先被初始化
-
-    * 如果你使用C part <span class="keyword">of</span> C++而且初始化可能招致运行期成本，那么就不保证初始化。一旦进入non-C parts <span class="keyword">of</span> C++，规则有些变化。最佳的处理办法就是：永远在使用对象之前先将它初始化。对于无任何成员的内置类型，你必须手工完成。至于内置类型以外的任何其他东西，由构造函数完成。每一个构造函数都将对象的每一个成员初始化。
-    * C++规定，对象的成员变量的初始化动作发生在进入构造函数本体之前。
-</code></pre><p>A::A(const std::string &name)<br>{<br>  theName = name; // std::string theName;<br>  num = 0;    //int num;<br>}</p>
-<p>初始化的发生时间发生于成员的default构造函数被自动调用之时。但对内置类型来说，不保证一定在你看到的那个赋值动作的时间点之前获得初值。构造函数的较佳写法是：成员初值列，这样效率更高。基于赋值的初始化首先调用default函数为theName设初值，然后立刻再对他们赋予新值，default构造函数所做的就浪费了。而成员初值列避免了这一问题，因为初值列中针对各个成员变量而设的实参，被拿去作为各成员变量之构造函数的实参。对大多数类型而言，比起先调用default构造函数然后再调用copy assignment操作符，单只调用一次copy构造函数是比较高效的，有时甚至高效得多。对于内置类型如num，其初始化和赋值的成本相同，但为了一致性最好还是通过成员初值列来初始化。</p>
-<pre><code>    * 有些情况下即使面对的成员变量属于内置类型，也一定得使用初值列。是的，如果成员变量是<span class="keyword">const</span>或reference，它们就一定需要初值，不能被赋值。最简单的做法就是：总是使用成员初值列。
-    * 多分成员初值列的存在就会导致重复。可以合理的在初值列中遗漏那些“赋值表现像初始化一样的”成员变量，改用赋值，并移往某个函数（通常是<span class="keyword">private</span>），供所有构造函数调用。这种做法在“成员变量的初值系由文件或数据库读入”时特别有用
-    * C++的<span class="keyword">class</span>成员变量总是以其声明次序被初始化，所以最好总是以其声明次序为次序。
-    * 不同编译单元内定义之non-local <span class="keyword">static</span>对象的初始化次序问题。
-
-        * <span class="keyword">static</span>对象，包括global对象、定义于<span class="keyword">namespace</span>作用域内的对象、在classes内、在函数内、以及在file作用域内被声明为<span class="keyword">static</span>的对象。函数内的<span class="keyword">static</span>对象称为local <span class="keyword">static</span>其他的<span class="keyword">static</span>对象称为non-local <span class="keyword">static</span>对象
-        * 编译单元是指产出单一目标文件的那些编码。基本上它是单一源码文件加上其所含入的头文件（#include）。
-        * 如果某编译单元内的某个non-local <span class="keyword">static</span>对象的初始化动作使用了另一编译单元内的某个non-local <span class="keyword">static</span>对象，它所用到的这个对象可能尚未被初始化，因为C++对“定义于不同编译单元内的non-local <span class="keyword">static</span>对象”的初始化次序并无明确定义。解决办法是：将每个non-local <span class="keyword">static</span>对象搬到自己的专属函数内（该对象在此函数内被声明为<span class="keyword">static</span>）这些函数返回一个reference指向它所含的对象。然后用户调用这些函数，而不直接指涉这些对象。也就是说，non-local <span class="keyword">static</span>对象被local <span class="keyword">static</span>对象替换了。这是Singleton模式的常见实现手法。这个手法基础在于：C++保证，函数内的local <span class="keyword">static</span>对象会在“该函数被调用期间”“首次遇上该对象之定义式”时被初始化。
-</code></pre><p>class FileSystem;<br>FileSystem &tfs()<br>{<br>static FileSystem fs;<br>return fs;<br>}</p>
-<pre><code>        * 任何一种non-const static对象，无论它是<span class="keyword">local</span>或non-<span class="keyword">local</span>，在多线程环境下“等待某事发生”都会有麻烦处理这个麻烦的一种做法是：在程序的单线程启动阶段手工调用<span class="keyword">reference</span>-<span class="keyword">returning</span>函数，这可消除与初始化有关的“竞速形势”。当然，运用<span class="keyword">reference</span>-<span class="keyword">returning</span>函数防止“初始化次序问题”。前提是其中有着一个对对象而言合理的初始化次序。
-
-    * 避免在对象初始化之前过早地使用它们，你要做：
-
-        * 第一，手工初始化内置型non-member对象
-        * 第二，使用成员初值列对付对象的所有成分
-        * 最后，在“初始化次序不确定性”氛围下加强你的设计
-
-    * 请记住：
-
-        * 为内置型对象进行手工初始化，因为C++不保证初始化它们
-        * 构造函数最好使用成员初值列，而不要在构造函数本体内使用赋值操作。初值列列出的成员变量，其排列次序应该和它们在<span class="type">class</span>中的声明次序相同。
-        * 为免除“跨编译单元之初始化次序”问题，请以<span class="keyword">local</span> static对象替换non-<span class="keyword">local</span> static对象
-</code></pre><p>2 构造/析构/赋值运算</p>
-<pre><code><span class="number">1</span>. 条款<span class="number">05</span>：了解C++默默编写并调用哪些函数
-
-    * 请记住：编译器可以暗自为<span class="keyword">class</span>创建<span class="keyword">default</span>构造函数、<span class="keyword">copy</span>构造函数、<span class="keyword">copy</span> assignment操作符，以及析构函数。所有这些函数都是<span class="keyword">public</span>且<span class="keyword">inline</span>。
-    * 唯有当这些函数被需要（被调用），它们才会被编译器创建出来。<span class="keyword">default</span>构造函数和析构函数主要是给编译器一个地方用来放置“藏身幕后”的代码，像是调用base classes和non-<span class="keyword">static</span>成员变量的构造函数和析构函数。注意，编译器产生的析构函数是个non-vitual，除非这个<span class="keyword">class</span>的base <span class="keyword">class</span>自身声明有<span class="keyword">virtual</span>析构函数。
-    * 至于<span class="keyword">copy</span>构造函数和<span class="keyword">copy</span> assignment操作符，编译器创建的版本只是单纯地将来源对象的每一个non-<span class="keyword">static</span>成员变量拷贝到目标对象。
-    * 只要声明了一个构造函数，编译器就不再为它创建<span class="keyword">default</span>构造函数。
-    * 如果你打算在一个“内涵<span class="keyword">reference</span>成员”的<span class="keyword">class</span>内支持赋值操作，你必须自己定义<span class="keyword">copy</span> assignment操作符。面对“内含<span class="keyword">const</span>成员”的classed，编译器的反应也一样。
-    * 如果某个base classes将<span class="keyword">copy</span> assignment操作符声明为<span class="keyword">private</span>，编译器将拒绝为其derived classed生成一个<span class="keyword">copy</span> assignment操作符。
-
-<span class="number">2</span>. 条款<span class="number">06</span>：若不想使用编译器自动生成的函数，就该明确拒绝
-
-    * 请记住：为驳回编译器自动提供的功能，可将相应的成员函数声明为<span class="keyword">private</span>并且不予实现。使用像Uncopyable这样的base classed也是一种做法。
-    * 所有编译器产生的函数都是<span class="keyword">public</span>。如果你不想使用<span class="keyword">copy</span>构造函数或<span class="keyword">copy</span> assignment操作符，你可以将<span class="keyword">copy</span>构造函数或<span class="keyword">copy</span> assignment操作符声明为<span class="keyword">private</span>。借由明确声明一个成员函数，你阻止了编译器创建其专属版本；而令其为<span class="keyword">private</span>，使你成功阻止人们调用它。但是因为member函数和friend还是可以调用<span class="keyword">private</span>函数。你可以不去定义它们，那么如果某些人不慎调用任何一个，会获得一个连接错误（linkage error）。
-    * 将连接错误移至编译器是可能的，可以继承一个专门为了阻止copying动作而设计的base <span class="keyword">class</span>:
-</code></pre><p>class Uncopyable{<br>protected:<br>Uncopyable(){}<br>~Uncopyable(){}<br>private:<br>Uncopyable(const Uncopyable &);<br>Uncopyable & operator=(const Uncopyable &);<br>};</p>
-<p>继承Uncopyable，编译器尝试着生成一个copy构造函数和copy assignment操作符，而正如条款12所说，这些函数的“编译器生成版”会尝试调用其base class的对应兄弟，那么调用会被编译器拒绝。</p>
-<pre><code><span class="number">3.</span> 条款<span class="number">07</span>：为多态基类声明<span class="keyword">virtual</span>析构函数
-
-    * 请记住：
-
-        * polymorphic(带多态性质)的base classed应该声明一个<span class="keyword">virtual</span>析构函数。如果<span class="keyword">class</span>带有<span class="keyword">virtual</span>函数，它就应该拥有一个<span class="keyword">virtual</span>析构函数
-        * Classes的设计目的如果不是作为base classe使用，或不是为了具备多态性质，就不该声明<span class="keyword">virtual</span>析构函数
-
-    * 当derived <span class="keyword">class</span>对象经由一个base <span class="keyword">class</span>指针被删除，而该base <span class="keyword">class</span>带着一个non-<span class="keyword">virtual</span>析构函数，其结果过未有定义——实际执行时通常发生的是对象的derived成分没被销毁。于是造成了诡异的“局部销毁”对象。这会可形成资源泄露，败坏之数据结构。解决办法是给base <span class="keyword">class</span>一个<span class="keyword">virtual</span>析构函数。
-    * 当<span class="keyword">class</span>不企图被当做base <span class="keyword">class</span>，令其析构函数为<span class="keyword">virtual</span>不好。欲实现<span class="keyword">virtual</span>函数，对象必须携带某些信息，主要用来在运行期间决定哪一个<span class="keyword">virtual</span>函数该被调用。这份信息由包含一个所谓vptr（<span class="keyword">virtual</span> table pointer）指针指出。vptr指向一个由函数指针构成的数组，称为vtbl（<span class="keyword">virtual</span> table）。所以，只有当<span class="keyword">class</span>内含至少<span class="keyword">virtual</span>函数，才为它声明<span class="keyword">virtual</span>析构函数。
-    * 标准<span class="built_in">string</span>不含任何<span class="keyword">virtual</span>函数，有些程序员会错误地把它当做base <span class="keyword">class</span>
-    * 相同的分析适用于任何不带<span class="keyword">virtual</span>析构函数的<span class="keyword">class</span>，包括所有STL容器如<span class="built_in">vector</span>,<span class="built_in">list</span>,<span class="built_in">set</span>,tr1::<span class="built_in">unordered_map</span>
-    * 有时候令<span class="keyword">class</span>带一个pure <span class="keyword">virtual</span>析构函数，可能颇为便利。pure <span class="keyword">virtual</span>函数可能导致abstract classed——不能被实体化。然而，你必须为这个pure <span class="keyword">virtual</span>析构函数提供一份定义。
-    * 并非所有的base classes的设计目的都是为了多态用途。
-
-<span class="number">4.</span> 条款<span class="number">08</span>：别让异常逃离析构函数
-
-    * 请记住：
-
-        * 析构函数绝对不要吐出异常。如果一个被析构函数调用的函数可能抛出异常，析构函数应该捕捉任何异常，然后吞下它们（不传播）或结束程序。
-        * 如果客户需要对某个操作函数运行期间抛出的异常做出反应，那么<span class="keyword">class</span>应该提供一个普通函数（而非在析构函数中）执行该操作。
-
-    * 如果析构函数抛出异常，那么有两个办法可以避免这个问题：
-
-        * 如果close抛出异常就结束程序，通常通过调用<span class="built_in">abort</span>完成。<span class="built_in">abort</span>可以抢先制“不明确行为”于死地。
-        * 吞下调用close而发生的异常
-
-    * 如果某个操作可能在失败时抛出异常，而又存在某种需要必须处理该异常，那么这个异常必须来自析构函数以外的某个函数
-
-<span class="number">5.</span> 条款<span class="number">09</span>：绝不在构造和析构过程中调用<span class="keyword">virtual</span>函数
-
-    * 请记住：在构造和析构期间不要调用<span class="keyword">virtual</span>函数，因为这类调用从不下降至derived <span class="keyword">class</span>（比起当前执行构造函数和析构函数那层）
-    * 在base <span class="keyword">class</span>构造期间，<span class="keyword">virtual</span>函数不是<span class="keyword">virtual</span>函数。在derived <span class="keyword">class</span>对象的base <span class="keyword">class</span>构造期间，对象的类型是base <span class="keyword">class</span>而不是derived <span class="keyword">class</span>。不只<span class="keyword">virtual</span>函数会被编译器解析至base <span class="keyword">class</span>，若使用运行期间类型信息（如<span class="keyword">dynamic_cast</span>和<span class="keyword">typeid</span>），也会把对象视为base <span class="keyword">class</span>类型。对象在derived <span class="keyword">class</span>构造函数开始执行前不会成为一个derived <span class="keyword">class</span>对象
-    * 一旦derived <span class="keyword">class</span>析构函数开始执行，对象内的derived <span class="keyword">class</span>成员变量便呈现未定义值，所以C++视它们仿佛不再存在。进入base <span class="keyword">class</span>析构函数后对象就成为一个base <span class="keyword">class</span>对象
-    * 确定你的构造函数和析构函数都没有调用<span class="keyword">virtual</span>函数，而它们调用的所有函数也都服从同一约束。
-    * 一种做法是在<span class="keyword">class</span> Transaction内将logTransaction函数改为non-<span class="keyword">virtual</span>，然后要求derived <span class="keyword">class</span>构造函数传递必要信息给Transaction构造函数，而后那个构造函数便可安全的调用non-<span class="keyword">virtual</span> logTransaction。
-    * 由于你无法使用<span class="keyword">virtual</span>函数从base classes向下调用，在构造期间，你可以借由“令derived classes将必要的构造信息向上传递至base <span class="keyword">class</span>构造函数”替换之而加以弥补。
-    * 利用辅助函数创建一个值传给base <span class="keyword">class</span>构造函数往往比较方便。令此函数为<span class="keyword">static</span>，也就不可能意外指向“初期成熟之BuyTransaction”对象内尚未初始化的成员变量。所以，“在base <span class="keyword">class</span>构造和析构期间调用的<span class="keyword">virtual</span>函数不可下降至derived classes”
-
-<span class="number">6.</span> 条款<span class="number">10</span>：令<span class="keyword">operator</span>=返回一个reference to *<span class="keyword">this</span>
-
-    * 请记住：令赋值操作符返回一个reference to *<span class="keyword">this</span>
-    * 然后这份协议被所有内置类型和标准程序库提供的类型如<span class="built_in">string</span>, <span class="built_in">vector</span>, <span class="keyword">complex</span>, tr1::<span class="built_in">shared_ptr</span>或即将提供的类型共同蹲守
-
-<span class="number">7.</span> 条款<span class="number">11</span>：在<span class="keyword">operator</span>=处理“自我赋值”
-
-    * 请记住：
-
-        * 确保当对象自我赋值时<span class="keyword">operator</span>=有良好行为。其中技术包括比较“来源对象”和“目标对象”的地址、精心周到的语句顺序、以及copy-and-swap
-        * 确定任何函数如果操作一个以上的对象，而其中多个对象是同一对象时，其行为仍然正确
-
-    * “证同测试”以达到“自我赋值”的检验目的：
-</code></pre><p>Widget & Widget::operator=(const Widget & rhs)<br>{<br>if( this == &rhs)   return <em>this;<br>delete pb;<br>pb = new Bitmap(</em>rhs.pb);<br>return *this;<br>}</p>
-<pre><code>    * 注意在复制pb所指东西之前别删除pb：
-</code></pre><p>Widget & Widget::operator=(const Widget & rhs)<br>{<br>Bitmap <em> pOrig = pb;<br>pb = new Bitmap(</em>rhs.pb);<br>delete pOrig;<br>return *this;<br>}</p>
-<pre><code>    * 使用copy <span class="keyword">and</span> <span class="keyword">swap</span>技术
-</code></pre><p>class Widget{<br>void swap(Widget &rhs);<br>};<br>Widget & Widget::operator=(const Widget & rhs)<br>{<br>Widget temp(rhs);<br>swap(temp);<br>return *this;<br>}</p>
-<p>(1)某class的copy assignment操作符可能被声明为“以by value方式接受实参”；（2）以by value方式传递东西会造成一份复件/副本<br>Widget & Widget::operator=(Widget rhs)<br>{<br>swap(rhs);<br>return *this;<br>}</p>
-<p>将”copying动作”从函数本体内移至“函数参数构造阶段”却可编译器有时生成更高效的代码</p>
-<pre><code><span class="number">8.</span> 条款<span class="number">12</span>：复制对象时勿忘其每一个成分
-
-    * 请记住：
-
-        * Copying函数应该确保复制“对象内的所有成员变量”及“所有<span class="keyword">base</span> <span class="keyword">class</span>成分”
-        * 不要尝试以某个copying函数实现另一个copying函数。应该将共同机能放进第三个函数中，并由两个copying函数共同调用。
-
-    * 为derived <span class="keyword">class</span>撰写copying函数，必须很小心地复制器<span class="keyword">base</span> <span class="keyword">class</span>成本。你应该让derived <span class="keyword">class</span>的copying函数调用相应的<span class="keyword">base</span> <span class="keyword">class</span>函数
-    * 当你编写一个copying函数，请确保：（<span class="number">1</span>）复制所有local成员变量；（<span class="number">2</span>）调用所有<span class="keyword">base</span> classes内的适当copying函数
-    * 你不该令copy assignment操作符调用copy构造函数
-    * 构造函数用来初始化新对象，而assignment操作符只施行于已初始化对象身上。
-    * 如果你发现你的copy assignment操作符和copy构造函数有相近的代码，消除重复代码的做法是：建立一个新的成员函数给两者调用。这样的函数往往是<span class="keyword">private</span>而且常被命名为init。
-</code></pre><p>3 资源管理内存是必须管理的众多资源之一，其他常见的资源还包括文件描述起、互斥锁、图形界面中的字型和笔刷、数据库连接、以及网络sockets。</p>
-<pre><code><span class="number">1.</span> 以对象管理资源
-
-    * 请记住：
-
-        * 为防止资源泄露，请使用RAII对象，它们在构造函数中获得资源并在析构函数中释放资源
-        * 两个常被使用的RAII classes分别是tr1::<span class="built_in">shared_ptr</span>和<span class="built_in">auto_ptr</span>。前者通常是较佳选择，因为其copy行为比较直观。若选择<span class="built_in">auto_ptr</span>，复制动作会使它指向null。
-
-    * 把资源放进对象内，我们便可倚赖C++的“析构函数自动调用机制”确保资源被释放
-</code></pre><p>Investment <em> createInvestment();<br>void f()<br>{<br>Investment </em> pInv = createInvestment();<br>delete pInv;<br>}</p>
-<p>void f()<br>{<br>std::auto_ptr<investment> pInv(createInvestment());<br>}</investment></p>
-<pre><code>    * “以对象管理资源”有两个关键的想法：
-
-        * 获得资源后立刻放进管理对象。“以对象管理资源”的观念常被称为“资源取得时机便是初始化时机（Resource Acquisition Is Initialization;RAII）”。每一笔资源都在获得的同时立刻被放进管理对象中。
-        * 管理对象运用析构函数确保资源被释放。无论控制流如何离开区块，一旦对象被销毁（例如当对象离开作用域）其析构函数自然会被自动调用，于是资源被释放。如果资源释放动作可能导致抛出异常，事情变得有点棘手。
-
-    * 别让多个<span class="built_in">auto_ptr</span>同时指向同一对象。如果对象会被删除一次以上，则会产生未定义行为。<span class="built_in">auto_ptr</span>有一个不寻常的性质：若通过copy构造函数或copy assignment操作符复制它们，它们会变成null，而复制所得的指针将取得资源的唯一拥有权！“受auto_ptrs管理的资源必须绝对没有一个以上的<span class="built_in">auto_ptr</span>同时指向它”，意味<span class="built_in">auto_ptr</span>并非管理动态分配资源的神兵利器。
-    * <span class="built_in">auto_ptr</span>的替代方案是“引用计数型智慧指针”（reference-counting smart pointer;RCSP)。所谓的RCSP也是个智能指针，持续跟踪共有多少对象指向某笔资源，并在无人指向它时自动删除该资源。
-    * tr1::<span class="built_in">shared_ptr</span>。tr1::<span class="built_in">shared_ptr</span>的复制行为“一如预期”
-</code></pre><p>void f()<br>{<br>std::tr1::shared_ptr<investment> pInv1(createInvestment());<br>std::tr1::shared_ptr<investment> pInv2(pInv1);<br>pInv1 = pInv2;<br>}</investment></investment></p>
-<pre><code>    * <span class="built_in">auto_ptr</span>和tr1::<span class="built_in">shared_ptr</span>两者都在其析构函数内做<span class="keyword">delete</span>而不是<span class="keyword">delete</span>[]动作。
-
-<span class="number">2.</span> 条款<span class="number">14</span>：在资源管理类中小心copying行为
-
-    * 请记住：
-
-        * 复制RAII对象必须一并复制它所管理的资源，所以资源的copying行为决定RAII对象的copying行为
-        * 普遍而常见的RAII <span class="keyword">class</span> copying行为是：抑制copying、施行引用计数法。不过其他行为也都可能被实现
-
-    * Mutex的互斥器对象。假设lock和unlock函数：
-</code></pre><p>void lock(Mutex <em>pm);<br>void unlock(Mutex </em>pm);<br>//class Lockclass Lock{<br>public:<br>explicit Lock(Mutex <em>pm):mutexPtr(pm)<br>{<br>  lock(mutexPtr);<br>}<br>~Lock(){ unlock(mutexPtr); }<br>private:<br>Mutex </em>mutexPtr;<br>}<br>//客户对Lock使用<br>Mutex m;<br>Lock m1(&m);</p>
-<pre><code>    * 当一个RAII对象被复制，会发生什么事？
-
-        * 禁止复制。根据条款<span class="number">6</span>告诉你：将copying操作声明为<span class="keyword">private</span>。
-        * 对底层资源祭出“引用计数法”。tr1::<span class="built_in">shared_ptr</span>的缺省行为是“当引用次数为<span class="number">0</span>时删除其所指物”。当我们用上一个Mutex，我们想要做的释放动作是解除锁定而非删除。幸运的是tr1::<span class="built_in">shared_ptr</span>允许指定所谓的“删除器(deleter)”，那是一个函数或函数对象，当引用次数为<span class="number">0</span>时便被调用（此机能并不存在于<span class="built_in">auto_ptr</span>+它总是将其指针删除）。删除器将tr1::<span class="built_in">shared_ptr</span>构造函数而言是可有可无的第二参数。
-</code></pre><p>class Lock{<br>public:<br>explicit Lock(Mutex *pm) : mutexPtr(pm, unlock)<br>{<br>lock(mutexPtr.get());<br>}<br>private:<br>std::tr1::shared_ptr<mutex> mutexPtr;<br>};</mutex></p>
-<pre><code>        * 复制底部资源。
-        * 转移底部资源的拥有权。这是<span class="built_in">auto_ptr</span>的复制意义。
-
-
-<span class="number">3.</span> 条款<span class="number">15</span>：在资源管理类中提供对原始资源的访问
-
-    * 请记住：
-
-        * APIs往往要求访问原始资源，所以每一个RAII <span class="keyword">class</span>应该提供一个“取得其所管理之资源”的办法
-        * 对原始资源的访问可能经由显式转换或隐式转换。一般而言，显式转换比较安全，但隐式转换对客户比较方便。
-
-    * 取得原始资源。有显式转换和隐式转换。tr1::<span class="built_in">shared_ptr</span>和<span class="built_in">auto_ptr</span>都提供一个get成员函数，用来执行显式转换，也就是它会返回智能指针内部的原始指针（的复件）。<span class="keyword">int</span> days = daysHeld(pInv.get());就像所有智能指针一样，tr1::<span class="built_in">shared_ptr</span>和<span class="built_in">auto_ptr</span>也重载了指针取值操作符，它们允许隐式转换至底部原始指针
-
-<span class="number">4.</span> 条款<span class="number">16</span>：成对使用<span class="keyword">new</span>和<span class="keyword">delete</span>时要采取相同形式
-
-    * 请记住：如果你在<span class="keyword">new</span>表达式中使用[]，必须在相应的<span class="keyword">delete</span>表达式中也使用[]。如果在<span class="keyword">new</span>表达式中不使用[]，一定不要在相应的<span class="keyword">delete</span>表达式中使用[]
-    * 当你使用<span class="keyword">new</span>动态生成一个对象。有两件事发生。第一，内存被分配出来。第二，针对此内存会有一个构造函数调用。当你使用<span class="keyword">delete</span>，有两件事发生：针对此内存会有一个析构函数被调用，然后内存才被释放。
-    * 因为单一对象的内存布局一般而言不同于数组的内存布局。数组的所用内存通常还包括“数组大小”的记录，以便<span class="keyword">delete</span>知道需要调用多少次析构函数。
-    * 最好尽量不要对数组形式做typedefs动作。因为C++标准程序库含有<span class="built_in">string</span>, <span class="built_in">vector</span>等templates，可将数组的需求降至几乎为零。
-
-<span class="number">5.</span> 条款<span class="number">17</span>：以独立语句将newed对象置入智能指针
-
-    * 请记住：以独立语句将newed对象存储于智能指针内。如果不这样做，一旦异常被抛出，有可能导致难以察觉的资源泄露。
-    * processWidget( <span class="built_in">std</span>::tr1::<span class="built_in">shared_ptr</span><Widget>(<span class="keyword">new</span> Widget), priority() ); 避免这类问题的办法很简单：使用分离语句，分别写出(<span class="number">1</span>)创建Widget(<span class="number">2</span>)将它置入一个智能指针内，然后再把那个智能指针传给processWidget。
-</code></pre><p>std::tr1::shared_ptr<widget> pw( new Widget );<br>processWidget( pw, priority() );</widget></p>
-<p>因为编译器对于“跨越语句的各项操作”没有重新排列的自由（只有在语句内它才拥有那个自由度）。</p>
-<p>4 设计与声明</p>
-<pre><code><span class="number">1.</span> 条款<span class="number">18</span>:让接口容易被正确使用，不易被误用
-
-    * 请记住：
-
-        * 好的接口很容易被正确使用，不容易被误用。
-        * “促进正确使用”的办法包括接口的一致性，以及与内置类型的行为兼容
-        * “阻止误用”的办法包括建立新类型、限制类型上的操作，束缚对象值，以及消除客户的资源管理责任
-        * tr1::<span class="built_in">shared_ptr</span>支持定制型删除器。这可防范DLL问题，可被用来自动解除互斥锁等等。
-
-    * 许多客户端错误可以因为导入新类型而获得预防。令day, month, year称为成熟且经充分锻炼的classes并封装其内数据，比简单实用上述的<span class="keyword">struct</span>好。办法之一是利用<span class="keyword">enum</span>表现月份，但enums不具备我们希望拥有的类型安全性。比较安全的解法是预先定义所有有效的Months。预防客户端的另一个错误是，限制类型内什么事可做，什么事不能做，常见的限制是加上<span class="keyword">const</span>。
-    * 除非有好理由，否则应该尽量令你的types的行为与内置types一直。
-    * 避免无端与内置类型不兼容，真正的理由是为了提供行为一致的接口。
-    * tr1::<span class="built_in">shared_ptr</span>允许当智能指针被建立起来的指定一个资源释放函数绑定于智能指针身上。
-    * 返回一个“将getRidOfInvestment绑定为删除器”的tr1::<span class="built_in">shared_ptr</span>。tr1::<span class="built_in">shared_ptr</span>提供的某个构造函数接受两个实参：一个是被管理的指针，另一个是引用次数为<span class="number">0</span>时将被调用的“删除器”
-</code></pre><p>std::tr1::shared_ptr<investment> createInvestment()<br>{<br>std::tr1::shared_ptr<investment> reVal( static_cast<investment *="">0, getRidOfInvestment);<br>reVal = …;<br>return retVal;<br>}</investment></investment></investment></p>
-<p>“将原始指针传给pInv构造函数”会比“先将pInv初始化为null再对它做一次赋值操作”为佳。</p>
-<pre><code>    * tr1::shared_ptr有一个特别好的性质是：它会自动使用它的“每个指针专属的删除器”，因而消除另一个潜在的客户错误：所谓的“cross-DLL problem”。这个问题发生于“对象在动态连接程序库（DLL）中被<span class="keyword">new</span>创建，却在另一个DLL内被delete销毁”。tr1::shared_ptr没有这个问题，因为它缺省的删除器是来自“tr1::shared_ptr诞生所在的那个DLL”的delete。
-    * 最常见的tr1::shared_ptr实现品来自Boost。Boost的tr1::shared_ptr是原始指针的两倍大。它比原始指针大且慢，而且使用辅助动态内存。
-
-<span class="number">2</span>. 条款<span class="number">19</span>：设计<span class="keyword">class</span>犹如设计<span class="keyword">type</span>
-
-    * 当你定义一个新的<span class="keyword">class</span>，也就定义了一个新<span class="keyword">type</span>。
-    * 新<span class="keyword">type</span>的对象应该如何被创建和销毁
-    * 对象的初始化和对象的赋值该有什么样的差别
-    * 新<span class="keyword">type</span>的对象如果被pass <span class="keyword">by</span> value，这意味着什么
-    * 什么是新<span class="keyword">type</span>的“合法值”
-    * 你的新<span class="keyword">type</span>需要配合某个继承图系吗？
-    * 你的新<span class="keyword">type</span>需要什么样的转换
-    * 什么样的操作符和函数对此新<span class="keyword">type</span>而言是合理的
-    * 什么样的标准函数应该驳回
-    * 谁该取用新<span class="keyword">type</span>的成员
-    * 什么是新<span class="keyword">type</span>的“未声明接口”
-    * 你的新<span class="keyword">type</span>有那么一般化？
-
-<span class="number">3</span>. 条款<span class="number">20</span>：宁以pass-<span class="keyword">by</span>-<span class="keyword">reference</span>-<span class="keyword">to</span>-<span class="keyword">const</span>替换pass-<span class="keyword">by</span>-value
-
-    * 请记住：
-
-        * 尽量以pass-<span class="keyword">by</span>-<span class="keyword">reference</span>-<span class="keyword">to</span>-<span class="keyword">const</span>替换pass-<span class="keyword">by</span>-value。前者通常比较高效，并可避免切割问题（slicing problem）
-        * 以上规则并不适用于内置类型，以及STL的迭代器和函数对象。对它们而言，pass-<span class="keyword">by</span>-value往往比较适当。
-
-    * 参数的传递成本是n次构造函数和n次析构函数
-    * pass-<span class="keyword">by</span>-<span class="keyword">reference</span>-<span class="keyword">to</span>-<span class="keyword">const</span>，这种传递方式的效率高得多：没有任何构造函数或析构函数被调用，因为没有任何新对象被创建
-    * 以<span class="keyword">by</span>-<span class="keyword">reference</span>方式传递参数也可以避免slicing（对象切割）问题。当一个derived <span class="keyword">class</span>对象以<span class="keyword">by</span> value方式传递并被视为一个base <span class="keyword">class</span>对象，base <span class="keyword">class</span>的<span class="keyword">copy</span>构造函数会被调用，而“造成次对象的行为像个derived <span class="keyword">class</span>对象”的那些特化性质全被切掉了，仅仅留下一个base <span class="keyword">class</span>对象。
-    * 如果窥视C++编译器的底层，你会发现，<span class="keyword">reference</span>往往以指针实现出来，因此pass <span class="keyword">by</span> <span class="keyword">reference</span>通常意味真正传递的是指针。
-
-<span class="number">4</span>. 条款<span class="number">21</span>：必须返回对象时，别妄想返回其<span class="keyword">reference</span>
-
-    * 请记住：绝不要返回pointer或<span class="keyword">reference</span>指向一个local stack对象，或返回<span class="keyword">reference</span>指向一个heap-allocated对象，或返回pointer或<span class="keyword">reference</span>指向一个local <span class="keyword">static</span>对象而有可能同时需要多个这样的对象。条款<span class="number">4</span>已经为“在单线程环境中合理返回<span class="keyword">reference</span>指向一个local <span class="keyword">static</span>对象”提供了一份设计实例
-    * 所谓的<span class="keyword">reference</span>只是个名称，代表某个既有对象。因为它一定是某物的另一个名称。
-    * 函数创建新对象的途径有二：在stack空间或在heap空间创建之。
-    * 一个“必须返回新对象”的函数的正确写法是：就让那个函数返回一个新对象。
-
-<span class="number">5</span>. 条款<span class="number">22</span>：将成员变量声明为<span class="keyword">private</span>
-
-    * 请记住：
-
-        * 切记将成员变量声明为<span class="keyword">private</span>，这可赋予客户访问数据的一致性、可细微划分访问控制、允诺约束条件获得保证，并提供<span class="keyword">class</span>作者以充分的实现弹性
-        * <span class="keyword">protected</span>并不比<span class="keyword">public</span>更具封装性。
-
-    * <span class="keyword">protected</span>成员变量就像<span class="keyword">public</span>成员变量一样缺乏封装性。其实只有两种访问权限：<span class="keyword">private</span>（提供封装）和其他（不提供封装）
-
-<span class="number">6</span>. 条款<span class="number">23</span>：宁以non-member、non-friend替换member函数
-
-    * 请记住：宁可拿non-member、non-friend函数替换member函数。这样做可以增加封装性、包裹弹性和机能扩充性。
-    * 推崇封装的原因：它使我们能够改变事物而只影响有限客户。愈少代码可以看到数据（也就是访问它），愈多的数据可被封装，而我们也就愈能自由地改变对象数据。愈多函数可以访问它，数据的封装性就愈低。
-    * 导致较大封装性的是non-member、non-friend函数，因为它并不增加“能够访问<span class="keyword">class</span>内之<span class="keyword">private</span>成分”的函数数量
-    * <span class="keyword">namespace</span>和classes不同，前者可跨越多个源代码文件而后者不能。
-    * 分离它们的最直接做法就是将书签相关便利函数声明于一个头文件，将cookie相关便利函数声明于另一个头文件，再将打印相关便利函数声明于第三个头文件。将所有便利函数放在多个头文件内但隶属同一个命名空间，意味客户可以轻松扩展这一组便利函数。
-
-<span class="number">7</span>. 条款<span class="number">24</span>：若所有参数皆需类型转换，请为此采用non-member函数
-
-    * 请记住：如果你需要为某个函数的所有参数（包括被this指针所指的那个隐喻参数）进行类型转换，那么这个函数必须是个non-menber
-    * 只有当参数被列于参数列内，这个参数才是隐式类型转换的合法参与者。地位相当于“被调用之成员函数所隶属的那个对象”——即this对象——那个隐喻参数，绝不是隐式转换的合法参与者。
-
-<span class="number">8</span>. 条款<span class="number">25</span>：考虑写出一个不抛出异常的swap函数
-
-    * 请记住：
-
-        * 当std::swap对你的类型效率不高时，提供一个swap成员函数，并确定这个函数不抛出异常
-        * 如果你提供一个member swap，也该提供一个non-member swap用来调用前者。对于classes（而非templates），也请特化std::swap
-        * 调用swap时应针对std::swap使用<span class="keyword">using</span>声明式，然后调用swap并且不带任何“命名空间资格修饰”
-        * 为“用户定义类型”进行std templates全特化是好的，但千万不要尝试在std内加入某些对std而言全新的东西。
-
-    * 所谓swap两对象值，意思是将两对象的值彼此赋予对方。缺省情况下，swap动作可有标准程序库提供的swap算法完成。
-    * “以指针指向一个对象，内含真正数据”那种类型，这是所谓的“pimpl手法(pointer <span class="keyword">to</span> <span class="keyword">implementation</span>)”
-    * 一旦要置换两个Widget对象值，我们需要做的是置换其pImp指针。
-    * 通常我们不能够（不允许）改变std命名空间内的任何东西，但可以为标准templates制造特化版本，使它专属于我们自己的classes。
-    * 任何地点的任何代码如果打算置换两个Widget对象，因而调用swap，C++的名称查找法则（更具体地说是所谓argument-dependent lookup或koening lookup法则）会找到Widget的专属版本。
-    * C++的名称查找法则确保将找到<span class="keyword">global</span>作用域或T所在之命名空间内的任何T专属的swap。
-    * 首先，如果swap的缺省实现码对你的<span class="keyword">class</span>或<span class="keyword">class</span> template提供可接受的效率，你不需要额外做任何事。其次，如果swap缺省实现版的效率不足。你可以这样做：
-
-        * <span class="number">1</span>.提供一个<span class="keyword">public</span> swap成员函数，让它高效的置换你的类型的两个对象值。这个函数绝不该抛出异常
-        * <span class="number">2</span>.在你的<span class="keyword">class</span>或template所在的命名空间内提供一个non-member swap，并令它调用上述swap成员函数。
-        * 如果你正编写一个<span class="keyword">class</span>，为你的<span class="keyword">class</span>特化std::swap。并令它调用你的swap成员函数
-        * 最后，如果你调用swap，请确定包含一个<span class="keyword">using</span>声明式，以便std::swap在你的函数内曝光可见，然后不加任何<span class="keyword">namespace</span>修饰符，赤裸裸地调用swap
-
-    * 成员版的swap绝不可抛出异常。这一约束只施行于成员版！不可施行于非成员版，因为swap缺省版本是以<span class="keyword">copy</span>构造函数和<span class="keyword">copy</span> assignment操作符为基础，而一般情况下两者都允许抛出异常
-</code></pre><p>5 实现</p>
-<pre><code><span class="bullet">1. </span>条款26：尽可能延后变量定义式的出现时间
-
-<span class="code">    * 请记住：尽可能延后变量定义式的出现，这样做可增加程序的清晰度并改善程序效率。</span>
-<span class="code">    * 只要你定义了一个变量而其类型带有一个构造函数或析构函数，那么当程序的控制流到达这个变量定义式时，你便得承受构造成本；变量离开其作用域，要承受析构成本。即使这个变量最终并未被使用，仍需耗费这些成本。</span>
-<span class="code">    * 最好延后变量的定义式，直到确实需要它。</span>
-<span class="code">    * 你应该尝试延后变量定义直到能够给它初值实参为止。以“具明显意义之初值”。</span>
-<span class="code">    * 除非(1)你知道赋值成本比“构造+析构”成本低，(2)你正在处理代码中效率高度敏感的部分，否则你应该采用方法B</span>
-</code></pre><p>//方法A：定义于循环外<br>Widget w;<br>for(int i=0; i <n; ++i){    w = 某个值;}<br>//方法B：定义于循环内for(int i=0; i <n; ++i){  Widget w = 某个值;}</p>
-<pre><code><span class="comment">2</span><span class="string">.</span> <span class="comment">条款27：尽量少做转型动作</span>
-
-    <span class="comment">*</span> <span class="comment">请记住：</span>
-
-        <span class="comment">*</span> <span class="comment">如果可以，尽量避免转型，特别是在注重效率的代码中避免dynamic_casts。</span>
-        <span class="comment">*</span> <span class="comment">如果转型是必要的，试着将它隐藏于某个函数背后。客户随后可以调用该函数，而不需将转型放进它们的代码内。</span>
-        <span class="comment">*</span> <span class="comment">宁可使用C</span><span class="literal">+</span><span class="literal">+</span> <span class="comment">style（新式）转型，不要使用旧式转型</span>
-
-    <span class="comment">*</span> <span class="comment">C</span><span class="literal">+</span><span class="literal">+</span><span class="comment">旧式转型：(T)expression;</span> <span class="comment">或者</span> <span class="comment">T(expression)</span>
-    <span class="comment">*</span> <span class="comment">新式转型：</span>
-</code></pre><p>const_cast<t> (expression)<br>dynamic_cast<t> (expression)<br>reinterpret_cast (expression)<br>static_cast <t> (expression)</t></t></t></p>
-<pre><code>        * <span class="keyword">const_cast</span>通常被用来将对象的常量性转除。它也是唯一有此能力的C++-style转型操作符
-        * <span class="keyword">dynamic_cast</span>主要用来执行“安全向下转型”，也就是用来决定某对象是否归属继承体系中的某个类型。它是唯一无法由旧式语法执行的动作，也是唯一可能耗费重大运行成本的转型动作
-        * <span class="keyword">reinterpret_cast</span>意图执行低级转型，实际动作（及结果）可能取决于编译器，这也就表示它不可移植
-        * <span class="keyword">static_cast</span>用来强迫隐式转换，例如将non-<span class="keyword">const</span>对象转为<span class="keyword">const</span>对象，或将<span class="keyword">int</span>转为<span class="keyword">double</span>。它也可以用来执行上述多种转换的反向转换。但它无法将<span class="keyword">const</span>转为non-<span class="keyword">const</span>
-
-    * 任何一个类型转换（无论通过转型操作而进行的显示转换，或通过编译器完成的隐式转换）往往真的令编译器编译出运行期间执行的码。
-    * 单一对象（例如derived <span class="keyword">class</span>对象）可能拥有一个以上的地址（例如以“Base 指向它”时的地址和“以derived ”指向它）。
-    * 对象的布局方式和它们的地址计算方式随编译器的不同而不同
-    * <span class="keyword">dynamic_cast</span>的许多实现版本速度相当慢。深度继承或多重继承的成本更高！
-    * 优良的C++代码很少使用转型。我们应该尽可能隔离转型动作
-
-<span class="number">3.</span> 条款<span class="number">28</span>：避免返回handles指向对象内部成本
-
-    * 请记住：避免返回handles（包括reference、指针、迭代器）指向对象内部。遵守这个条款可增加封装性，帮助<span class="keyword">const</span>成员函数的行为像个<span class="keyword">const</span>，并将发生“虚吊号码牌（dangling handles）”的可能性降至最低
-    * 第一，成员变量的封装性最多只等于“返回其reference”的函数的访问级别。第二，如果<span class="keyword">const</span>成员函数返回一个reference，后者所指数据与对象自身有关联，而它又被存储于对象之外，那么这个函数的调用者可以修改那笔数据。
-    * Reference、指针和迭代器使所谓的handles，而返回一个“代表对象内部数据”的handles，随之而来的是“降低对象封装性”的风险。
-    * 你绝对不该令成员函数返回一个指针指向“访问级别较低”的成员函数。这样，后者实际访问级别会提高如前者
-    * 虚吊号码牌（dangling handles）：这种handles所指东西不复存在。常见的来源就是函数返回值。
-
-<span class="number">4.</span> 条款<span class="number">29</span>：为“异常安全”而努力是值得的
-
-    * 请记住：
-
-        * 异常安全函数即使发生异常也不会泄露资源或允许任何数据结构败坏。这样的函数区分为三种可能的保证：基本型、强烈性、不抛异常型
-        * “强烈保证”往往能够以copy-and-swap实现出来，但“强烈保证”并非对所有函数都可实现或具备现实意义。
-        * 函数提供的“异常安全保证”通常最高只等于其所调用之各个函数的“异常安全保证”中的最弱者。
-
-    * 较少的码就是较好的码，因为出错机会比较少
-    * 异常安全函数提供三个保证之一：
-
-        * 基本承诺：如果异常被抛出，程序内的任何事情仍然保持在有效状态下。没有任何对象或数据结构会因此而败坏，所有对象都处于一种内部前后一致的状态。然后程序的现实状态恐怕不可预料。
-        * 强烈保证：如果异常被抛出，程序状态不会改变。如果函数成功，就是完全成功。如果函数失败，程序会回复到“调用函数之前”的状态
-        * 不抛掷保证：承诺绝不抛出异常，因为它们总是能够完成它们原先承诺的功能。作用于内置类型身上的所有操作都提供nothrow保证
-
-    * copy and swap：为你打算修改的对象（原件）做出一份副本，然后在那副本身上做一切必要修改。若有任何修改动作抛出异常，原对象仍保持未改变状态。待所有改变都成功后，再将修改过的那个副本和原对象在一个不抛出异常的操作中置换。实现上通常是将所有“隶属对象的数据”从原对象放进另一个对象内，然后赋予原对象一个指针，指向那个所谓的实现对象，这种手法被称为pimpl idiom
-    * 一个软件系统要不就具备异常安全性，要不就全然否定。
-    * 如果系统内有一个函数不具备异常安全性，整个系统就不具备异常安全性
-    * 如果具备异常安全性：首先是“以对象管理资源”，那可阻止资源泄露。然后是挑选三个“异常安全保证”中的某一个实施于你所写的每一个函数身上。
-
-<span class="number">5.</span> 条款<span class="number">30</span>：透彻了解inlining的里里外外
-
-    * 请记住：
-
-        * 将大多数inlinin限制在小型、被频繁调用的函数身上
-        * 不要只因为function templates出现在头文件中，就将它们声明为<span class="keyword">inline</span>
-
-    * 编译器最优化机制通常被设计用来浓缩那些“不含函数调用”的代码
-    * <span class="keyword">inline</span>是对此函数的每一个调用都以函数本体替换之。这样做可能增加你的目标码大小。<span class="keyword">inline</span>造成的代码膨胀亦会导致额外的换页行为，降低指令高度缓存装置的击中率，以及伴随这些而来的效率损失。
-    * <span class="keyword">inline</span>只是对编译器的一个申请，不是强制命名。这项申请可隐喻提出，也就是定义于<span class="keyword">class</span>定义式内。明确声明<span class="keyword">inline</span>函数式在定义式前加上关键字<span class="keyword">inline</span>。
-    * <span class="keyword">inline</span>函数通常一定被置于头文件内。inlining在大多数C++程序中是编译器行为。
-    * Templates通常也被置于头文件内，因为它一旦被使用，编译器为了将它具现化，需要知道它长什么样子。编译期完成具现化动作比较常见。Templates的具现化与inlining无关。
-    * 一个表面上看似<span class="keyword">inline</span>的函数是否真是<span class="keyword">inline</span>，取决于你的建置环境，主要取决于你的编译器。有时候虽然编译器有意愿inlining某个函数，还是可能为该函数生成一个函数主体。比如，如果程序要取某个<span class="keyword">inline</span>函数的地址，编译器通常必须为此函数生成一个outlined函数本体。编译器通常不对“通过函数指针而进行的调用”实施inlining。有时候编译器会生成构造函数和析构函数的outline副本。而实际上，构造函数和析构函数往往是inlining的糟糕候选人。Derived构造至少一会陆续调用其成员变量和base <span class="keyword">class</span>两者的构造函数，而那些调用（它们自身也会被<span class="keyword">inline</span>）会影响编译器是否对此空白函数的inlining。
-    * 大部分调试器面对<span class="keyword">inline</span>函数都束手无策。慎重使用<span class="keyword">inline</span>便是对日后使用调试器带来帮助。
-    * <span class="number">80</span>-<span class="number">20</span>经验法则：平均而言一个程序往往将<span class="number">80</span>%的执行时间花费在<span class="number">20</span>%的代码上头。
-
-<span class="number">6.</span> 条款<span class="number">31</span>：将文件间的编译依存关系降至最低
-
-    * 请记住：
-
-        * 支持“编译依存性最小化”的一般构想是：相依于声明式，不要相依于定义式。基于此构想的两个手段是Handle classes和Interface classes
-        * 程序库头文件应该以“完全且仅有声明式”的形式存在。这种做法无论是否涉及templates都适用
-</code></pre><p>6 继承与面向对象设计vitual函数意味“接口必须被继承”，non-virtual函数意味“接口和实现都必须被继承”</p>
-<pre><code><span class="number">1.</span> 条款<span class="number">32</span>：确定你的<span class="keyword">public</span>继承塑模出<span class="keyword">is</span>-a关系
-
-    * 请记住：“<span class="keyword">public</span>继承”意味<span class="keyword">is</span>-a。适用于<span class="keyword">base</span> classes身上的每一件事情一定也适用于derived classes身上，因为每一个derived <span class="keyword">class</span>对象也都是一个<span class="keyword">base</span> classes对象
-    * <span class="keyword">is</span>-a并非是唯一存在于classes之间的关系。另两个常见的关系是has-a（有一个）和<span class="keyword">is</span>-implemented-<span class="keyword">in</span>-terms-of（根据某物实现出）。
-
-2. 条款33：避免遮掩而来的名称
-
-    * 请记住：
-
-        * derived classes内的名称会遮掩<span class="keyword">base</span> classes内的名称。在<span class="keyword">public</span>继承下从来没有人希望如此。
-        * 为了让被遮掩的名称再见天日，可使用<span class="keyword">using</span>声明式或转交函数
-
-    * C++的名称遮掩规则所做的唯一事情就是：遮掩名称。置于名称是否应和相同或不同的类型，并不重要。
-    * derived <span class="keyword">class</span>作用域被嵌套在<span class="keyword">base</span> <span class="keyword">class</span>作用域内
-
-
-    * 编译器在寻找变量定义的做法是查找各作用域，首先是local作用域，然后查外围作用域，然后再<span class="keyword">namespace</span>作用域，最后往global作用域找去，直到找到为止。
-    * <span class="keyword">base</span> <span class="keyword">class</span>内函数会被derived <span class="keyword">class</span>相同函数名的覆盖，即使<span class="keyword">base</span> classes和derived classes内的函数有不同的参数类型也适用，而且无论函数是<span class="keyword">virtual</span>或non-<span class="keyword">virtual</span>一体适用。
-
-3. 条款34：区分接口继承和实现继承
-
-    * 请记住：
-
-        * 接口继承和实现继承不同。在<span class="keyword">public</span>继承之下，derived classes总是继承<span class="keyword">base</span> <span class="keyword">class</span>的接口
-        * pure <span class="keyword">virtual</span>函数只具体指定接口继承
-        * 简朴的（非纯）impure <span class="keyword">virtual</span>函数具体指定接口继承及缺省实现继承
-        * non-<span class="keyword">virtual</span>函数具体指定接口继承以及强制性实现继承。
-
-    * 成员函数的接口总是会被继承
-    * pure <span class="keyword">virtual</span>函数有两个最突出的特性：它们必须被任何“继承了它们”的具象<span class="keyword">class</span>重新声明，而且它们在抽象<span class="keyword">class</span>中通常没有定义。因此，声明一个pure <span class="keyword">virtual</span>函数的目的是为了让derived <span class="keyword">class</span>只继承函数接口。
-    * 声明简朴的（非纯）impure <span class="keyword">virtual</span>函数的目的，是让derived classes继承该函数的接口和缺省实现。derived classes继承函数接口，但impure <span class="keyword">virtual</span>函数会提供一份实现代码，derived classes可能覆写它。允许impure <span class="keyword">virtual</span>函数同时指定函数声明和函数缺省行为，却有可能形成危险。提供缺省实现给derived classes，但除非它们明白要求否则免谈。解决办法是切断<span class="keyword">virtual</span>函数接口和其缺省实现之间的连接。
-    * 声明non-<span class="keyword">virtual</span>函数的目的是为了令derived classes继承函数的接口及一份强制性实现。non-<span class="keyword">virtual</span>函数代表的意义是不变性凌驾特异性。
-    * 一个常见错误是将所有函数声明为non-<span class="keyword">virtual</span>。non-<span class="keyword">virtual</span>析构函数尤其会带来问题。另一个常见错误是将所有成员函数声明为<span class="keyword">virtual</span>。
-
-4. 条款35：考虑<span class="keyword">virtual</span>函数以外的其他选择
-
-    * 请记住：
-
-        * <span class="keyword">virtual</span>函数的替代方法包括NVI手法及Strategy设计模式的多种形式。NVI手法自身是一种特殊形式的Template Method
-        * 将机能从成员函数移到<span class="keyword">class</span>外部函数，带来的一个缺点是，非成员函数无法访问<span class="keyword">class</span>的non-<span class="keyword">public</span>成员
-        * tr1::funciton对象的行为就像一般函数指针。这样的对象可接纳“与给定之目标签名式兼容”的所有可调用物。
-
-    * 当你为解决问题而寻找某个设计方法时，不妨考虑<span class="keyword">virtual</span>函数的替代方案。
-
-        * 使用non-<span class="keyword">virtual</span> <span class="keyword">interface</span>（NVI）手法，那是Template Method设计模式的一种特殊形式。它以<span class="keyword">public</span> non-<span class="keyword">virtual</span>成员函数包裹较低访问性的<span class="keyword">virtual</span>函数
-        * 将<span class="keyword">virtual</span>函数替换为“函数指针成员变量”，这是Strategy设计模式的一种分解表现形式。
-        * 以tr1::function成员变量替换<span class="keyword">virtual</span>函数。
-        * 将继承体系内的<span class="keyword">virtual</span>函数替换为另一个继承体系内的<span class="keyword">virtual</span>函数。
-
-
-5. 条款36：绝不重新定义继承而来的non-<span class="keyword">virtual</span>函数
-
-6. 条款37：绝不重新定义继承而来的缺省参数值。
-
-    * 请记住：绝对不要重新定义一个继承而来的缺省参数值，因为缺省参数值都是静态绑定，而<span class="keyword">virtual</span>函数——你唯一应该覆写的东西——却是动态绑定
-    * 静态绑定由又名前期绑定，动态绑定又名后期绑定。对象的所谓静态类型，就是它在程序中被声明时所采用的类型。对象的所谓动态类型则是指“目前所指对象的类型”。
-    * “调用一个定义于derived <span class="keyword">class</span>内的<span class="keyword">virtual</span>函数”的同时，却使用<span class="keyword">base</span> <span class="keyword">class</span>为它所指定的缺省函数值。C++这样做的原因在于运行期效率。
-
-7. 条款38：通过复合塑模出has或“根据某物实现出”
-
-    * 请记住：
-
-        * 复合的以为和<span class="keyword">public</span>继承完全不同
-        * 在应用域，复合意味has-a。在实现域，复合意味<span class="keyword">is</span>-implemented-<span class="keyword">in</span>-terms-of（根据某物实现出）
-
-
-8. 条款39：明智而审慎地使用<span class="keyword">private</span>继承
-
-    * 请记住：
-
-        * Private函数意味<span class="keyword">is</span>-implemented-<span class="keyword">in</span>-terms-of（根据某物实现出）。它通常比复合的级别比。但是当derived <span class="keyword">class</span>需要<span class="keyword">protected</span> <span class="keyword">base</span> <span class="keyword">class</span>的成员，或需要重新定义继承而来的<span class="keyword">virtual</span>函数时，这么设计是合理的
-        * 和复合不同，<span class="keyword">private</span>继承可以造成empty <span class="keyword">base</span>最优化。这对致力于“对象尺寸最小化”的程序库开发者而言，可能很重要。
-
-    * 如果classes之间的继承关系是<span class="keyword">private</span>，编译器不会自动将一个derived <span class="keyword">class</span>对象转换为<span class="keyword">base</span> <span class="keyword">class</span>对象。
-    * Private继承意味着<span class="keyword">is</span>-implemented-<span class="keyword">in</span>-terms-of。Private继承纯粹只是一种实现技术。<span class="keyword">private</span>继承意味着只有实现部分被继承，接口部分应略去。
-    * C++裁定凡是独立（非附属）对象都必要有非零大小。
-</code></pre><p>class Empty{};sizeof(Empty)=1;因为面对“大小为零之独立（非附属）对象，通常C++官方勒令默默安插一个char到空对象内。”</p>
-<pre><code>    * 这个约束不适用于derived class对象内的<span class="keyword">base</span> class，因为它们并非独立（非附属）。如果你继承Empty，而不是内含一个那种类型的对象：class HoldAnInt:<span class="keyword">private</span> Empty { <span class="keyword">private</span>:<span class="keyword">int</span> x;};因此<span class="keyword">sizeof</span>(HoldAnInt) = <span class="keyword">sizeof</span>(<span class="keyword">int</span>)。这是所谓的EBO（empty <span class="keyword">base</span> optimization；空白基类最优化）。EBO一般只在单一继承（而非多重继承）下才可行，统治C++对象布局的那些规则通常表示EBO无法被施行于“拥有多个<span class="keyword">base</span>”的derived class身上。
-    * 现在中的“empty class”并不是真的empty。虽然它们从未拥有non-<span class="keyword">static</span>成员变量，却往往内含typedefs， enums， <span class="keyword">static</span>成员变量，或non-<span class="keyword">virtual</span>函数。STL就有许多技术用途的empty class，其中内含有用的成员，包括<span class="keyword">base</span> classes unary_function和binary_function。
-    * 复合和<span class="keyword">private</span>继承都意味着<span class="keyword">is</span>-implemented-<span class="keyword">in</span>-terms-of，但复合比较容易理解，所以无论什么时候，只要可以，你应该选择复合。但是当derived <span class="keyword">class</span>需要<span class="keyword">protected</span> <span class="keyword">base</span> <span class="keyword">class</span>的成员，或需要重新定义继承而来的<span class="keyword">virtual</span>函数时，可以选择<span class="keyword">private</span>
-
-9. 条款40：明智而审慎地使用多重继承
-
-    * 请记住：
-
-        * 多重继承比单一继承复杂。它可能导致新的歧义性，以及对<span class="keyword">virtual</span>继承的需要
-        * <span class="keyword">virtual</span>继承会增加大小、速度、初始化（及赋值）复杂度等等成本。如果virtualbase <span class="keyword">class</span>不带任何数据，将是最具实用价值的情况
-        * 多重继承的确有正当用途。其中一个情节设计“<span class="keyword">public</span>继承某个Interface <span class="keyword">class</span>”和“<span class="keyword">private</span>继承某个协助实现的<span class="keyword">class</span>”的两相组合。
-
-    * 与C++用来解析重载函数调用的规则相符：在看到是否有个函数可取用之前，C++首先确认这个函数对此调用之言是最佳匹配。找出最佳匹配函数后才可检验器可取用性。
-    * 为避免继承得来的成员变量重复，编译器必须提供若干幕后戏法，而其后果是，使用<span class="keyword">virtual</span>继承的那些classes所产生的对象往往比使用non-<span class="keyword">virtual</span>继承的兄弟们体积大，访问<span class="keyword">virtual</span> <span class="keyword">base</span> classes的成员变量时，也比访问non-<span class="keyword">virtual</span> <span class="keyword">base</span> classes的成员变量速度慢。
-    * <span class="keyword">virtual</span> <span class="keyword">base</span>的初始化责任是由继承体系中的最底层负责。
-    * 对<span class="keyword">virtual</span> <span class="keyword">base</span> classes忠告：第一，非必要不适用<span class="keyword">virtual</span> <span class="keyword">class</span>。第二，如果你必须使用<span class="keyword">virtual</span> <span class="keyword">base</span> claaes，尽可能避免在其中放置数据。
-</code></pre><p>7 模板和泛型编程</p>
-<pre><code><span class="number">1.</span> 条款<span class="number">41</span>：了解隐式接口和编译器多态
-
-    * 请记住：
-
-        * classes和Templates都支持隐式接口（interfaces）和多态（polymorphism）
-        * 对classes而言接口是显式的，以函数签名为中心。多态则是通过<span class="keyword">virtual</span>函数发生于运行期
-        * 对templates参数而言，接口是隐式地，奠基于有效表达式。多态则是通过<span class="keyword">template</span>具现化和函数重载解析发生于编译期。
-
-
-<span class="number">2.</span> 条款<span class="number">42</span>：了解<span class="keyword">typename</span>的双重意义
-
-    * 请记住：
-
-        * 声明<span class="keyword">template</span>参数时，前缀关键字<span class="keyword">class</span>和<span class="keyword">typename</span>可互换
-        * 请使用关键字<span class="keyword">typename</span>标识嵌套从属类型名称；但不得在base <span class="keyword">class</span> lists（基类列）或member initialization <span class="built_in">list</span>（成员初值列）内以它作为base <span class="keyword">class</span>修饰符
-
-    * 声明<span class="keyword">template</span>参数时，无论使用关键字<span class="keyword">class</span>或<span class="keyword">typename</span>，意义完全一样。
-    * <span class="keyword">template</span>内出现的名称如果相依于某个<span class="keyword">template</span>参数，称之为从属名称。如果从属名称在<span class="keyword">class</span>内呈嵌套状，我们称它为嵌套从属名称。
-    * 任何时候当你想要在<span class="keyword">template</span>中指涉一个嵌套从属类型名称，就必须在紧临它的前一个位置放上关键字<span class="keyword">typename</span>。“<span class="keyword">typename</span>必须作为嵌套从属类型名称的前缀词”这一规则的例外是，<span class="keyword">typename</span>不可以出现在base classes <span class="built_in">list</span>内的嵌套从属类型名称之前，也不可在member initialization <span class="built_in">list</span>（成员初值列）中作为base <span class="keyword">class</span>修饰符
-
-<span class="number">3.</span> 条款<span class="number">43</span>：学习处理模板化基类内的名称
-
-    * 请记住：请在derived <span class="keyword">class</span> <span class="keyword">template</span>内通过“<span class="keyword">this</span>->”指涉base <span class="keyword">class</span> <span class="keyword">template</span>内的成员名称，或借由一个明白写出的“base <span class="keyword">class</span>资格修饰符”完成
-
-<span class="number">4.</span> 条款<span class="number">44</span>：将与参数无关的代码抽离templates
-
-    * 请记住：
-
-        * Templates生成多个classes和多个函数，所以任何<span class="keyword">template</span>代码都不该与某个造成膨胀的<span class="keyword">template</span>参数产生相依关系
-        * 因非类型模板参数而造成的代码膨胀，往往可以消除，做法是以函数参数或<span class="keyword">class</span>成员变量替换<span class="keyword">template</span>参数
-        * 因类型参数而造成的代码膨胀，往往可降低，做法是让带有完全相同二进制表述的具现类型共享实现码
-
-
-<span class="number">5.</span> 条款<span class="number">45</span>：运用成员函数模板接受所有兼容类型
-
-    * 请记住：
-
-        * 请使用member function <span class="keyword">template</span>（成员函数模板）生成“可接受所有兼容类型”的函数
-        * 如果你声明member templates用于“泛化copy构造”或“泛化assignment操作”，你还是需要声明正常的copy构造函数和copy assignment操作符
-
-
-<span class="number">6.</span> 条款<span class="number">46</span>：需要类型转换时请为模板定义非成员函数
-
-    * 请记住：当我们编写一个<span class="keyword">class</span> <span class="keyword">template</span>，而它所提供之“与此<span class="keyword">template</span>相关的”函数支持“所有参数之隐式类型转换”时，请将那么函数定义为“<span class="keyword">class</span> <span class="keyword">template</span>内部的<span class="keyword">friend</span>函数”
-
-<span class="number">7.</span> 条款<span class="number">47</span>：请使用traits classes表现类型信息
-
-    * 请记住：
-
-        * traits classes使得“类型相关信息”在编译器可用。它们以templates和“templates特化”完成实现
-        * 整合重载技术后，traits classes有可能在编译期对类型执行<span class="keyword">if</span>...<span class="keyword">else</span>测试
-
-
-<span class="number">8.</span> 认识<span class="keyword">template</span>元编程
-
-    * Template metaprogramming（TMP，模板元编程）可将工作由运行期移往编译器，因为得以实现早期错误侦测和更高的执行效率。
-    * TMP可被用来生成“基于政策选择组合”的客户定制代码，也可用来避免生成对某些特殊类型并不适合的代码
-</code></pre><p>8 定制new和deleteSTL容器所使用的heap内存是由容器所拥有的分配器对象（allocator ojects）管理，不是被new和delete直接管理。</p>
-<pre><code><span class="number">1.</span> 条款<span class="number">49</span>：了解<span class="keyword">new</span>-handler的行为
-
-    * 请记住：
-
-        * set_new_handler允许客户指定一个函数，在内存分配无法获得满足时被调用
-        * Nothrow <span class="keyword">new</span>是一个颇为局限的工具，因为它只适用于内存分配；后继的构造函数调用还是可能抛出异常
-
-            * 当<span class="keyword">operator</span> <span class="keyword">new</span>无法满足某一内存分配需求时，它会抛出异常。以前它会返回一个<span class="keyword">null</span>指针。当<span class="keyword">operator</span> <span class="keyword">new</span>抛出异常以反映一个未获满足的内存需求之前，它会先调用一个客户指定的错误处理函数，一个所谓的<span class="keyword">new</span>-handler。为了指定这个“用以处理内存不足”的函数，客户必须调用set_new_handler，那是声明于<<span class="keyword">new</span>>的一个标准程序库函数
-</code></pre><p>9 杂项讨论</p>
-<pre><code><span class="comment">1</span><span class="string">.</span> <span class="comment">条款53：不要轻忽编译器的警告</span>
-
-    <span class="comment">*</span> <span class="comment">请记住：</span>
-
-        <span class="comment">*</span> <span class="comment">严肃对待编译器发出的警告信息。努力在你的编译器的最高经高级别下争取“无任何警告”的荣誉</span>
-        <span class="comment">*</span> <span class="comment">不要过度倚赖编译器的报警能力，因为不同的编译器对待事物的态度并不相同。一旦移植到另一个编译器上，你原本倚赖的警告信息有可能消失</span>
-
-
-<span class="comment">2</span><span class="string">.</span> <span class="comment">条款54：让自己熟悉包括TR1在内的标准程序库</span>
-
-    <span class="comment">*</span> <span class="comment">请记住：</span>
-
-        <span class="comment">*</span> <span class="comment">C</span><span class="literal">+</span><span class="literal">+</span><span class="comment">标准程序库的主要技能由STL、iostream、locals组成。并包含C99标准程序库</span>
-        <span class="comment">*</span> <span class="comment">TR1添加了智能指针、一般化函数指针、hash</span><span class="literal">-</span><span class="comment">based容器、正则表达式以及另外10个组件的支持</span>
-        <span class="comment">*</span> <span class="comment">TR1自身只是一份规范。为获得TR1的好处，你需要一份实物。一个好的实物来源于Boost</span>
-
-
-<span class="comment">3</span><span class="string">.</span> <span class="comment">条款55：让自己熟悉Boost</span>
-
-    <span class="comment">*</span> <span class="comment">请记住：</span>
-
-        <span class="comment">*</span> <span class="comment">Boost是一个社群，也是一个网站。致力于免费、源码开放、同僚复审的C</span><span class="literal">+</span><span class="literal">+</span><span class="comment">程序库开发。Boost在C</span><span class="literal">+</span><span class="literal">+</span><span class="comment">标准化过程中扮演深具影响力的角色</span>
-        <span class="comment">*</span> <span class="comment">Boost提供许多TR1组件实现品，以及其他许多程序库</span>
-</code></pre>  
+		<h1 id="导读">导读</h1>
+<ol>
+<li>std::size_t，这表示类型size_t位于命名空间std内。继承自C的符号有可能存在于global作用域或std内，甚或两者兼具，取决于哪个头文件被含入。size_t只是一个typedef，是C++计算个数时用的某种不带正负号(unsigned)类型。它也是vector,queue和string内的operator[]函数接受的参数类型。</li>
+<li>签名式：每个函数的声明，也就是参数和返回类型；<br>定义式：定义式任务是提供编译器一些声明式所遗漏的细节。对对象(例如int)而言，定义式是编译器为此对象拨发内存的地点。对function或function temple而言，定义式提供了代码本体。对class或class temple而言，定义式列出它们的成员；<br>初始化：是“给予对象初值”的过程。对用户自定义类型的对象而言，初始化由构造函数执行。</li>
+<li>copy构造函数被用来“以同型对象初始化自我对象”，copy assignment操作符被用来“从另一个同型对象中拷贝其值到自我对象”<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="class"><span class="keyword">class</span> <span class="title">Widget</span>{};</span>
+<span class="constant">Widget</span> w1;      <span class="regexp">//default</span>调用函数
+<span class="constant">Widget</span> w2(w1);  <span class="regexp">//copy</span>构造函数
+w1 = w2;        <span class="regexp">//copy</span> assignment
+<span class="constant">Widget</span> w3 = w2; <span class="regexp">//copy</span>构造函数
+</pre></td></tr></table></figure><br>如果一个新对象被定义，一定会有个构造函数被调用，不可能调用赋值操作。如果没有新对象被定义，就不会有构造函数被调用，那么当然就是赋值操作符被调用。PS(from c++ primer plus)：初始化总是会调用赋值构造函数，而是用=操作符也可能调用赋值操作符</li>
+<li>不明确（未定义）行为的结果是不可预期的。如对一个NULL指针取值。</li>
+<li>TR1（”Technical Report1”）是一份规范，描述加入C++标准程序库的诸多新机能，这些机能以新的class templates和function temlpates形式体现，针对的题目有hash tables, reference-counting smart pointers, regular expression, 以及更多。所有TR1组件被置于命名空间tr1，后者嵌套于命名空间std内。</li>
+</ol>
+<h1 id="1_让自己习惯C++">1   让自己习惯C++</h1>
+<ol>
+<li>条款01：视C++为一个语言联邦<ul>
+<li>C++是个多重范式编程语言(multiparadigm programming language)，一个同时支持过程形式(procedural)、面向对象形式(object-oriented)、函数形式(functional)、泛型形式(generic)、元编程形式(metaprogramming)的语言。</li>
+<li>理解C++的几个次语言：<ul>
+<li>C。高效编程守则照出C语言的局限：没有模板、没有异常、没有重载···</li>
+<li>Object-oriented C++。classes(包括构造函数和析构函数)、封装(encapsulation)、继承(inheritance)、多态(polymorphism)、virtual函数（动态绑定）···等等。</li>
+<li>Template C++。泛型编程部分。模板元编程（TMP）</li>
+<li>STL。template程序库</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>条款02：尽量以const，enum，inline替换#define</p>
+<ul>
+<li>宁可以编译器替换预处理器。#define或许不被视为语言的一部分。</li>
+<li><code>#define ASPECT_RATION 1.653</code>。ASPECT_RATION没有进入记号表(symbol table)内，不好追踪。解决方法是用一个常量替换宏：<code>const double AspectRatio = 1.653;</code>AspectRatio会进入记号表。此外对浮点常量而言，使用常量可能比使用#define导致较小量的码，因为预处理器“盲目的将宏名称ASPECT_RATION替换为1.653”可能导致目标码出现多分1.653，若改用常量AspectRatio绝不会出现这种情况</li>
+<li>有两种特殊情况要说说。第一是定义常量指针。由于常量定义式常被放在头文件内，因此有必要将指针声明为const。string通常比其前辈char *-based合适。第二个值得注意的是class专属常量。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="class"><span class="keyword">class</span> <span class="title">GamePlayer</span>{</span>
+<span class="keyword">private</span>:
+    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">int</span> NumTurns = <span class="number">5</span>;
+    <span class="keyword">int</span> scores[NumTurns];
+};
+</pre></td></tr></table></figure><br>然后这里的NumTurns的声明式并非定义式。通常C++要求你对你所使用的任何东西提供一个定义式，但如果它是个class专属常量又是static且为整数类型（例如int,char,bool），则需要特殊处理。只要不取它们的地址，你可以声明并使用它们而无须提供定义式。但如果你取某个class专属常量的地址，或纵使你不取而你的编译器坚持要看到一个定义式，你就要提供定义式如下:<code>const int GamePlayer::NumTurns;//没有给予数值</code>。将这个式子放在实现文件而非头文件。由于class中已获得初值，因此定义时不可以再设初值。我们无法用#define创建一个class专属常量，因为#define并不重视作用域。一旦宏被定义，它就在其后的编译过程中有效（除非在某处被#undef）。</li>
+<li>所谓的“in-class初值设定”只允许对整数常量进行。如果你的编译器不支持上述语法，你可以将初始放在定义式：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="class"><span class="keyword">class</span> <span class="title">CostEstimate</span> {</span>
+privete:
+    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">double</span> FudgeFactor;        <span class="comment">//static class常量声明位于头文件内</span>
+};
+<span class="keyword">const</span> <span class="keyword">double</span> CostEstimate::FudgeFactor = <span class="number">1.35</span>; <span class="comment">//static class常量定义位于实现文件内</span>
+</pre></td></tr></table></figure><br>而编译器坚持必须在编译器期间知道数组大小，而编译器不允许“static整数型class常量”完成“in class常量设定”，可用“the enum hack”补偿做法。理论基础是“一个属于枚举类型的数值可权充ints被使用”，于是GamePlay定义如下：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="class"><span class="keyword">class</span> <span class="title">GamePlayer</span>{</span>
+<span class="keyword">private</span>:
+    <span class="keyword">enum</span> { NumTurns = <span class="number">5</span> };
+    <span class="keyword">int</span> scores[NumTurns];
+}
+</pre></td></tr></table></figure><br>第一，enum hack的行为在某方面说像#define而不像const。例如取一个const地址是合法的，取一个enum地址就不合法，而取一个#define的地址也不合法。第二个理由纯粹是为了实用主义。</li>
+<li>另一个常用的#define语用情况是以它实现宏。宏看起来像函数，但不会招致函数调用带来的额外的开销。<code>#define CALL_WITH_MAX(a,b)  f((a) > (b) ? (a) : (b))</code>。你必须记住为宏中的所有实参加上小括号，否则会遇到麻烦。但即使这样，看看下面不可思议的事情：<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="keyword">int</span> a=<span class="number">5</span>, b=<span class="number">0</span>;
+CALL_WITH_MAX(++a, b);      <span class="comment">//a被累加二次</span>
+CALL_WITH_MAX(++a, b+<span class="number">10</span>);   <span class="comment">//a被累加一次</span>
+</pre></td></tr></table></figure><br>在这里，调用f之前，a的递增次数竟然取决于“它被拿来和谁比较”！解决办法，你可以写出template inline函数：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="keyword">template</span> <<span class="keyword">typename</span> T>
+<span class="keyword">inline</span> <span class="keyword">void</span> callWithMax(<span class="keyword">const</span> T& a, <span class="keyword">const</span> T& b)
+{   
+     f(a>b ? a:b);
+}
+</pre></td></tr></table></figure></li>
+<li>请记住<ul>
+<li>对于单纯常量，最好以const对象或enum替换#define</li>
+<li>对于形似函数的宏，最好改用inline函数替换#define</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>条款03：尽可能使用const</p>
+<ul>
+<li>声明迭代器为const就像声明指针为const一样（即声明一个T *const指针），表示这个迭代器不得不指向不同的东西，但它所指的东西的值是可以改动的。如果你希望迭代器所指的东西不可被改动，你需要的是const_iterator.</li>
+<li>const最具威力的用法是面对函数声明时的应用，在一个函数声明式内，const可以和函数返回值、各参数、函数自身产生关联。另函数返回一个常量值，往往可以降低因客户错误而造成的意外，而又不至于放弃安全性和高效性。</li>
+<li>const成员函数。确认该成员函数可作用于const对象。它们使“操作const对象”称为可能。</li>
+<li>两个成员函数如果只是常量性不同，可以被重载，这是一个重要的C++特性。</li>
+<li>如果函数的返回类型是个内置类型，那么改动函数返回值从来就不合法。</li>
+<li>mutable(可变的)变量，mutable释放掉non-static成员变量的bitwise constness约束。在const成员函数内也能改变变量。</li>
+<li>在const和non-const成员函数中避免重复。另其中一个调用另一个，这促使我们将常量性转除。<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="code"><pre><span class="keyword">class</span> TextBlock {
+<span class="keyword">public</span>:
+         <span class="keyword">const</span> <span class="keyword">char</span> & <span class="keyword">operator</span>[] (<span class="built_in">std</span>::size_t position) <span class="keyword">const</span>
+         {
+              ...
+                 <span class="keyword">return</span> text[position];
+         }
+         <span class="keyword">char</span> & <span class="keyword">operator</span>[] (<span class="built_in">std</span>::size_t position)
+         {
+            <span class="keyword">return</span> <span class="keyword">const_cast</span><<span class="keyword">char</span>&>(<span class="keyword">static_cast</span><<span class="keyword">const</span> TextBlock&>(*<span class="keyword">this</span>)[position]);
+         };
+};
+</pre></td></tr></table></figure></li>
+<li>const成员函数承诺绝不改变其对象的逻辑状态，non-const成员函数却没有这般承诺。</li>
+<li>请记住：<ul>
+<li>const可被施加于任何作用域内的对象、函数参数、函数返回类型、成员函数本体。</li>
+<li>编译器强制实施bitwise constness，但你编写程序时应该使用“概念上的常量性”</li>
+<li>当const和con-const成员函数有着实质等价的实现时，令non-const版本调用const版本可避免代码重复。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>条款04：确定对象被使用前已先被初始化</p>
+<ul>
+<li>如果你使用C part of C++而且初始化可能招致运行期成本，那么就不保证初始化。一旦进入non-C parts of C++，规则有些变化。最佳的处理办法就是：永远在使用对象之前先将它初始化。对于无任何成员的内置类型，你必须手工完成。至于内置类型以外的任何其他东西，由构造函数完成。每一个构造函数都将对象的每一个成员初始化。</li>
+<li>C++规定，对象的成员变量的初始化动作发生在进入构造函数本体之前。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre>A::A(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &name)
+{
+        theName = name; <span class="comment">// std::string theName;  </span>
+        num = <span class="number">0</span>;    <span class="comment">//int num;</span>
+}
+</pre></td></tr></table></figure><br>初始化的发生时间发生于成员的default构造函数被自动调用之时。但对内置类型来说，不保证一定在你看到的那个赋值动作的时间点之前获得初值。构造函数的较佳写法是：成员初值列，这样效率更高。基于赋值的初始化首先调用default函数为theName设初值，然后立刻再对他们赋予新值，default构造函数所做的就浪费了。而成员初值列避免了这一问题，因为初值列中针对各个成员变量而设的实参，被拿去作为各成员变量之构造函数的实参。对大多数类型而言，比起先调用default构造函数然后再调用copy assignment操作符，单只调用一次copy构造函数是比较高效的，有时甚至高效得多。对于内置类型如num，其初始化和赋值的成本相同，但为了一致性最好还是通过成员初值列来初始化。</li>
+<li>有些情况下即使面对的成员变量属于内置类型，也一定得使用初值列。是的，如果成员变量是const或reference，它们就一定需要初值，不能被赋值。最简单的做法就是：总是使用成员初值列。</li>
+<li>多分成员初值列的存在就会导致重复。可以合理的在初值列中遗漏那些“赋值表现像初始化一样的”成员变量，改用赋值，并移往某个函数（通常是private），供所有构造函数调用。这种做法在“成员变量的初值系由文件或数据库读入”时特别有用</li>
+<li>C++的class成员变量总是以其声明次序被初始化，所以最好总是以其声明次序为次序。</li>
+<li>不同编译单元内定义之non-local static对象的初始化次序问题。<ul>
+<li>static对象，包括global对象、定义于namespace作用域内的对象、在classes内、在函数内、以及在file作用域内被声明为static的对象。函数内的static对象称为local static其他的static对象称为non-local static对象</li>
+<li>编译单元是指产出单一目标文件的那些编码。基本上它是单一源码文件加上其所含入的头文件（#include）。</li>
+<li>如果某编译单元内的某个non-local static对象的初始化动作使用了另一编译单元内的某个non-local static对象，它所用到的这个对象可能尚未被初始化，因为C++对“定义于不同编译单元内的non-local static对象”的初始化次序并无明确定义。解决办法是：将每个non-local static对象搬到自己的专属函数内（该对象在此函数内被声明为static）这些函数返回一个reference指向它所含的对象。然后用户调用这些函数，而不直接指涉这些对象。也就是说，non-local static对象被local static对象替换了。这是Singleton模式的常见实现手法。这个手法基础在于：C++保证，函数内的local static对象会在“该函数被调用期间”“首次遇上该对象之定义式”时被初始化。<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="class"><span class="keyword">class</span> <span class="title">FileSystem</span>;
+<span class="title">FileSystem</span> &<span class="title">tfs</span>()
+{</span>
+    <span class="keyword">static</span> FileSystem fs;
+    <span class="keyword">return</span> fs;
+}
+</pre></td></tr></table></figure></li>
+<li>任何一种non-const static对象，无论它是local或non-local，在多线程环境下“等待某事发生”都会有麻烦处理这个麻烦的一种做法是：在程序的单线程启动阶段手工调用reference-returning函数，这可消除与初始化有关的“竞速形势”。当然，运用reference-returning函数防止“初始化次序问题”。前提是其中有着一个对对象而言合理的初始化次序。</li>
+</ul>
+</li>
+<li>避免在对象初始化之前过早地使用它们，你要做：<ul>
+<li>第一，手工初始化内置型non-member对象</li>
+<li>第二，使用成员初值列对付对象的所有成分</li>
+<li>最后，在“初始化次序不确定性”氛围下加强你的设计</li>
+</ul>
+</li>
+<li>请记住：<ul>
+<li>为内置型对象进行手工初始化，因为C++不保证初始化它们</li>
+<li>构造函数最好使用成员初值列，而不要在构造函数本体内使用赋值操作。初值列列出的成员变量，其排列次序应该和它们在class中的声明次序相同。</li>
+<li>为免除“跨编译单元之初始化次序”问题，请以local static对象替换non-local static对象</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h1 id="2_构造/析构/赋值运算">2 构造/析构/赋值运算</h1>
+<ol>
+<li><p>条款05：了解C++默默编写并调用哪些函数</p>
+<ul>
+<li>请记住：编译器可以暗自为class创建default构造函数、copy构造函数、copy assignment操作符，以及析构函数。所有这些函数都是public且inline。</li>
+<li>唯有当这些函数被需要（被调用），它们才会被编译器创建出来。default构造函数和析构函数主要是给编译器一个地方用来放置“藏身幕后”的代码，像是调用base classes和non-static成员变量的构造函数和析构函数。注意，编译器产生的析构函数是个non-vitual，除非这个class的base class自身声明有virtual析构函数。</li>
+<li>至于copy构造函数和copy assignment操作符，编译器创建的版本只是单纯地将来源对象的每一个non-static成员变量拷贝到目标对象。</li>
+<li>只要声明了一个构造函数，编译器就不再为它创建default构造函数。</li>
+<li>如果你打算在一个“内涵reference成员”的class内支持赋值操作，你必须自己定义copy assignment操作符。面对“内含const成员”的classed，编译器的反应也一样。</li>
+<li>如果某个base classes将copy assignment操作符声明为private，编译器将拒绝为其derived classed生成一个copy assignment操作符。</li>
+</ul>
+</li>
+<li><p>条款06：若不想使用编译器自动生成的函数，就该明确拒绝</p>
+<ul>
+<li>请记住：为驳回编译器自动提供的功能，可将相应的成员函数声明为private并且不予实现。使用像Uncopyable这样的base classed也是一种做法。</li>
+<li>所有编译器产生的函数都是public。如果你不想使用copy构造函数或copy assignment操作符，你可以将copy构造函数或copy assignment操作符声明为private。借由明确声明一个成员函数，你阻止了编译器创建其专属版本；而令其为private，使你成功阻止人们调用它。但是因为member函数和friend还是可以调用private函数。你可以不去定义它们，那么如果某些人不慎调用任何一个，会获得一个连接错误（linkage error）。</li>
+<li>将连接错误移至编译器是可能的，可以继承一个专门为了阻止copying动作而设计的base class:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre>class Uncopyable{
+<span class="keyword">protected</span>:
+    <span class="title">Uncopyable</span>(){}
+    ~Uncopyable(){}
+<span class="keyword">private</span>:
+    <span class="title">Uncopyable</span>(<span class="keyword">const</span> Uncopyable &);
+    Uncopyable & <span class="keyword">operator</span>=(<span class="keyword">const</span> Uncopyable &);
+};
+</pre></td></tr></table></figure><br>继承Uncopyable，编译器尝试着生成一个copy构造函数和copy assignment操作符，而正如条款12所说，这些函数的“编译器生成版”会尝试调用其base class的对应兄弟，那么调用会被编译器拒绝。</li>
+</ul>
+</li>
+<li><p>条款07：为多态基类声明virtual析构函数</p>
+<ul>
+<li>请记住：<ul>
+<li>polymorphic(带多态性质)的base classed应该声明一个virtual析构函数。如果class带有virtual函数，它就应该拥有一个virtual析构函数</li>
+<li>Classes的设计目的如果不是作为base classe使用，或不是为了具备多态性质，就不该声明virtual析构函数</li>
+</ul>
+</li>
+<li>当derived class对象经由一个base class指针被删除，而该base class带着一个non-virtual析构函数，其结果过未有定义——实际执行时通常发生的是对象的derived成分没被销毁。于是造成了诡异的“局部销毁”对象。这会可形成资源泄露，败坏之数据结构。解决办法是给base class一个virtual析构函数。</li>
+<li>当class不企图被当做base class，令其析构函数为virtual不好。欲实现virtual函数，对象必须携带某些信息，主要用来在运行期间决定哪一个virtual函数该被调用。这份信息由包含一个所谓vptr（virtual table pointer）指针指出。vptr指向一个由函数指针构成的数组，称为vtbl（virtual table）。所以，只有当class内含至少virtual函数，才为它声明virtual析构函数。</li>
+<li>标准string不含任何virtual函数，有些程序员会错误地把它当做base class</li>
+<li>相同的分析适用于任何不带virtual析构函数的class，包括所有STL容器如vector,list,set,tr1::unordered_map</li>
+<li>有时候令class带一个pure virtual析构函数，可能颇为便利。pure virtual函数可能导致abstract classed——不能被实体化。然而，你必须为这个pure virtual析构函数提供一份定义。</li>
+<li>并非所有的base classes的设计目的都是为了多态用途。</li>
+</ul>
+</li>
+<li><p>条款08：别让异常逃离析构函数</p>
+<ul>
+<li>请记住：<ul>
+<li>析构函数绝对不要吐出异常。如果一个被析构函数调用的函数可能抛出异常，析构函数应该捕捉任何异常，然后吞下它们（不传播）或结束程序。</li>
+<li>如果客户需要对某个操作函数运行期间抛出的异常做出反应，那么class应该提供一个普通函数（而非在析构函数中）执行该操作。</li>
+</ul>
+</li>
+<li>如果析构函数抛出异常，那么有两个办法可以避免这个问题：<ul>
+<li>如果close抛出异常就结束程序，通常通过调用abort完成。abort可以抢先制“不明确行为”于死地。</li>
+<li>吞下调用close而发生的异常</li>
+</ul>
+</li>
+<li>如果某个操作可能在失败时抛出异常，而又存在某种需要必须处理该异常，那么这个异常必须来自析构函数以外的某个函数</li>
+</ul>
+</li>
+<li><p>条款09：绝不在构造和析构过程中调用virtual函数</p>
+<ul>
+<li>请记住：在构造和析构期间不要调用virtual函数，因为这类调用从不下降至derived class（比起当前执行构造函数和析构函数那层）</li>
+<li>在base class构造期间，virtual函数不是virtual函数。在derived class对象的base class构造期间，对象的类型是base class而不是derived class。不只virtual函数会被编译器解析至base class，若使用运行期间类型信息（如dynamic_cast和typeid），也会把对象视为base class类型。对象在derived class构造函数开始执行前不会成为一个derived class对象</li>
+<li>一旦derived class析构函数开始执行，对象内的derived class成员变量便呈现未定义值，所以C++视它们仿佛不再存在。进入base class析构函数后对象就成为一个base class对象</li>
+<li>确定你的构造函数和析构函数都没有调用virtual函数，而它们调用的所有函数也都服从同一约束。</li>
+<li>一种做法是在class Transaction内将logTransaction函数改为non-virtual，然后要求derived class构造函数传递必要信息给Transaction构造函数，而后那个构造函数便可安全的调用non-virtual logTransaction。</li>
+<li>由于你无法使用virtual函数从base classes向下调用，在构造期间，你可以借由“令derived classes将必要的构造信息向上传递至base class构造函数”替换之而加以弥补。</li>
+<li>利用辅助函数创建一个值传给base class构造函数往往比较方便。令此函数为static，也就不可能意外指向“初期成熟之BuyTransaction”对象内尚未初始化的成员变量。所以，“在base class构造和析构期间调用的virtual函数不可下降至derived classes”</li>
+</ul>
+</li>
+<li><p>条款10：令operator=返回一个reference to *this</p>
+<ul>
+<li>请记住：令赋值操作符返回一个reference to *this</li>
+<li>然后这份协议被所有内置类型和标准程序库提供的类型如string, vector, complex, tr1::shared_ptr或即将提供的类型共同蹲守</li>
+</ul>
+</li>
+<li><p>条款11：在operator=处理“自我赋值”</p>
+<ul>
+<li>请记住：<ul>
+<li>确保当对象自我赋值时operator=有良好行为。其中技术包括比较“来源对象”和“目标对象”的地址、精心周到的语句顺序、以及copy-and-swap</li>
+<li>确定任何函数如果操作一个以上的对象，而其中多个对象是同一对象时，其行为仍然正确</li>
+</ul>
+</li>
+<li>“证同测试”以达到“自我赋值”的检验目的：<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="code"><pre>Widget & Widget::<span class="keyword">operator</span>=(<span class="keyword">const</span> Widget & rhs)
+{
+    <span class="keyword">if</span>( <span class="keyword">this</span> == &rhs)   <span class="keyword">return</span> *<span class="keyword">this</span>;
+    <span class="keyword">delete</span> pb;
+    pb = <span class="keyword">new</span> Bitmap(*rhs.pb);
+    <span class="keyword">return</span> *<span class="keyword">this</span>;
+}
+</pre></td></tr></table></figure></li>
+<li>注意在复制pb所指东西之前别删除pb：<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="code"><pre>Widget & Widget::<span class="keyword">operator</span>=(<span class="keyword">const</span> Widget & rhs)
+{
+    Bitmap * pOrig = pb;
+    pb = <span class="keyword">new</span> Bitmap(*rhs.pb);
+    <span class="keyword">delete</span> pOrig;
+    <span class="keyword">return</span> *<span class="keyword">this</span>;
+}
+</pre></td></tr></table></figure></li>
+<li>使用copy and swap技术<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="code"><pre><span class="class"><span class="keyword">class</span> <span class="type">Widget</span>{
+    void swap<span class="container">(<span class="type">Widget</span> &<span class="title">rhs</span>)</span>;
+};
+<span class="type">Widget</span> & <span class="type">Widget</span>::operator=<span class="container">(<span class="title">const</span> <span class="type">Widget</span> & <span class="title">rhs</span>)</span>
+{
+    <span class="type">Widget</span> temp<span class="container">(<span class="title">rhs</span>)</span>;
+    swap<span class="container">(<span class="title">temp</span>)</span>;
+    return *this;
+}</span>
+</pre></td></tr></table></figure><br>(1)某class的copy assignment操作符可能被声明为“以by value方式接受实参”；（2）以by value方式传递东西会造成一份复件/副本<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre>Widget & Widget::<span class="keyword">operator</span>=(Widget rhs)
+{
+    swap(rhs);
+    <span class="keyword">return</span> *<span class="keyword">this</span>;
+}
+</pre></td></tr></table></figure><br>将”copying动作”从函数本体内移至“函数参数构造阶段”却可编译器有时生成更高效的代码</li>
+</ul>
+</li>
+<li><p>条款12：复制对象时勿忘其每一个成分</p>
+<ul>
+<li>请记住：<ul>
+<li>Copying函数应该确保复制“对象内的所有成员变量”及“所有base class成分”</li>
+<li>不要尝试以某个copying函数实现另一个copying函数。应该将共同机能放进第三个函数中，并由两个copying函数共同调用。</li>
+</ul>
+</li>
+<li>为derived class撰写copying函数，必须很小心地复制器base class成本。你应该让derived class的copying函数调用相应的base class函数</li>
+<li>当你编写一个copying函数，请确保：（1）复制所有local成员变量；（2）调用所有base classes内的适当copying函数</li>
+<li>你不该令copy assignment操作符调用copy构造函数</li>
+<li>构造函数用来初始化新对象，而assignment操作符只施行于已初始化对象身上。</li>
+<li>如果你发现你的copy assignment操作符和copy构造函数有相近的代码，消除重复代码的做法是：建立一个新的成员函数给两者调用。这样的函数往往是private而且常被命名为init。</li>
+</ul>
+</li>
+</ol>
+<h1 id="3_资源管理">3 资源管理</h1>
+<p>内存是必须管理的众多资源之一，其他常见的资源还包括文件描述起、互斥锁、图形界面中的字型和笔刷、数据库连接、以及网络sockets。</p>
+<ol>
+<li><p>以对象管理资源</p>
+<ul>
+<li>请记住：<ul>
+<li>为防止资源泄露，请使用RAII对象，它们在构造函数中获得资源并在析构函数中释放资源</li>
+<li>两个常被使用的RAII classes分别是tr1::shared_ptr和auto_ptr。前者通常是较佳选择，因为其copy行为比较直观。若选择auto_ptr，复制动作会使它指向null。</li>
+</ul>
+</li>
+<li>把资源放进对象内，我们便可倚赖C++的“析构函数自动调用机制”确保资源被释放<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre>Investment * createInvestment();
+<span class="keyword">void</span> f()
+{
+    Investment * pInv = createInvestment();
+    <span class="keyword">delete</span> pInv;
+}
+</pre></td></tr></table></figure><br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+</pre></td><td class="code"><pre><span class="tag">void</span> <span class="tag">f</span>()
+<span class="rules">{
+    <span class="rule"><span class="attribute">std</span>:<span class="value">:auto_ptr<Investment> <span class="function">pInv(<span class="function">createInvestment()</span>)</span></span></span>;
+<span class="rule">}</span></span>
+</pre></td></tr></table></figure></li>
+<li>“以对象管理资源”有两个关键的想法：<ul>
+<li>获得资源后立刻放进管理对象。“以对象管理资源”的观念常被称为“资源取得时机便是初始化时机（Resource Acquisition Is Initialization;RAII）”。每一笔资源都在获得的同时立刻被放进管理对象中。</li>
+<li>管理对象运用析构函数确保资源被释放。无论控制流如何离开区块，一旦对象被销毁（例如当对象离开作用域）其析构函数自然会被自动调用，于是资源被释放。如果资源释放动作可能导致抛出异常，事情变得有点棘手。</li>
+</ul>
+</li>
+<li>别让多个auto_ptr同时指向同一对象。如果对象会被删除一次以上，则会产生未定义行为。auto_ptr有一个不寻常的性质：若通过copy构造函数或copy assignment操作符复制它们，它们会变成null，而复制所得的指针将取得资源的唯一拥有权！“受auto_ptrs管理的资源必须绝对没有一个以上的auto_ptr同时指向它”，意味auto_ptr并非管理动态分配资源的神兵利器。</li>
+<li>auto_ptr的替代方案是“引用计数型智慧指针”（reference-counting smart pointer;RCSP)。所谓的RCSP也是个智能指针，持续跟踪共有多少对象指向某笔资源，并在无人指向它时自动删除该资源。</li>
+<li>tr1::shared_ptr。tr1::shared_ptr的复制行为“一如预期”<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre>void f()
+{
+    <span class="symbol">std:</span><span class="symbol">:tr1</span><span class="symbol">:</span><span class="symbol">:shared_ptr<Investment></span> pInv1(createInvestment());
+    <span class="symbol">std:</span><span class="symbol">:tr1</span><span class="symbol">:</span><span class="symbol">:shared_ptr<Investment></span> pInv2(pInv1);
+    pInv1 = pInv2;
+}
+</pre></td></tr></table></figure></li>
+<li>auto_ptr和tr1::shared_ptr两者都在其析构函数内做delete而不是delete[]动作。</li>
+</ul>
+</li>
+<li><p>条款14：在资源管理类中小心copying行为</p>
+<ul>
+<li>请记住：<ul>
+<li>复制RAII对象必须一并复制它所管理的资源，所以资源的copying行为决定RAII对象的copying行为</li>
+<li>普遍而常见的RAII class copying行为是：抑制copying、施行引用计数法。不过其他行为也都可能被实现</li>
+</ul>
+</li>
+<li>Mutex的互斥器对象。假设lock和unlock函数：<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre></td><td class="code"><pre>void <span class="operator"><span class="keyword">lock</span>(Mutex *pm);</span>
+void unlock(Mutex *pm);
+//class <span class="operator"><span class="keyword">Lock</span>
+class <span class="keyword">Lock</span>{
+<span class="keyword">public</span>:
+    explicit <span class="keyword">Lock</span>(Mutex *pm):mutexPtr(pm)
+    {
+        <span class="keyword">lock</span>(mutexPtr);</span>
+    }
+    ~<span class="operator"><span class="keyword">Lock</span>(){ unlock(mutexPtr);</span> }
+private:
+    Mutex *mutexPtr;
+}
+//客户对<span class="operator"><span class="keyword">Lock</span>使用
+Mutex m;</span>
+<span class="operator"><span class="keyword">Lock</span> m1(&m);</span>
+</pre></td></tr></table></figure></li>
+<li>当一个RAII对象被复制，会发生什么事？<ul>
+<li>禁止复制。根据条款6告诉你：将copying操作声明为private。</li>
+<li>对底层资源祭出“引用计数法”。tr1::shared_ptr的缺省行为是“当引用次数为0时删除其所指物”。当我们用上一个Mutex，我们想要做的释放动作是解除锁定而非删除。幸运的是tr1::shared_ptr允许指定所谓的“删除器(deleter)”，那是一个函数或函数对象，当引用次数为0时便被调用（此机能并不存在于auto_ptr+它总是将其指针删除）。删除器将tr1::shared_ptr构造函数而言是可有可无的第二参数。<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="code"><pre><span class="tag">class</span> <span class="tag">Lock</span><span class="rules">{
+<span class="rule"><span class="attribute">public</span>:<span class="value">
+    explicit <span class="function">Lock(Mutex *pm)</span> : <span class="function">mutexPtr(pm, unlock)</span>
+    {
+        <span class="function">lock(mutexPtr.<span class="function">get()</span>)</span></span></span>;
+    <span class="rule">}</span></span>
+<span class="tag">private</span>:
+    <span class="tag">std</span><span class="pseudo">::tr1</span><span class="pseudo">::shared_ptr</span><<span class="tag">Mutex</span>> <span class="tag">mutexPtr</span>;
+};
+</pre></td></tr></table></figure></li>
+<li>复制底部资源。</li>
+<li>转移底部资源的拥有权。这是auto_ptr的复制意义。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>条款15：在资源管理类中提供对原始资源的访问</p>
+<ul>
+<li>请记住：<ul>
+<li>APIs往往要求访问原始资源，所以每一个RAII class应该提供一个“取得其所管理之资源”的办法</li>
+<li>对原始资源的访问可能经由显式转换或隐式转换。一般而言，显式转换比较安全，但隐式转换对客户比较方便。</li>
+</ul>
+</li>
+<li>取得原始资源。有显式转换和隐式转换。tr1::shared_ptr和auto_ptr都提供一个get成员函数，用来执行显式转换，也就是它会返回智能指针内部的原始指针（的复件）。<code>int days = daysHeld(pInv.get());</code>就像所有智能指针一样，tr1::shared_ptr和auto_ptr也重载了指针取值操作符，它们允许隐式转换至底部原始指针</li>
+</ul>
+</li>
+<li><p>条款16：成对使用new和delete时要采取相同形式 </p>
+<ul>
+<li>请记住：如果你在new表达式中使用[]，必须在相应的delete表达式中也使用[]。如果在new表达式中不使用[]，一定不要在相应的delete表达式中使用[]</li>
+<li>当你使用new动态生成一个对象。有两件事发生。第一，内存被分配出来。第二，针对此内存会有一个构造函数调用。当你使用delete，有两件事发生：针对此内存会有一个析构函数被调用，然后内存才被释放。</li>
+<li>因为单一对象的内存布局一般而言不同于数组的内存布局。数组的所用内存通常还包括“数组大小”的记录，以便delete知道需要调用多少次析构函数。</li>
+<li>最好尽量不要对数组形式做typedefs动作。因为C++标准程序库含有string, vector等templates，可将数组的需求降至几乎为零。</li>
+</ul>
+</li>
+<li><p>条款17：以独立语句将newed对象置入智能指针</p>
+<ul>
+<li>请记住：以独立语句将newed对象存储于智能指针内。如果不这样做，一旦异常被抛出，有可能导致难以察觉的资源泄露。</li>
+<li>processWidget( std::tr1::shared_ptr<widget>(new Widget), priority() ); 避免这类问题的办法很简单：使用分离语句，分别写出(1)创建Widget(2)将它置入一个智能指针内，然后再把那个智能指针传给processWidget。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="symbol">std:</span><span class="symbol">:tr1</span><span class="symbol">:</span><span class="symbol">:shared_ptr<Widget></span> pw( new <span class="constant">Widget</span> );
+processWidget( pw, priority() );
+</pre></td></tr></table></figure><br>因为编译器对于“跨越语句的各项操作”没有重新排列的自由（只有在语句内它才拥有那个自由度）。</widget></li>
+</ul>
+</li>
+</ol>
+<h1 id="4_设计与声明">4 设计与声明</h1>
+<ol>
+<li><p>条款18:让接口容易被正确使用，不易被误用</p>
+<ul>
+<li>请记住：<ul>
+<li>好的接口很容易被正确使用，不容易被误用。</li>
+<li>“促进正确使用”的办法包括接口的一致性，以及与内置类型的行为兼容</li>
+<li>“阻止误用”的办法包括建立新类型、限制类型上的操作，束缚对象值，以及消除客户的资源管理责任</li>
+<li>tr1::shared_ptr支持定制型删除器。这可防范DLL问题，可被用来自动解除互斥锁等等。</li>
+</ul>
+</li>
+<li>许多客户端错误可以因为导入新类型而获得预防。令day, month, year称为成熟且经充分锻炼的classes并封装其内数据，比简单实用上述的struct好。办法之一是利用enum表现月份，但enums不具备我们希望拥有的类型安全性。比较安全的解法是预先定义所有有效的Months。预防客户端的另一个错误是，限制类型内什么事可做，什么事不能做，常见的限制是加上const。</li>
+<li>除非有好理由，否则应该尽量令你的types的行为与内置types一直。</li>
+<li>避免无端与内置类型不兼容，真正的理由是为了提供行为一致的接口。</li>
+<li>tr1::shared_ptr允许当智能指针被建立起来的指定一个资源释放函数绑定于智能指针身上。</li>
+<li>返回一个“将getRidOfInvestment绑定为删除器”的tr1::shared_ptr。tr1::shared_ptr提供的某个构造函数接受两个实参：一个是被管理的指针，另一个是引用次数为0时将被调用的“删除器”<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="built_in">std</span>::tr1::<span class="built_in">shared_ptr</span><Investment> createInvestment()
+{
+    <span class="built_in">std</span>::tr1::<span class="built_in">shared_ptr</span><Investment> reVal( <span class="keyword">static_cast</span><Investment *><span class="number">0</span>, getRidOfInvestment);
+    reVal = ...;
+    <span class="keyword">return</span> retVal;
+}
+</pre></td></tr></table></figure><br>“将原始指针传给pInv构造函数”会比“先将pInv初始化为null再对它做一次赋值操作”为佳。</li>
+<li>tr1::shared_ptr有一个特别好的性质是：它会自动使用它的“每个指针专属的删除器”，因而消除另一个潜在的客户错误：所谓的“cross-DLL problem”。这个问题发生于“对象在动态连接程序库（DLL）中被new创建，却在另一个DLL内被delete销毁”。tr1::shared_ptr没有这个问题，因为它缺省的删除器是来自“tr1::shared_ptr诞生所在的那个DLL”的delete。</li>
+<li>最常见的tr1::shared_ptr实现品来自Boost。Boost的tr1::shared_ptr是原始指针的两倍大。它比原始指针大且慢，而且使用辅助动态内存。</li>
+</ul>
+</li>
+<li><p>条款19：设计class犹如设计type</p>
+<ul>
+<li>当你定义一个新的class，也就定义了一个新type。</li>
+<li>新type的对象应该如何被创建和销毁</li>
+<li>对象的初始化和对象的赋值该有什么样的差别</li>
+<li>新type的对象如果被pass by value，这意味着什么</li>
+<li>什么是新type的“合法值”</li>
+<li>你的新type需要配合某个继承图系吗？</li>
+<li>你的新type需要什么样的转换</li>
+<li>什么样的操作符和函数对此新type而言是合理的</li>
+<li>什么样的标准函数应该驳回</li>
+<li>谁该取用新type的成员</li>
+<li>什么是新type的“未声明接口”</li>
+<li>你的新type有那么一般化？</li>
+</ul>
+</li>
+<li><p>条款20：宁以pass-by-reference-to-const替换pass-by-value</p>
+<ul>
+<li>请记住：<ul>
+<li>尽量以pass-by-reference-to-const替换pass-by-value。前者通常比较高效，并可避免切割问题（slicing problem）</li>
+<li>以上规则并不适用于内置类型，以及STL的迭代器和函数对象。对它们而言，pass-by-value往往比较适当。</li>
+</ul>
+</li>
+<li>参数的传递成本是n次构造函数和n次析构函数</li>
+<li>pass-by-reference-to-const，这种传递方式的效率高得多：没有任何构造函数或析构函数被调用，因为没有任何新对象被创建</li>
+<li>以by-reference方式传递参数也可以避免slicing（对象切割）问题。当一个derived class对象以by value方式传递并被视为一个base class对象，base class的copy构造函数会被调用，而“造成次对象的行为像个derived class对象”的那些特化性质全被切掉了，仅仅留下一个base class对象。</li>
+<li>如果窥视C++编译器的底层，你会发现，reference往往以指针实现出来，因此pass by reference通常意味真正传递的是指针。</li>
+</ul>
+</li>
+<li><p>条款21：必须返回对象时，别妄想返回其reference</p>
+<ul>
+<li>请记住：绝不要返回pointer或reference指向一个local stack对象，或返回reference指向一个heap-allocated对象，或返回pointer或reference指向一个local static对象而有可能同时需要多个这样的对象。条款4已经为“在单线程环境中合理返回reference指向一个local static对象”提供了一份设计实例</li>
+<li>所谓的reference只是个名称，代表某个既有对象。因为它一定是某物的另一个名称。</li>
+<li>函数创建新对象的途径有二：在stack空间或在heap空间创建之。</li>
+<li>一个“必须返回新对象”的函数的正确写法是：就让那个函数返回一个新对象。</li>
+</ul>
+</li>
+<li><p>条款22：将成员变量声明为private</p>
+<ul>
+<li>请记住：<ul>
+<li>切记将成员变量声明为private，这可赋予客户访问数据的一致性、可细微划分访问控制、允诺约束条件获得保证，并提供class作者以充分的实现弹性</li>
+<li>protected并不比public更具封装性。</li>
+</ul>
+</li>
+<li>protected成员变量就像public成员变量一样缺乏封装性。其实只有两种访问权限：private（提供封装）和其他（不提供封装）</li>
+</ul>
+</li>
+<li><p>条款23：宁以non-member、non-friend替换member函数</p>
+<ul>
+<li>请记住：宁可拿non-member、non-friend函数替换member函数。这样做可以增加封装性、包裹弹性和机能扩充性。</li>
+<li>推崇封装的原因：它使我们能够改变事物而只影响有限客户。愈少代码可以看到数据（也就是访问它），愈多的数据可被封装，而我们也就愈能自由地改变对象数据。愈多函数可以访问它，数据的封装性就愈低。</li>
+<li>导致较大封装性的是non-member、non-friend函数，因为它并不增加“能够访问class内之private成分”的函数数量</li>
+<li>namespace和classes不同，前者可跨越多个源代码文件而后者不能。</li>
+<li>分离它们的最直接做法就是将书签相关便利函数声明于一个头文件，将cookie相关便利函数声明于另一个头文件，再将打印相关便利函数声明于第三个头文件。将所有便利函数放在多个头文件内但隶属同一个命名空间，意味客户可以轻松扩展这一组便利函数。</li>
+</ul>
+</li>
+<li><p>条款24：若所有参数皆需类型转换，请为此采用non-member函数</p>
+<ul>
+<li>请记住：如果你需要为某个函数的所有参数（包括被this指针所指的那个隐喻参数）进行类型转换，那么这个函数必须是个non-menber</li>
+<li>只有当参数被列于参数列内，这个参数才是隐式类型转换的合法参与者。地位相当于“被调用之成员函数所隶属的那个对象”——即this对象——那个隐喻参数，绝不是隐式转换的合法参与者。</li>
+</ul>
+</li>
+<li><p>条款25：考虑写出一个不抛出异常的swap函数</p>
+<ul>
+<li>请记住：<ul>
+<li>当std::swap对你的类型效率不高时，提供一个swap成员函数，并确定这个函数不抛出异常</li>
+<li>如果你提供一个member swap，也该提供一个non-member swap用来调用前者。对于classes（而非templates），也请特化std::swap</li>
+<li>调用swap时应针对std::swap使用using声明式，然后调用swap并且不带任何“命名空间资格修饰”</li>
+<li>为“用户定义类型”进行std templates全特化是好的，但千万不要尝试在std内加入某些对std而言全新的东西。</li>
+</ul>
+</li>
+<li>所谓swap两对象值，意思是将两对象的值彼此赋予对方。缺省情况下，swap动作可有标准程序库提供的swap算法完成。</li>
+<li>“以指针指向一个对象，内含真正数据”那种类型，这是所谓的“pimpl手法(pointer to implementation)”</li>
+<li>一旦要置换两个Widget对象值，我们需要做的是置换其pImp指针。</li>
+<li>通常我们不能够（不允许）改变std命名空间内的任何东西，但可以为标准templates制造特化版本，使它专属于我们自己的classes。</li>
+<li>任何地点的任何代码如果打算置换两个Widget对象，因而调用swap，C++的名称查找法则（更具体地说是所谓argument-dependent lookup或koening lookup法则）会找到Widget的专属版本。</li>
+<li>C++的名称查找法则确保将找到global作用域或T所在之命名空间内的任何T专属的swap。</li>
+<li>首先，如果swap的缺省实现码对你的class或class template提供可接受的效率，你不需要额外做任何事。其次，如果swap缺省实现版的效率不足。你可以这样做：<ul>
+<li>1.提供一个public swap成员函数，让它高效的置换你的类型的两个对象值。这个函数绝不该抛出异常</li>
+<li>2.在你的class或template所在的命名空间内提供一个non-member swap，并令它调用上述swap成员函数。</li>
+<li>如果你正编写一个class，为你的class特化std::swap。并令它调用你的swap成员函数</li>
+<li>最后，如果你调用swap，请确定包含一个using声明式，以便std::swap在你的函数内曝光可见，然后不加任何namespace修饰符，赤裸裸地调用swap</li>
+</ul>
+</li>
+<li>成员版的swap绝不可抛出异常。这一约束只施行于成员版！不可施行于非成员版，因为swap缺省版本是以copy构造函数和copy assignment操作符为基础，而一般情况下两者都允许抛出异常</li>
+</ul>
+</li>
+</ol>
+<h1 id="5_实现">5 实现</h1>
+<ol>
+<li><p>条款26：尽可能延后变量定义式的出现时间</p>
+<ul>
+<li>请记住：尽可能延后变量定义式的出现，这样做可增加程序的清晰度并改善程序效率。</li>
+<li>只要你定义了一个变量而其类型带有一个构造函数或析构函数，那么当程序的控制流到达这个变量定义式时，你便得承受构造成本；变量离开其作用域，要承受析构成本。即使这个变量最终并未被使用，仍需耗费这些成本。</li>
+<li>最好延后变量的定义式，直到确实需要它。</li>
+<li>你应该尝试延后变量定义直到能够给它初值实参为止。以“具明显意义之初值”。</li>
+<li>除非(1)你知道赋值成本比“构造+析构”成本低，(2)你正在处理代码中效率高度敏感的部分，否则你应该采用方法B<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="comment">//方法A：定义于循环外</span>
+Widget w;
+<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i <n; ++i){    w = 某个值;}
+<span class="comment">//方法B：定义于循环内</span>
+<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i <n; ++i){  Widget w = 某个值;}
+</pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>条款27：尽量少做转型动作</p>
+<ul>
+<li>请记住：<ul>
+<li>如果可以，尽量避免转型，特别是在注重效率的代码中避免dynamic_casts。</li>
+<li>如果转型是必要的，试着将它隐藏于某个函数背后。客户随后可以调用该函数，而不需将转型放进它们的代码内。</li>
+<li>宁可使用C++ style（新式）转型，不要使用旧式转型</li>
+</ul>
+</li>
+<li>C++旧式转型：<code>(T)expression;  或者 T(expression)</code></li>
+<li>新式转型：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+</pre></td><td class="code"><pre><span class="keyword">const_cast</span><T> (expression)
+<span class="keyword">dynamic_cast</span><T> (expression)
+<span class="keyword">reinterpret_cast</span> (expression)
+<span class="keyword">static_cast</span> <T> (expression)
+</pre></td></tr></table></figure><ul>
+<li>const_cast通常被用来将对象的常量性转除。它也是唯一有此能力的C++-style转型操作符</li>
+<li>dynamic_cast主要用来执行“安全向下转型”，也就是用来决定某对象是否归属继承体系中的某个类型。它是唯一无法由旧式语法执行的动作，也是唯一可能耗费重大运行成本的转型动作</li>
+<li>reinterpret_cast意图执行低级转型，实际动作（及结果）可能取决于编译器，这也就表示它不可移植</li>
+<li>static_cast用来强迫隐式转换，例如将non-const对象转为const对象，或将int转为double。它也可以用来执行上述多种转换的反向转换。但它无法将const转为non-const</li>
+</ul>
+</li>
+<li>任何一个类型转换（无论通过转型操作而进行的显示转换，或通过编译器完成的隐式转换）往往真的令编译器编译出运行期间执行的码。</li>
+<li>单一对象（例如derived class对象）可能拥有一个以上的地址（例如以“Base <em>指向它”时的地址和“以derived </em>”指向它）。</li>
+<li>对象的布局方式和它们的地址计算方式随编译器的不同而不同</li>
+<li>dynamic_cast的许多实现版本速度相当慢。深度继承或多重继承的成本更高！</li>
+<li>优良的C++代码很少使用转型。我们应该尽可能隔离转型动作</li>
+</ul>
+</li>
+<li><p>条款28：避免返回handles指向对象内部成本</p>
+<ul>
+<li>请记住：避免返回handles（包括reference、指针、迭代器）指向对象内部。遵守这个条款可增加封装性，帮助const成员函数的行为像个const，并将发生“虚吊号码牌（dangling handles）”的可能性降至最低</li>
+<li>第一，成员变量的封装性最多只等于“返回其reference”的函数的访问级别。第二，如果const成员函数返回一个reference，后者所指数据与对象自身有关联，而它又被存储于对象之外，那么这个函数的调用者可以修改那笔数据。</li>
+<li>Reference、指针和迭代器使所谓的handles，而返回一个“代表对象内部数据”的handles，随之而来的是“降低对象封装性”的风险。</li>
+<li>你绝对不该令成员函数返回一个指针指向“访问级别较低”的成员函数。这样，后者实际访问级别会提高如前者</li>
+<li>虚吊号码牌（dangling handles）：这种handles所指东西不复存在。常见的来源就是函数返回值。</li>
+</ul>
+</li>
+<li><p>条款29：为“异常安全”而努力是值得的</p>
+<ul>
+<li>请记住：<ul>
+<li>异常安全函数即使发生异常也不会泄露资源或允许任何数据结构败坏。这样的函数区分为三种可能的保证：基本型、强烈性、不抛异常型</li>
+<li>“强烈保证”往往能够以copy-and-swap实现出来，但“强烈保证”并非对所有函数都可实现或具备现实意义。</li>
+<li>函数提供的“异常安全保证”通常最高只等于其所调用之各个函数的“异常安全保证”中的最弱者。</li>
+</ul>
+</li>
+<li>较少的码就是较好的码，因为出错机会比较少</li>
+<li>异常安全函数提供三个保证之一：<ul>
+<li>基本承诺：如果异常被抛出，程序内的任何事情仍然保持在有效状态下。没有任何对象或数据结构会因此而败坏，所有对象都处于一种内部前后一致的状态。然后程序的现实状态恐怕不可预料。</li>
+<li>强烈保证：如果异常被抛出，程序状态不会改变。如果函数成功，就是完全成功。如果函数失败，程序会回复到“调用函数之前”的状态</li>
+<li>不抛掷保证：承诺绝不抛出异常，因为它们总是能够完成它们原先承诺的功能。作用于内置类型身上的所有操作都提供nothrow保证</li>
+</ul>
+</li>
+<li>copy and swap：为你打算修改的对象（原件）做出一份副本，然后在那副本身上做一切必要修改。若有任何修改动作抛出异常，原对象仍保持未改变状态。待所有改变都成功后，再将修改过的那个副本和原对象在一个不抛出异常的操作中置换。实现上通常是将所有“隶属对象的数据”从原对象放进另一个对象内，然后赋予原对象一个指针，指向那个所谓的实现对象，这种手法被称为pimpl idiom</li>
+<li>一个软件系统要不就具备异常安全性，要不就全然否定。</li>
+<li>如果系统内有一个函数不具备异常安全性，整个系统就不具备异常安全性</li>
+<li>如果具备异常安全性：首先是“以对象管理资源”，那可阻止资源泄露。然后是挑选三个“异常安全保证”中的某一个实施于你所写的每一个函数身上。</li>
+</ul>
+</li>
+<li><p>条款30：透彻了解inlining的里里外外</p>
+<ul>
+<li>请记住：<ul>
+<li>将大多数inlinin限制在小型、被频繁调用的函数身上</li>
+<li>不要只因为function templates出现在头文件中，就将它们声明为inline</li>
+</ul>
+</li>
+<li>编译器最优化机制通常被设计用来浓缩那些“不含函数调用”的代码</li>
+<li>inline是对此函数的每一个调用都以函数本体替换之。这样做可能增加你的目标码大小。inline造成的代码膨胀亦会导致额外的换页行为，降低指令高度缓存装置的击中率，以及伴随这些而来的效率损失。</li>
+<li>inline只是对编译器的一个申请，不是强制命名。这项申请可隐喻提出，也就是定义于class定义式内。明确声明inline函数式在定义式前加上关键字inline。</li>
+<li>inline函数通常一定被置于头文件内。inlining在大多数C++程序中是编译器行为。</li>
+<li>Templates通常也被置于头文件内，因为它一旦被使用，编译器为了将它具现化，需要知道它长什么样子。编译期完成具现化动作比较常见。Templates的具现化与inlining无关。</li>
+<li>一个表面上看似inline的函数是否真是inline，取决于你的建置环境，主要取决于你的编译器。有时候虽然编译器有意愿inlining某个函数，还是可能为该函数生成一个函数主体。比如，如果程序要取某个inline函数的地址，编译器通常必须为此函数生成一个outlined函数本体。编译器通常不对“通过函数指针而进行的调用”实施inlining。有时候编译器会生成构造函数和析构函数的outline副本。而实际上，构造函数和析构函数往往是inlining的糟糕候选人。Derived构造至少一会陆续调用其成员变量和base class两者的构造函数，而那些调用（它们自身也会被inline）会影响编译器是否对此空白函数的inlining。</li>
+<li>大部分调试器面对inline函数都束手无策。慎重使用inline便是对日后使用调试器带来帮助。</li>
+<li>80-20经验法则：平均而言一个程序往往将80%的执行时间花费在20%的代码上头。</li>
+</ul>
+</li>
+<li><p>条款31：将文件间的编译依存关系降至最低</p>
+<ul>
+<li>请记住：<ul>
+<li>支持“编译依存性最小化”的一般构想是：相依于声明式，不要相依于定义式。基于此构想的两个手段是Handle classes和Interface classes</li>
+<li>程序库头文件应该以“完全且仅有声明式”的形式存在。这种做法无论是否涉及templates都适用</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h1 id="6_继承与面向对象设计">6 继承与面向对象设计</h1>
+<p>vitual函数意味“接口必须被继承”，non-virtual函数意味“接口和实现都必须被继承”</p>
+<ol>
+<li><p>条款32：确定你的public继承塑模出is-a关系</p>
+<ul>
+<li>请记住：“public继承”意味is-a。适用于base classes身上的每一件事情一定也适用于derived classes身上，因为每一个derived class对象也都是一个base classes对象</li>
+<li>is-a并非是唯一存在于classes之间的关系。另两个常见的关系是has-a（有一个）和is-implemented-in-terms-of（根据某物实现出）。</li>
+</ul>
+</li>
+<li><p>条款33：避免遮掩而来的名称</p>
+<ul>
+<li>请记住：<ul>
+<li>derived classes内的名称会遮掩base classes内的名称。在public继承下从来没有人希望如此。</li>
+<li>为了让被遮掩的名称再见天日，可使用using声明式或转交函数</li>
+</ul>
+</li>
+<li>C++的名称遮掩规则所做的唯一事情就是：遮掩名称。置于名称是否应和相同或不同的类型，并不重要。</li>
+<li>derived class作用域被嵌套在base class作用域内<br><img src="./1403792437679.png" alt="Alt text"><br><img src="./1403792390210.png" alt="Alt text"></li>
+<li>编译器在寻找变量定义的做法是查找各作用域，首先是local作用域，然后查外围作用域，然后再namespace作用域，最后往global作用域找去，直到找到为止。</li>
+<li>base class内函数会被derived class相同函数名的覆盖，即使base classes和derived classes内的函数有不同的参数类型也适用，而且无论函数是virtual或non-virtual一体适用。</li>
+</ul>
+</li>
+<li><p>条款34：区分接口继承和实现继承</p>
+<ul>
+<li>请记住：<ul>
+<li>接口继承和实现继承不同。在public继承之下，derived classes总是继承base class的接口</li>
+<li>pure virtual函数只具体指定接口继承</li>
+<li>简朴的（非纯）impure virtual函数具体指定接口继承及缺省实现继承</li>
+<li>non-virtual函数具体指定接口继承以及强制性实现继承。</li>
+</ul>
+</li>
+<li>成员函数的接口总是会被继承</li>
+<li>pure virtual函数有两个最突出的特性：它们必须被任何“继承了它们”的具象class重新声明，而且它们在抽象class中通常没有定义。因此，声明一个pure virtual函数的目的是为了让derived class只继承函数接口。</li>
+<li>声明简朴的（非纯）impure virtual函数的目的，是让derived classes继承该函数的接口和缺省实现。derived classes继承函数接口，但impure virtual函数会提供一份实现代码，derived classes可能覆写它。允许impure virtual函数同时指定函数声明和函数缺省行为，却有可能形成危险。提供缺省实现给derived classes，但除非它们明白要求否则免谈。解决办法是切断virtual函数接口和其缺省实现之间的连接。</li>
+<li>声明non-virtual函数的目的是为了令derived classes继承函数的接口及一份强制性实现。non-virtual函数代表的意义是不变性凌驾特异性。</li>
+<li>一个常见错误是将所有函数声明为non-virtual。non-virtual析构函数尤其会带来问题。另一个常见错误是将所有成员函数声明为virtual。</li>
+</ul>
+</li>
+<li><p>条款35：考虑virtual函数以外的其他选择</p>
+<ul>
+<li>请记住：<ul>
+<li>virtual函数的替代方法包括NVI手法及Strategy设计模式的多种形式。NVI手法自身是一种特殊形式的Template Method</li>
+<li>将机能从成员函数移到class外部函数，带来的一个缺点是，非成员函数无法访问class的non-public成员</li>
+<li>tr1::funciton对象的行为就像一般函数指针。这样的对象可接纳“与给定之目标签名式兼容”的所有可调用物。</li>
+</ul>
+</li>
+<li>当你为解决问题而寻找某个设计方法时，不妨考虑virtual函数的替代方案。<ul>
+<li>使用non-virtual interface（NVI）手法，那是Template Method设计模式的一种特殊形式。它以public non-virtual成员函数包裹较低访问性的virtual函数</li>
+<li>将virtual函数替换为“函数指针成员变量”，这是Strategy设计模式的一种分解表现形式。</li>
+<li>以tr1::function成员变量替换virtual函数。</li>
+<li>将继承体系内的virtual函数替换为另一个继承体系内的virtual函数。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>条款36：绝不重新定义继承而来的non-virtual函数</p>
+</li>
+<li><p>条款37：绝不重新定义继承而来的缺省参数值。</p>
+<ul>
+<li>请记住：绝对不要重新定义一个继承而来的缺省参数值，因为缺省参数值都是静态绑定，而virtual函数——你唯一应该覆写的东西——却是动态绑定</li>
+<li>静态绑定由又名前期绑定，动态绑定又名后期绑定。对象的所谓静态类型，就是它在程序中被声明时所采用的类型。对象的所谓动态类型则是指“目前所指对象的类型”。</li>
+<li>“调用一个定义于derived class内的virtual函数”的同时，却使用base class为它所指定的缺省函数值。C++这样做的原因在于运行期效率。</li>
+</ul>
+</li>
+<li><p>条款38：通过复合塑模出has或“根据某物实现出”</p>
+<ul>
+<li>请记住：<ul>
+<li>复合的以为和public继承完全不同</li>
+<li>在应用域，复合意味has-a。在实现域，复合意味is-implemented-in-terms-of（根据某物实现出）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>条款39：明智而审慎地使用private继承</p>
+<ul>
+<li>请记住：<ul>
+<li>Private函数意味is-implemented-in-terms-of（根据某物实现出）。它通常比复合的级别比。但是当derived class需要protected base class的成员，或需要重新定义继承而来的virtual函数时，这么设计是合理的</li>
+<li>和复合不同，private继承可以造成empty base最优化。这对致力于“对象尺寸最小化”的程序库开发者而言，可能很重要。</li>
+</ul>
+</li>
+<li>如果classes之间的继承关系是private，编译器不会自动将一个derived class对象转换为base class对象。</li>
+<li>Private继承意味着is-implemented-in-terms-of。Private继承纯粹只是一种实现技术。private继承意味着只有实现部分被继承，接口部分应略去。</li>
+<li>C++裁定凡是独立（非附属）对象都必要有非零大小。<br><code>class Empty{};sizeof(Empty)=1;</code>因为面对“大小为零之独立（非附属）对象，通常C++官方勒令默默安插一个char到空对象内。”</li>
+<li>这个约束不适用于derived class对象内的base class，因为它们并非独立（非附属）。如果你继承Empty，而不是内含一个那种类型的对象：<code>class HoldAnInt:private Empty { private:int x;};</code>因此<code>sizeof(HoldAnInt) = sizeof(int)</code>。这是所谓的EBO（empty base optimization；空白基类最优化）。EBO一般只在单一继承（而非多重继承）下才可行，统治C++对象布局的那些规则通常表示EBO无法被施行于“拥有多个base”的derived class身上。</li>
+<li>现在中的“empty class”并不是真的empty。虽然它们从未拥有non-static成员变量，却往往内含typedefs， enums， static成员变量，或non-virtual函数。STL就有许多技术用途的empty class，其中内含有用的成员，包括base classes unary_function和binary_function。</li>
+<li>复合和private继承都意味着is-implemented-in-terms-of，但复合比较容易理解，所以无论什么时候，只要可以，你应该选择复合。但是当derived class需要protected base class的成员，或需要重新定义继承而来的virtual函数时，可以选择private</li>
+</ul>
+</li>
+<li><p>条款40：明智而审慎地使用多重继承</p>
+<ul>
+<li>请记住：<ul>
+<li>多重继承比单一继承复杂。它可能导致新的歧义性，以及对virtual继承的需要</li>
+<li>virtual继承会增加大小、速度、初始化（及赋值）复杂度等等成本。如果virtualbase class不带任何数据，将是最具实用价值的情况</li>
+<li>多重继承的确有正当用途。其中一个情节设计“public继承某个Interface class”和“private继承某个协助实现的class”的两相组合。</li>
+</ul>
+</li>
+<li>与C++用来解析重载函数调用的规则相符：在看到是否有个函数可取用之前，C++首先确认这个函数对此调用之言是最佳匹配。找出最佳匹配函数后才可检验器可取用性。</li>
+<li>为避免继承得来的成员变量重复，编译器必须提供若干幕后戏法，而其后果是，使用virtual继承的那些classes所产生的对象往往比使用non-virtual继承的兄弟们体积大，访问virtual base classes的成员变量时，也比访问non-virtual base classes的成员变量速度慢。</li>
+<li>virtual base的初始化责任是由继承体系中的最底层负责。</li>
+<li>对virtual base classes忠告：第一，非必要不适用virtual class。第二，如果你必须使用virtual base claaes，尽可能避免在其中放置数据。</li>
+</ul>
+</li>
+</ol>
+<h1 id="7_模板和泛型编程">7 模板和泛型编程</h1>
+<ol>
+<li><p>条款41：了解隐式接口和编译器多态</p>
+<ul>
+<li>请记住：<ul>
+<li>classes和Templates都支持隐式接口（interfaces）和多态（polymorphism）</li>
+<li>对classes而言接口是显式的，以函数签名为中心。多态则是通过virtual函数发生于运行期</li>
+<li>对templates参数而言，接口是隐式地，奠基于有效表达式。多态则是通过template具现化和函数重载解析发生于编译期。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>条款42：了解typename的双重意义</p>
+<ul>
+<li>请记住：<ul>
+<li>声明template参数时，前缀关键字class和typename可互换</li>
+<li>请使用关键字typename标识嵌套从属类型名称；但不得在base class lists（基类列）或member initialization list（成员初值列）内以它作为base class修饰符</li>
+</ul>
+</li>
+<li>声明template参数时，无论使用关键字class或typename，意义完全一样。</li>
+<li>template内出现的名称如果相依于某个template参数，称之为从属名称。如果从属名称在class内呈嵌套状，我们称它为嵌套从属名称。</li>
+<li>任何时候当你想要在template中指涉一个嵌套从属类型名称，就必须在紧临它的前一个位置放上关键字typename。“typename必须作为嵌套从属类型名称的前缀词”这一规则的例外是，typename不可以出现在base classes list内的嵌套从属类型名称之前，也不可在member initialization list（成员初值列）中作为base class修饰符</li>
+</ul>
+</li>
+<li><p>条款43：学习处理模板化基类内的名称</p>
+<ul>
+<li>请记住：请在derived class template内通过“this->”指涉base class template内的成员名称，或借由一个明白写出的“base class资格修饰符”完成</li>
+</ul>
+</li>
+<li><p>条款44：将与参数无关的代码抽离templates</p>
+<ul>
+<li>请记住：<ul>
+<li>Templates生成多个classes和多个函数，所以任何template代码都不该与某个造成膨胀的template参数产生相依关系</li>
+<li>因非类型模板参数而造成的代码膨胀，往往可以消除，做法是以函数参数或class成员变量替换template参数</li>
+<li>因类型参数而造成的代码膨胀，往往可降低，做法是让带有完全相同二进制表述的具现类型共享实现码</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>条款45：运用成员函数模板接受所有兼容类型</p>
+<ul>
+<li>请记住：<ul>
+<li>请使用member function template（成员函数模板）生成“可接受所有兼容类型”的函数</li>
+<li>如果你声明member templates用于“泛化copy构造”或“泛化assignment操作”，你还是需要声明正常的copy构造函数和copy assignment操作符</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>条款46：需要类型转换时请为模板定义非成员函数</p>
+<ul>
+<li>请记住：当我们编写一个class template，而它所提供之“与此template相关的”函数支持“所有参数之隐式类型转换”时，请将那么函数定义为“class template内部的friend函数”</li>
+</ul>
+</li>
+<li><p>条款47：请使用traits classes表现类型信息</p>
+<ul>
+<li>请记住：<ul>
+<li>traits classes使得“类型相关信息”在编译器可用。它们以templates和“templates特化”完成实现</li>
+<li>整合重载技术后，traits classes有可能在编译期对类型执行if…else测试</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>认识template元编程</p>
+<ul>
+<li>Template metaprogramming（TMP，模板元编程）可将工作由运行期移往编译器，因为得以实现早期错误侦测和更高的执行效率。</li>
+<li>TMP可被用来生成“基于政策选择组合”的客户定制代码，也可用来避免生成对某些特殊类型并不适合的代码</li>
+</ul>
+</li>
+</ol>
+<h1 id="8_定制new和delete">8 定制new和delete</h1>
+<p>STL容器所使用的heap内存是由容器所拥有的分配器对象（allocator ojects）管理，不是被new和delete直接管理。</p>
+<ol>
+<li>条款49：了解new-handler的行为<ul>
+<li>请记住：<ul>
+<li>set_new_handler允许客户指定一个函数，在内存分配无法获得满足时被调用</li>
+<li>Nothrow new是一个颇为局限的工具，因为它只适用于内存分配；后继的构造函数调用还是可能抛出异常</li>
+<li>当operator new无法满足某一内存分配需求时，它会抛出异常。以前它会返回一个null指针。当operator new抛出异常以反映一个未获满足的内存需求之前，它会先调用一个客户指定的错误处理函数，一个所谓的new-handler。为了指定这个“用以处理内存不足”的函数，客户必须调用set_new_handler，那是声明于<new>的一个标准程序库函数 </new></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h1 id="9_杂项讨论">9 杂项讨论</h1>
+<ol>
+<li><p>条款53：不要轻忽编译器的警告</p>
+<ul>
+<li>请记住：<ul>
+<li>严肃对待编译器发出的警告信息。努力在你的编译器的最高经高级别下争取“无任何警告”的荣誉</li>
+<li>不要过度倚赖编译器的报警能力，因为不同的编译器对待事物的态度并不相同。一旦移植到另一个编译器上，你原本倚赖的警告信息有可能消失</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>条款54：让自己熟悉包括TR1在内的标准程序库</p>
+<ul>
+<li>请记住：<ul>
+<li>C++标准程序库的主要技能由STL、iostream、locals组成。并包含C99标准程序库</li>
+<li>TR1添加了智能指针、一般化函数指针、hash-based容器、正则表达式以及另外10个组件的支持</li>
+<li>TR1自身只是一份规范。为获得TR1的好处，你需要一份实物。一个好的实物来源于Boost</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>条款55：让自己熟悉Boost</p>
+<ul>
+<li>请记住：<ul>
+<li>Boost是一个社群，也是一个网站。致力于免费、源码开放、同僚复审的C++程序库开发。Boost在C++标准化过程中扮演深具影响力的角色</li>
+<li>Boost提供许多TR1组件实现品，以及其他许多程序库</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+  
 	</div>
 		<footer class="article-footer clearfix">
 
@@ -712,9 +1060,9 @@
  
 
 <div class="next">
-<a href="/2014/09/05/backup/2014百度研发内推电面经验/"  title="2014百度研发内推电面经验">
+<a href="/2014/07/29/C++联合容器set和map/"  title="C++联合容器set和map">
  <strong>NEXT:</strong><br/> 
- <span>2014百度研发内推电面经验
+ <span>C++联合容器set和map
 </span>
 </a>
 </div>
@@ -731,7 +1079,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#导读"><span class="toc-number">1.</span> <span class="toc-text">导读</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1_让自己习惯C++"><span class="toc-number">2.</span> <span class="toc-text">1   让自己习惯C++</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2_构造/析构/赋值运算"><span class="toc-number">3.</span> <span class="toc-text">2 构造/析构/赋值运算</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3_资源管理"><span class="toc-number">4.</span> <span class="toc-text">3 资源管理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4_设计与声明"><span class="toc-number">5.</span> <span class="toc-text">4 设计与声明</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5_实现"><span class="toc-number">6.</span> <span class="toc-text">5 实现</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6_继承与面向对象设计"><span class="toc-number">7.</span> <span class="toc-text">6 继承与面向对象设计</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#7_模板和泛型编程"><span class="toc-number">8.</span> <span class="toc-text">7 模板和泛型编程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#8_定制new和delete"><span class="toc-number">9.</span> <span class="toc-text">8 定制new和delete</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#9_杂项讨论"><span class="toc-number">10.</span> <span class="toc-text">9 杂项讨论</span></a></li></ol>
   </div>
 
 <div id="asidepart">
@@ -754,10 +1102,6 @@
 			<li><a href="/tags/Tech/" title="Tech">Tech<sup>8</sup></a></li>
 		
 			<li><a href="/tags/c++/" title="c++">c++<sup>5</sup></a></li>
-		
-			<li><a href="/tags/linux/" title="linux">linux<sup>1</sup></a></li>
-		
-			<li><a href="/tags/求职/" title="求职">求职<sup>1</sup></a></li>
 		
 		</ul>
 </div>
