@@ -4,10 +4,17 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>1 | LinEvan&#39;s blog</title>
+    <title>C++冲刺（二）内置类型转换 | LinEvan&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="LinEvan">
+    
+    <meta name="description" content="C++定义了一组内置类型对象之间的标准转换，在必要时它们被编译器隐式地应用到对象上。
+
+隐式类型转换发生在以下几种情况：
+1.在混合类型的算术表达式中。在这种情况下最宽的数据类型成为目标转换类型，这也被称为算术转换。
+2.用一种类型的表达式赋值给另一种类型的对象
+3.把一个表达式传递给一个函数，调用">
     
     
     
@@ -66,15 +73,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/09/07/1/" title="1" itemprop="url">1</a>
+      <a href="/2014/08/02/C++冲刺（二）内置类型转换/" title="C++冲刺（二）内置类型转换" itemprop="url">C++冲刺（二）内置类型转换</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://yoursite.com" title="LinEvan">LinEvan</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-09-07T08:05:43.000Z" itemprop="datePublished">9月 7 2014</time>
-    更新日期:<time datetime="2014-09-07T08:05:43.000Z" itemprop="dateModified">9月 7 2014</time>
+    <time datetime="2014-08-02T08:05:43.000Z" itemprop="datePublished">8月 2 2014</time>
+    更新日期:<time datetime="2014-09-07T08:10:23.000Z" itemprop="dateModified">9月 7 2014</time>
     
   </p>
 </header>
@@ -86,16 +93,37 @@
 		
 		</div>
 		
-		  
+		<p>C++定义了一组内置类型对象之间的标准转换，在必要时它们被编译器隐式地应用到对象上。</p>
+<ol>
+<li>隐式类型转换发生在以下几种情况：<ul>
+<li>1.在混合类型的算术表达式中。在这种情况下最宽的数据类型成为目标转换类型，这也被称为<strong>算术转换</strong>。</li>
+<li>2.用一种类型的表达式赋值给另一种类型的对象</li>
+<li>3.把一个表达式传递给一个函数，调用表达式的类型与形式参数的类型不相同</li>
+<li>4.从一个函数返回一个表达式的类型与返回类型不相同</li>
+</ul>
+</li>
+<li>算术转换保证了二元操作符，如加法或乘法的两个操作数被提升为共同的类型，然后再用它表示结果的类型。两个通过的指导原则如下：<ul>
+<li>1.防止精度损失，如果必要的话，类型总是被提升为较宽的类型</li>
+<li>2.所有含有小于整型的有序类型的算术表达式在计算之前其类型都会被转换成整型。</li>
+</ul>
+</li>
+<li>规则定义如上面所述，这些规则定义了一个类型转换层次结构。long double->double->float。否则如果两个操作数都不是3种浮点类型之一，他们一定是某种整值类型。在确定共同的目标提升类型之前，编译器将在所有小于int的整值类型上施加一个被成为<strong>整值提升</strong>的过程。在进行整值提升时类型char、signed char、unsigned char和short int都被提升为类型int。如果机器上的类型空间足够表示所有unsigned short型的值，这发生在short用半个字而int用一个字表示的情况下，则unsigned short int也被转换为int，否则它会被提升为unsigned int。wchar_t和枚举类型被提升为能够表示其底层类型所有值的最小整数类型。unsigned long->long->int。long转型有一个例外，如果一个是long而另一个是unsigned int，则一般long长度不足以存放unsigned int所有值，此时两个都被提升为unsigned long型。若两个都不是long型而其中一个是unsigned int，则另一个也被转换成unsigned int，否则两个操作数一定都是int型。</li>
+</ol>
+  
 	</div>
 		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Tech/">Tech</a><a href="/tags/c++/">c++</a>
+  </div>
 
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://yoursite.com/2014/09/07/1/" data-title="1 | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
+  <div data-url="http://yoursite.com/2014/08/02/C++冲刺（二）内置类型转换/" data-title="C++冲刺（二）内置类型转换 | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
   </div>
 
 </div>
@@ -145,9 +173,9 @@
 		
 			<li><a href="/tags/TCPIP/" title="TCP/IP">TCP/IP<sup>1</sup></a></li>
 		
-			<li><a href="/tags/Tech/" title="Tech">Tech<sup>16</sup></a></li>
+			<li><a href="/tags/Tech/" title="Tech">Tech<sup>17</sup></a></li>
 		
-			<li><a href="/tags/c++/" title="c++">c++<sup>13</sup></a></li>
+			<li><a href="/tags/c++/" title="c++">c++<sup>14</sup></a></li>
 		
 		</ul>
 </div>
