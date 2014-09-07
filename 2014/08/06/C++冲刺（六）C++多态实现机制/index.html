@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>C++冲刺（五）C++多态实现机制 | LinEvan&#39;s blog</title>
+    <title>C++冲刺（六）C++多态实现机制 | LinEvan&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="LinEvan">
@@ -68,7 +68,7 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/08/06/C++冲刺（六）C++多态实现机制/" title="C++冲刺（五）C++多态实现机制" itemprop="url">C++冲刺（五）C++多态实现机制</a>
+      <a href="/2014/08/06/C++冲刺（六）C++多态实现机制/" title="C++冲刺（六）C++多态实现机制" itemprop="url">C++冲刺（六）C++多态实现机制</a>
   </h1>
   <p class="article-author">By
     
@@ -76,7 +76,7 @@
     </p>
   <p class="article-time">
     <time datetime="2014-08-06T08:05:43.000Z" itemprop="datePublished">8月 6 2014</time>
-    更新日期:<time datetime="2014-09-07T11:48:17.000Z" itemprop="dateModified">9月 7 2014</time>
+    更新日期:<time datetime="2014-09-07T12:26:33.000Z" itemprop="dateModified">9月 7 2014</time>
     
   </p>
 </header>
@@ -88,7 +88,8 @@
 		
 		</div>
 		
-		<p>编译系统为每个包含虚函数的类包括它的子类都创建一个虚函数表，称为vftable，这是一个指针数组，存放每个虚函数的入口地址，供该类的所有对象共享。在每个类对象中放置称为vfptr的虚表指针，指向所属类的虚函数表。当通过指针调用虚函数时，编译器通过vfptr，在其所指的虚函数表中查找函数入口地址，从而实现动态多态性.<br>在多重继承下，如果派生类的多个基类含有虚函数，编译系统会为它创建多个虚函数表。该类的每个对象均含多个虚表指针！</p>
+		<p>编译系统为每个包含虚函数的类包括它的子类都创建一个虚函数表，称为vftable，这是一个指针数组，存放每个虚函数的入口地址，供该类的所有对象共享。在每个类对象中放置称为vfptr的虚表指针，指向所属类的虚函数表。当通过指针调用虚函数时，编译器通过vfptr，在其所指的虚函数表中查找函数入口地址，从而实现动态多态性.</p>
+<p>在多重继承下，如果派生类的多个基类含有虚函数，编译系统会为它创建多个虚函数表。该类的每个对象均含多个虚表指针！</p>
 <p>insight c++ object models：<br><img src="/img/pages/c++/多态机制01.jpg" alt="多态机制01"><br><img src="/img/pages/c++/多态机制02.jpg" alt="多态机制02"></p>
 <p>总结：<br>1、每一个类都有虚表；<br>2、虚表可以继承，如果子类没有重新虚函数，那么子类虚表中仍然会有该函数的地址，只不过这个地址指向的是基类的虚函数实现。如果基类3个虚函数，那么基类的虚表中就有3项（虚函数的地址），派生类也会有虚表，至少有3项，如果重写了相应的虚函数，那么虚表的中的地址就会改变，指向自身的虚函数实现。如果派生类有自己的虚函数，那么虚函数表中就会添加该项。<br>3、派生类的虚表中虚函数的地址排列顺序和基类的虚表中虚函数地址排列顺序相同。</p>
   
@@ -97,7 +98,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Tech/">Tech</a><a href="/tags/c++/">c++</a>
+  <span></span> <a href="/tags/c++/">c++</a>
   </div>
 
 
@@ -105,7 +106,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://yoursite.com/2014/08/06/C++冲刺（六）C++多态实现机制/" data-title="C++冲刺（五）C++多态实现机制 | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
+  <div data-url="http://yoursite.com/2014/08/06/C++冲刺（六）C++多态实现机制/" data-title="C++冲刺（六）C++多态实现机制 | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
   </div>
 
 </div>
@@ -155,9 +156,11 @@
 		
 			<li><a href="/tags/TCPIP/" title="TCP/IP">TCP/IP<sup>1</sup></a></li>
 		
-			<li><a href="/tags/Tech/" title="Tech">Tech<sup>21</sup></a></li>
+			<li><a href="/tags/Tech/" title="Tech">Tech<sup>20</sup></a></li>
 		
 			<li><a href="/tags/c++/" title="c++">c++<sup>18</sup></a></li>
+		
+			<li><a href="/tags/数据结构/" title="数据结构">数据结构<sup>7</sup></a></li>
 		
 		</ul>
 </div>

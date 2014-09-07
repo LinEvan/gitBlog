@@ -4,15 +4,12 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>C++冲刺（五）C/C++内存机制 | LinEvan&#39;s blog</title>
+    <title>数据结构（七）树 | LinEvan&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="LinEvan">
     
-    <meta name="description" content="（一）C内存机制
-
-栈(Stack)：位于函数内的局部变量（包括函数实参），由编译器负责分配释放，函数结束，栈变量失效。
-堆(Heap) ：由程序员用malloc()/calloc()/realloc()分配空间，free()释放所申请的空间。如果程序员忘记free()，则会造成内存泄漏，程序结束时">
+    <meta name="description" content="二叉查找树查找插入和删除的时间复杂度都为O(log N)。但它有个弊端。如果输入的数据是排序数据，那么代价巨大，因为树将只由那么没有左（或右）儿子的节点组成。一种解决方法是找平衡条件：任何节点的深度不能过深。最老的一种平衡查找树，即AVL树。另外，较新的方法是放弃平衡条件，允许树有任何的深度，但是在">
     
     
     
@@ -71,15 +68,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/08/05/C++冲刺（五）C和C++内存机制/" title="C++冲刺（五）C/C++内存机制" itemprop="url">C++冲刺（五）C/C++内存机制</a>
+      <a href="/2014/04/07/数据结构（七）树/" title="数据结构（七）树" itemprop="url">数据结构（七）树</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://yoursite.com" title="LinEvan">LinEvan</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-08-05T08:05:43.000Z" itemprop="datePublished">8月 5 2014</time>
-    更新日期:<time datetime="2014-09-07T11:38:55.000Z" itemprop="dateModified">9月 7 2014</time>
+    <time datetime="2014-04-07T07:59:42.000Z" itemprop="datePublished">4月 7 2014</time>
+    更新日期:<time datetime="2014-09-07T12:33:51.000Z" itemprop="dateModified">9月 7 2014</time>
     
   </p>
 </header>
@@ -88,46 +85,32 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		
+		<ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-_AVL树"><span class="toc-number">1.</span> <span class="toc-text">1. AVL树</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-_伸展树"><span class="toc-number">2.</span> <span class="toc-text">2. 伸展树</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-_B树"><span class="toc-number">3.</span> <span class="toc-text">3. B树</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
 		</div>
 		
-		<p>（一）C内存机制</p>
-<ol>
-<li>栈(Stack)：<br>位于函数内的局部变量（包括函数实参），由编译器负责分配释放，函数结束，栈变量失效。</li>
-<li>堆(Heap) ：<br>由程序员用malloc()/calloc()/realloc()分配空间，free()释放所申请的空间。如果程序员忘记free()，则会造成内存泄漏，程序结束时可能会由操作系统回收，也许就一直占用着直至关机。</li>
-<li>全局区/静态区(Global Static Area)：<br>全局变量和静态变量存放区，程序一经编译好，该区域便存在。并且在C语言中初始化的全局变量和静态变量和未初始化的放在相邻的两个区域（在C++中，由于编译器会给全局变量和静态变量自动初始化赋值，所以没有区分了）。由于全局变量一直占据内存空间且不易维护，推荐少用。程序结束时释放。 </li>
-<li>C风格字符串常量存储区：<br>专门存放字符串常量的地方，程序结束时释放。</li>
-<li>程序代码区：<br>存放程序二进制代码的区域。</li>
-</ol>
-<p><img src="/img/pages/c++/C&&C++内存机制.png" alt="C&&C++内存机制">    </p>
-<ul>
-<li>文本段包含程序的指令。链接器把指令直接从文件拷贝到内存中。</li>
-<li>数据段包含经过初始化的全局和静态变量以及它们的值。BBS段的大小从可执行文件中得到，然后链接器得到这个大小的内存块，紧跟在数据块之后。当这个内存区进入程序的地址空间后全部清零。包括数据段和BBS段的整个区段此时通常统称为数据区。在任何进程中数据段是最大的段。</li>
-<li>堆栈是用于保存局部变量、临时数据、传递到函数中的参数。<br>堆。用于动态分配的内存。调用malloc函数虚拟空间的最低部分未被映射，它位于进程的地址空间内，但并未赋予物理地址，所以任何对它的引用都是非法的。典型情况下，它是从地址零开始的几K字节。它用于捕捉使用空指针和小整型值的指针引用内存的情况。</li>
-</ul>
-<p>（二）C++内存机制</p>
-<ol>
-<li>栈(Stack)：<br>位于函数内的局部变量（包括函数实参），由编译器负责分配释放，函数结束，栈变量失效。</li>
-<li>堆(Heap)：<br>这里与C不同的是，该堆是由new申请的内存，由delete负责释放。</li>
-<li>自由存储区(Free Storage)：<br>由程序员用malloc()/calloc()/realloc()分配空间，由free()释放。如果程序员忘记free()了，则会造成内存泄漏，程序结束时可能会有操作系统回收，也许就一直占用着直至关机。<br>与C的堆机制对应。</li>
-<li>全局区/静态区(Global Static Area)：<br>全局变量和静态变量存放区，程序一经编译好，该区域便存在。在C++中，由于编译器会给全局变量和静态变量自动初始化赋值，所以没有区分初始化和未初始化变量。由于全局变量一直占据内存空间且不易维护，推荐少用。程序结束时释放。</li>
-<li>常量存储区：<br>这是一块比较特殊的存储区，专门存储不能修改的常量（如果采用非正常手段更改，当然也是可以的）。</li>
-</ol>
-<p>（三）堆和栈的区别<br>主要的区别由以下几点：<br>　　1、管理方式不同；<br>　　2、空间大小不同；<br>　　3、能否产生碎片不同；<br>　　4、生长方向不同；<br>　　5、分配方式不同；<br>　　6、分配效率不同；</p>
-<p>　　管理方式：对于栈来讲，是由编译器自动管理，无需我们手工控制；对于堆来说，释放工作由程序员控制，容易产生memory leak。</p>
-<p>　　空间大小：一般来讲在 32 位系统下，堆内存可以达到4G的空间，从这个角度来看堆内存几乎是没有什么限制的。但是对于栈来讲，一般都是有一定的空间大小的，例如，在VC6下面，默认的栈空间大小是1M（好像是，记不清楚了）。当然，我们可以修改：打开工程，依次操作菜单如下：Project->Setting->Link，在 Category 中选中 Output，然后在 Reserve 中设定堆栈的最大值和 commit。注意：reserve 最小值为 4Byte；commit 是保留在虚拟内存的页文件里面，它设置的较大会使栈开辟较大的值，可能增加内存的开销和启动时间。</p>
-<p>　　碎片问题：对于堆来讲，频繁的 new/delete 势必会造成内存空间的不连续，从而造成大量的碎片，使程序效率降低。对于栈来讲，则不会存在这个问题，因为栈是先进后出的队列，他们是如此的一一对应，以至于永远都不可能有一个内存块从栈中间弹出，在他弹出之前，在他上面的后进的栈内容已经被弹出，详细的可以参考数据结构，这里我们就不再一一讨论了。</p>
-<p>　　生长方向：对于堆来讲，生长方向是向上的，也就是向着内存地址增加的方向；对于栈来讲，它的生长方向是向下的，是向着内存地址减小的方向增长。</p>
-<p>　　分配方式：堆都是动态分配的，没有静态分配的堆。栈有2种分配方式：静态分配和动态分配。静态分配是编译器完成的，比如局部变量的分配。动态分配由 malloc 函数进行分配，但是栈的动态分配和堆是不同的，他的动态分配是由编译器进行释放，无需我们手工实现。</p>
-<p>　　分配效率：栈是机器系统提供的数据结构，计算机会在底层对栈提供支持：分配专门的寄存器存放栈的地址，压栈出栈都有专门的指令执行，这就决定了栈的效率比较高。堆则是 C/C++ 函数库提供的，它的机制是很复杂的，例如为了分配一块内存，库函数会按照一定的算法（具体的算法可以参考数据结构/操作系统）在堆内存中搜索可用的足够大小的空间，如果没有足够大小的空间（可能是由于内存碎片太多），就有可能调用系统功能去增加程序数据段的内存空间，这样就有机会分到足够大小的内存，然后进行返回。显然，堆的效率比栈要低得多。</p>
-<p>　　从这里我们可以看到，堆和栈相比，由于大量 new/delete 的使用，容易造成大量的内存碎片；由于没有专门的系统支持，效率很低；由于可能引发用户态和核心态的切换，内存的申请，代价变得更加昂贵。所以栈在程序中是应用最广泛的，就算是函数的调用也利用栈去完成，函数调用过程中的参数，返回地址，EBP 和局部变量都采用栈的方式存放。所以，我们推荐大家尽量用栈，而不是用堆。<br>　　虽然栈有如此众多的好处，但是由于和堆相比不是那么灵活，有时候分配大量的内存空间，还是用堆好一些。<br>　　无论是堆还是栈，都要防止越界现象的发生（除非你是故意使其越界），因为越界的结果要么是程序崩溃，要么是摧毁程序的堆、栈结构，产生以想不到的结果,就算是在你的程序运行过程中。<br>　　对了，还有一件事，如果有人把堆栈合起来说，那它的意思是栈。</p>
+		<p>二叉查找树查找插入和删除的时间复杂度都为O(log N)。但它有个弊端。如果输入的数据是排序数据，那么代价巨大，因为树将只由那么没有左（或右）儿子的节点组成。一种解决方法是找平衡条件：任何节点的深度不能过深。最老的一种平衡查找树，即AVL树。另外，较新的方法是放弃平衡条件，允许树有任何的深度，但是在每次操作之后要使用一个调整规则进行调整，使得后面的操作效率更高，这是自调整类结构，例如伸展树。</p>
+<h4 id="1-_AVL树">1. AVL树</h4>
+<p>AVL树是每个节点的左子树和右子树的高度最多差1的二叉查找树。除去可能的插入外，所有的树查找都可以以时间O(log N)执行。插入一个节点要靠旋转来修正：旋转有两种情况，一是插入发生在“外边的情况”，通过单旋转来调整。二是发生在“内部”的情形，通过“双旋转”来实现。除旋转引起的局部变化外，编程人员必须记住：树的其他部分必须知晓该变化。<br><img src="/img/pages/dataStruct/0701.png" alt="Alt text"><br><img src="/img/pages/dataStruct/0702.png" alt="Alt text"><br><img src="/img/pages/dataStruct/0703.png" alt="Alt text"><br><img src="/img/pages/dataStruct/0704.png" alt="Alt text"><br>对AVL树的删除多少要比插入复杂，如果删除操作相对较少，那么懒惰删除恐怕是最好的策略。</p>
+<h4 id="2-_伸展树">2. 伸展树</h4>
+<p>伸展树的基本想法是，当一个节点被访问后，它就要经过一系列AVL树的旋转被放到根上。另外，伸展树还不要求保留高度或平衡信息。<br>保证从空树开始任意连续M次对树的操作最多花费O(Mlog N)的时间。<br>展开思路：从底部向上沿着访问路径旋转。如果X的父节点是树根，那么我们只要旋转X和树根。这是最后的旋转。如果出现之字型，则像AVL那样双旋转。如果出现一字型，则将左边的树变换成右边树。<br><img src="/img/pages/dataStruct/0705.png" alt="Alt text"><br><img src="/img/pages/dataStruct/0706.png" alt="Alt text"><br>我们可以通过访问要删除的节点实行删除操作。将节点推到根处，然后找到左子树中最大的元素然后旋转到左子树下，此时的左子树没有右儿子，我们将可以使右子树称为右儿子从而结束删除。对于伸展树分析很困难，但编程要比AVL树简单得多，这是因为要考虑得情形少许并且没有平衡信息需要存储。</p>
+<h4 id="3-_B树">3. B树</h4>
+<p>迄今为止，我们始终假设可以把整个数据结构存储到计算机的主存中。可是，如果数据太多主存装不下，那么就意味着必须把数据结构放在磁盘上。此时，因为大O模型不再使用，所以导致规则发生了变化。<br>一棵M叉查找树可以有M路分支，随着分支增加，树的深度在减少。一颗完全M叉树的高度约为$ log_MN $。<br>B树是平衡M-路树，是常用的查找树。<br>阶为M的B-树定义：</p>
+<pre><code><span class="blockquote">> 数据项存储在树叶上</span>
+<span class="blockquote">> 非叶节点存储直到M-1个键，以指示搜索的方向；键i代表子树i+1中得知最小的键</span>
+<span class="blockquote">> 树的根或者是一片树叶，或者其儿子数在2到M之间</span>
+<span class="blockquote">> 除根外，所有非树叶节点的儿子数在[M/2]到M之间</span>
+<span class="blockquote">> 所有的树叶都在相同的深度上并有[L/2]和L之间个数据项</span>
+</code></pre><p>L=5时，<br><img src="/img/pages/dataStruct/0707.png" alt="Alt text"><br>4阶B-树称为2-3-4树，3阶B-树叫做2-3树。<br><img src="/img/pages/dataStruct/0708.png" alt="Alt text"></p>
+<p>B-树的深度最多是[$log_{M/2}N$]，我们执行O(log M)时间的工作量以确定选择哪个分支（使用折半查找），但是Insert和Delete运算可能需要O(M)的工作量来调整该节点该节点上的所有信息，因此，对于每个Insert和Delete，最坏情形的运行时间为$O(Mlog_MN)=O((M/log_M)logN)$。不过，对于一次Find只花费O(log N)的时间。经验指出，从运行时间考虑，M的最好选择是M=3或4。<br>B-树实际用于数据库系统，在那里树被存储在物理的磁盘上而不是主存中。一般来说，对磁盘的访问要比任何的主存操作慢几个数量级。如果我们使用M-阶B-树，那么磁盘访问次数是$O(log_MN)$。虽然每次磁盘访问花费$O(log_M)$来确定分支的方向，但是执行该操作的时间一般比读存储器的区块所花费的时间少得多。</p>
+<h4 id="总结">总结</h4>
+<p>我们已经看到树在操作系统、编译器设计以及查找中的应用。表达式树是更一般结构即所谓的分析树的一个小例子，分析树是编译器设计中的核心数据结构。查找树在算法设计中是非常重要的。它们几乎支持所有有用的操作。查找树的非递归实现多少要快一些，但是递归实现更讲究、更精彩，而且易于理解和除错。查找树的问题在于，其性能严重的依赖于输入，而输入则是随机的。不改变树的操作都可以使用标准二叉查找树的程序。改变树的操作必须将树恢复。在伸展树中的节点可以达到任意深度，但是在每次访问之后树又以多少有些神秘的方式被调整。任意连续M次操作花费O(M log N)的时间，它与平衡树花费的时间相同。B-树是平衡M-路树，它能很好的匹配磁盘。其特殊情形是2-3树，它是实现平衡查找树的另一种常用方法。在实践中，所有平衡树方案的运行时间都不如简单二叉查找树省时。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Tech/">Tech</a><a href="/tags/c++/">c++</a>
+  <span></span> <a href="/tags/数据结构/">数据结构</a>
   </div>
 
 
@@ -135,7 +118,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://yoursite.com/2014/08/05/C++冲刺（五）C和C++内存机制/" data-title="C++冲刺（五）C/C++内存机制 | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
+  <div data-url="http://yoursite.com/2014/04/07/数据结构（七）树/" data-title="数据结构（七）树 | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
   </div>
 
 </div>
@@ -145,18 +128,18 @@
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/2014/08/06/C++冲刺（六）C++多态实现机制/" title="C++冲刺（六）C++多态实现机制">
+ <a href="/2014/04/18/C++类中static成员变量及函数使用小结/" title="C++类中static成员变量及函数使用小结">
   <strong>PREVIOUS:</strong><br/>
   <span>
-  C++冲刺（六）C++多态实现机制</span>
+  C++类中static成员变量及函数使用小结</span>
 </a>
 </div>
 
 
 <div class="next">
-<a href="/2014/08/04/C++冲刺（四）字节对齐问题详解/"  title="C++冲刺（四）字节对齐问题详解">
+<a href="/2014/04/06/数据结构（六）排序算法汇总（附源代码）/"  title="数据结构（六）排序算法汇总">
  <strong>NEXT:</strong><br/> 
- <span>C++冲刺（四）字节对齐问题详解
+ <span>数据结构（六）排序算法汇总
 </span>
 </a>
 </div>
@@ -173,7 +156,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  
+  <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-_AVL树"><span class="toc-number">1.</span> <span class="toc-text">1. AVL树</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-_伸展树"><span class="toc-number">2.</span> <span class="toc-text">2. 伸展树</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-_B树"><span class="toc-number">3.</span> <span class="toc-text">3. B树</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
   </div>
 
 <div id="asidepart">
