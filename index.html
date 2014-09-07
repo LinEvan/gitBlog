@@ -67,21 +67,21 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/2014/09/07/Effective-C++(八)定制new与delete/" title="Effective C++(八)定制new和delete" itemprop="url">
+    <a href="/2014/09/07/Effective C++(三)资源管理/" title="Effective C++(三)资源管理" itemprop="url">
   
-    <h1 itemprop="name">Effective C++(八)定制new和delete</h1>
+    <h1 itemprop="name">Effective C++(三)资源管理</h1>
     
      
-           <p itemprop="description" >定制new和delete
-STL容器所使用的heap内存是由容器所拥有的分配器对象（allocator ojects）管理，不是被new和delete直接管理。
+           <p itemprop="description" >内存是必须管理的众多资源之一，其他常见的资源还包括文件描述起、互斥锁、图形界面中的字型和笔刷、数据库连接、以及网络sockets。
 
-条款49：了解new-handler的行为
+条款13：以对象管理资源
 
 请记住：
-set_new_handler允许客户指定一个函数，在内存分</p>
+为防止资源泄露，请使用RAII对象，它们在构造函数中获得资源并在析构函数中释放资源
+两个常被使用的RAII </p>
         
     
-    <time datetime="2014-09-07T07:55:26.000Z" itemprop="datePublished">9月 7 2014</time>
+    <time datetime="2014-09-07T07:10:33.000Z" itemprop="datePublished">9月 7 2014</time>
   </a>
 </section>
 
@@ -161,26 +161,6 @@ classes和Templates都支持隐式接口（interfaces）和多态（polymorphism
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/2014/09/07/Effective C++(三)资源管理/" title="Effective C++(三)资源管理" itemprop="url">
-  
-    <h1 itemprop="name">Effective C++(三)资源管理</h1>
-    
-     
-           <p itemprop="description" >内存是必须管理的众多资源之一，其他常见的资源还包括文件描述起、互斥锁、图形界面中的字型和笔刷、数据库连接、以及网络sockets。
-
-条款13：以对象管理资源
-
-请记住：
-为防止资源泄露，请使用RAII对象，它们在构造函数中获得资源并在析构函数中释放资源
-两个常被使用的RAII </p>
-        
-    
-    <time datetime="2014-09-07T07:08:33.000Z" itemprop="datePublished">9月 7 2014</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
     <a href="/2014/09/07/Effective C++(二)构造析构赋值运算/" title="Effective C++(二)构造析构赋值运算" itemprop="url">
   
     <h1 itemprop="name">Effective C++(二)构造析构赋值运算</h1>
@@ -240,6 +220,21 @@ SYN_RCVD: 这个状态表示接受到了SYN报文，在正常情况下，这个�
         
     
     <time datetime="2014-07-29T02:43:27.000Z" itemprop="datePublished">7月 29 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2014/07/08/快速理解Linux的压缩命令/" title="快速理解Linux的压缩命令" itemprop="url">
+  
+    <h1 itemprop="name">快速理解Linux的压缩命令</h1>
+    
+     
+           <p itemprop="description" >0. 前言
+在Linux的环境中，压缩文件的扩展名大多是：『*.tar, *.tar.gz, *.tgz, *.gz, *.bz2』，相对应的命令有tar、gz、bz2。命令比较多，而且每条命令的参数也很多，每次碰到都不得不google百度之。此文帮你快速的理清这些命令的简单用法</p>
+        
+    
+    <time datetime="2014-07-08T13:10:05.000Z" itemprop="datePublished">7月 8 2014</time>
   </a>
 </section>
 
