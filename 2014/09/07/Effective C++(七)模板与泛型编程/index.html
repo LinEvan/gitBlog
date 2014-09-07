@@ -4,10 +4,17 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>2 | LinEvan&#39;s blog</title>
+    <title>Effective C++(七)模板与泛型编程 | LinEvan&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="LinEvan">
+    
+    <meta name="description" content="条款41：了解隐式接口和编译器多态
+
+请记住：
+classes和Templates都支持隐式接口（interfaces）和多态（polymorphism）
+对classes而言接口是显式的，以函数签名为中心。多态则是通过virtual函数发生于运行期
+对templates参数而言，接口是隐式地，奠基">
     
     
     
@@ -66,7 +73,7 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/09/07/2/" title="2" itemprop="url">2</a>
+      <a href="/2014/09/07/Effective C++(七)模板与泛型编程/" title="Effective C++(七)模板与泛型编程" itemprop="url">Effective C++(七)模板与泛型编程</a>
   </h1>
   <p class="article-author">By
     
@@ -74,7 +81,7 @@
     </p>
   <p class="article-time">
     <time datetime="2014-09-07T07:08:33.000Z" itemprop="datePublished">9月 7 2014</time>
-    更新日期:<time datetime="2014-09-07T07:08:33.000Z" itemprop="dateModified">9月 7 2014</time>
+    更新日期:<time datetime="2014-09-07T07:31:32.000Z" itemprop="dateModified">9月 7 2014</time>
     
   </p>
 </header>
@@ -86,16 +93,89 @@
 		
 		</div>
 		
-		  
+		<ol>
+<li><p>条款41：了解隐式接口和编译器多态</p>
+<ul>
+<li>请记住：<ul>
+<li>classes和Templates都支持隐式接口（interfaces）和多态（polymorphism）</li>
+<li>对classes而言接口是显式的，以函数签名为中心。多态则是通过virtual函数发生于运行期</li>
+<li>对templates参数而言，接口是隐式地，奠基于有效表达式。多态则是通过template具现化和函数重载解析发生于编译期。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>条款42：了解typename的双重意义</p>
+<ul>
+<li>请记住：<ul>
+<li>声明template参数时，前缀关键字class和typename可互换</li>
+<li>请使用关键字typename标识嵌套从属类型名称；但不得在base class lists（基类列）或member initialization list（成员初值列）内以它作为base class修饰符</li>
+</ul>
+</li>
+<li>声明template参数时，无论使用关键字class或typename，意义完全一样。</li>
+<li>template内出现的名称如果相依于某个template参数，称之为从属名称。如果从属名称在class内呈嵌套状，我们称它为嵌套从属名称。</li>
+<li>任何时候当你想要在template中指涉一个嵌套从属类型名称，就必须在紧临它的前一个位置放上关键字typename。“typename必须作为嵌套从属类型名称的前缀词”这一规则的例外是，typename不可以出现在base classes list内的嵌套从属类型名称之前，也不可在member initialization list（成员初值列）中作为base class修饰符</li>
+</ul>
+</li>
+<li><p>条款43：学习处理模板化基类内的名称</p>
+<ul>
+<li>请记住：请在derived class template内通过“this->”指涉base class template内的成员名称，或借由一个明白写出的“base class资格修饰符”完成</li>
+</ul>
+</li>
+<li><p>条款44：将与参数无关的代码抽离templates</p>
+<ul>
+<li>请记住：<ul>
+<li>Templates生成多个classes和多个函数，所以任何template代码都不该与某个造成膨胀的template参数产生相依关系</li>
+<li>因非类型模板参数而造成的代码膨胀，往往可以消除，做法是以函数参数或class成员变量替换template参数</li>
+<li>因类型参数而造成的代码膨胀，往往可降低，做法是让带有完全相同二进制表述的具现类型共享实现码</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>条款45：运用成员函数模板接受所有兼容类型</p>
+<ul>
+<li>请记住：<ul>
+<li>请使用member function template（成员函数模板）生成“可接受所有兼容类型”的函数</li>
+<li>如果你声明member templates用于“泛化copy构造”或“泛化assignment操作”，你还是需要声明正常的copy构造函数和copy assignment操作符</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>条款46：需要类型转换时请为模板定义非成员函数</p>
+<ul>
+<li>请记住：当我们编写一个class template，而它所提供之“与此template相关的”函数支持“所有参数之隐式类型转换”时，请将那么函数定义为“class template内部的friend函数”</li>
+</ul>
+</li>
+<li><p>条款47：请使用traits classes表现类型信息</p>
+<ul>
+<li>请记住：<ul>
+<li>traits classes使得“类型相关信息”在编译器可用。它们以templates和“templates特化”完成实现</li>
+<li>整合重载技术后，traits classes有可能在编译期对类型执行if…else测试</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>条款48：认识template元编程</p>
+<ul>
+<li>Template metaprogramming（TMP，模板元编程）可将工作由运行期移往编译器，因为得以实现早期错误侦测和更高的执行效率。</li>
+<li>TMP可被用来生成“基于政策选择组合”的客户定制代码，也可用来避免生成对某些特殊类型并不适合的代码</li>
+</ul>
+</li>
+</ol>
+  
 	</div>
 		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Tech/">Tech</a><a href="/tags/c++/">c++</a>
+  </div>
 
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://yoursite.com/2014/09/07/2/" data-title="2 | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
+  <div data-url="http://yoursite.com/2014/09/07/Effective C++(七)模板与泛型编程/" data-title="Effective C++(七)模板与泛型编程 | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
   </div>
 
 </div>
@@ -104,11 +184,19 @@
 	
 <nav class="article-nav clearfix">
  
+ <div class="prev" >
+ <a href="/2014/09/07/Effective C++(五)接口实现/" title="Effective C++(五)接口实现">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  Effective C++(五)接口实现</span>
+</a>
+</div>
+
 
 <div class="next">
-<a href="/2014/09/07/Effective C++(二)构造析构赋值运算/"  title="Effective C++(二)构造析构赋值运算">
+<a href="/2014/09/07/Effective C++(三)内存与资源管理/"  title="Effective C++(三)资源管理">
  <strong>NEXT:</strong><br/> 
- <span>Effective C++(二)构造析构赋值运算
+ <span>Effective C++(三)资源管理
 </span>
 </a>
 </div>
@@ -145,9 +233,9 @@
 		
 			<li><a href="/tags/TCPIP/" title="TCP/IP">TCP/IP<sup>1</sup></a></li>
 		
-			<li><a href="/tags/Tech/" title="Tech">Tech<sup>9</sup></a></li>
+			<li><a href="/tags/Tech/" title="Tech">Tech<sup>16</sup></a></li>
 		
-			<li><a href="/tags/c++/" title="c++">c++<sup>6</sup></a></li>
+			<li><a href="/tags/c++/" title="c++">c++<sup>13</sup></a></li>
 		
 		</ul>
 </div>

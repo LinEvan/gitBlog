@@ -67,12 +67,112 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/2014/09/07/2/" title="2" itemprop="url">
+    <a href="/2014/09/07/Effective C++(三)资源管理/" title="Effective C++(三)资源管理" itemprop="url">
   
-    <h1 itemprop="name">2</h1>
+    <h1 itemprop="name">Effective C++(三)资源管理</h1>
     
      
-           <p itemprop="description" ></p>
+           <p itemprop="description" >内存是必须管理的众多资源之一，其他常见的资源还包括文件描述起、互斥锁、图形界面中的字型和笔刷、数据库连接、以及网络sockets。
+
+条款13：以对象管理资源
+
+请记住：
+为防止资源泄露，请使用RAII对象，它们在构造函数中获得资源并在析构函数中释放资源
+两个常被使用的RAII </p>
+        
+    
+    <time datetime="2014-09-07T07:08:33.000Z" itemprop="datePublished">9月 7 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2014/09/07/Effective C++(四)接口设计与声明/" title="Effective C++(四)接口设计与声明" itemprop="url">
+  
+    <h1 itemprop="name">Effective C++(四)接口设计与声明</h1>
+    
+     
+           <p itemprop="description" >条款18:让接口容易被正确使用，不易被误用
+
+请记住：
+好的接口很容易被正确使用，不容易被误用。
+“促进正确使用”的办法包括接口的一致性，以及与内置类型的行为兼容
+“阻止误用”的办法包括建立新类型、限制类型上的操作，束缚对象值，以及消除客户的资源管理责任
+tr1::shared_</p>
+        
+    
+    <time datetime="2014-09-07T07:08:33.000Z" itemprop="datePublished">9月 7 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2014/09/07/Effective C++(六)继承与面向对象设计/" title="Effective C++(六)继承与面向对象设计" itemprop="url">
+  
+    <h1 itemprop="name">Effective C++(六)继承与面向对象设计</h1>
+    
+     
+           <p itemprop="description" >vitual函数意味“接口必须被继承”，non-virtual函数意味“接口和实现都必须被继承”
+
+条款32：确定你的public继承塑模出is-a关系
+
+请记住：“public继承”意味is-a。适用于base classes身上的每一件事情一定也适用于derived clas</p>
+        
+    
+    <time datetime="2014-09-07T07:08:33.000Z" itemprop="datePublished">9月 7 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2014/09/07/Effective C++(五)接口实现/" title="Effective C++(五)接口实现" itemprop="url">
+  
+    <h1 itemprop="name">Effective C++(五)接口实现</h1>
+    
+     
+           <p itemprop="description" >条款26：尽可能延后变量定义式的出现时间
+
+请记住：尽可能延后变量定义式的出现，这样做可增加程序的清晰度并改善程序效率。
+只要你定义了一个变量而其类型带有一个构造函数或析构函数，那么当程序的控制流到达这个变量定义式时，你便得承受构造成本；变量离开其作用域，要承受析构成本。即使这个</p>
+        
+    
+    <time datetime="2014-09-07T07:08:33.000Z" itemprop="datePublished">9月 7 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2014/09/07/Effective C++(七)模板与泛型编程/" title="Effective C++(七)模板与泛型编程" itemprop="url">
+  
+    <h1 itemprop="name">Effective C++(七)模板与泛型编程</h1>
+    
+     
+           <p itemprop="description" >条款41：了解隐式接口和编译器多态
+
+请记住：
+classes和Templates都支持隐式接口（interfaces）和多态（polymorphism）
+对classes而言接口是显式的，以函数签名为中心。多态则是通过virtual函数发生于运行期
+对templates参数而言</p>
+        
+    
+    <time datetime="2014-09-07T07:08:33.000Z" itemprop="datePublished">9月 7 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2014/09/07/Effective C++(三)内存与资源管理/" title="Effective C++(三)资源管理" itemprop="url">
+  
+    <h1 itemprop="name">Effective C++(三)资源管理</h1>
+    
+     
+           <p itemprop="description" >内存是必须管理的众多资源之一，其他常见的资源还包括文件描述起、互斥锁、图形界面中的字型和笔刷、数据库连接、以及网络sockets。
+
+以对象管理资源
+
+请记住：
+为防止资源泄露，请使用RAII对象，它们在构造函数中获得资源并在析构函数中释放资源
+两个常被使用的RAII class</p>
         
     
     <time datetime="2014-09-07T07:08:33.000Z" itemprop="datePublished">9月 7 2014</time>
@@ -86,12 +186,10 @@
     <h1 itemprop="name">Effective C++(二)构造析构赋值运算</h1>
     
      
-           <p itemprop="description" >2 构造/析构/赋值运算
-
-条款05：了解C++默默编写并调用哪些函数
+           <p itemprop="description" >条款05：了解C++默默编写并调用哪些函数
 
 请记住：编译器可以暗自为class创建default构造函数、copy构造函数、copy assignment操作符，以及析构函数。所有这些函数都是public且inline。
-唯有当这些函数被需要（被调用</p>
+唯有当这些函数被需要（被调用），它们才会被编译器创建出来</p>
         
     
     <time datetime="2014-09-07T07:08:27.000Z" itemprop="datePublished">9月 7 2014</time>
@@ -116,6 +214,26 @@ std::size_t，这表示类型size_t位于命名空间std内。继承自C的符�
 
   <section class="post" itemscope itemprop="blogPost">
   
+    <a href="/2014/09/07/Effective-C++(八)定制new与delete/" title="Effective C++(八)定制new和delete" itemprop="url">
+  
+    <h1 itemprop="name">Effective C++(八)定制new和delete</h1>
+    
+     
+           <p itemprop="description" >定制new和delete
+STL容器所使用的heap内存是由容器所拥有的分配器对象（allocator ojects）管理，不是被new和delete直接管理。
+
+条款49：了解new-handler的行为
+
+请记住：
+set_new_handler允许客户指定一个函数，在内存分</p>
+        
+    
+    <time datetime="2014-09-07T06:55:26.000Z" itemprop="datePublished">9月 7 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
     <a href="/2014/07/29/C++联合容器set和map/" title="C++联合容器set和map" itemprop="url">
   
     <h1 itemprop="name">C++联合容器set和map</h1>
@@ -125,101 +243,6 @@ std::size_t，这表示类型size_t位于命名空间std内。继承自C的符�
         
     
     <time datetime="2014-07-29T08:09:43.000Z" itemprop="datePublished">7月 29 2014</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2014/07/29/TCP握手协议和状态变迁/" title="TCP握手协议和状态变迁" itemprop="url">
-  
-    <h1 itemprop="name">TCP握手协议和状态变迁</h1>
-    
-     
-           <p itemprop="description" >TCP状态变迁图
-CLOSED: 这个没什么好说的了，表示初始状态。
-LISTEN: 这个也是非常容易理解的一个状态，表示服务器端的某个SOCKET处于监听状态，可以接受连接了。
-SYN_RCVD: 这个状态表示接受到了SYN报文，在正常情况下，这个状态是服务器端的SOCKET在</p>
-        
-    
-    <time datetime="2014-07-29T02:43:27.000Z" itemprop="datePublished">7月 29 2014</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2014/07/08/快速理解Linux的压缩命令/" title="快速理解Linux的压缩命令" itemprop="url">
-  
-    <h1 itemprop="name">快速理解Linux的压缩命令</h1>
-    
-     
-           <p itemprop="description" >0. 前言
-在Linux的环境中，压缩文件的扩展名大多是：『*.tar, *.tar.gz, *.tgz, *.gz, *.bz2』，相对应的命令有tar、gz、bz2。命令比较多，而且每条命令的参数也很多，每次碰到都不得不google百度之。此文帮你快速的理清这些命令的简单用法</p>
-        
-    
-    <time datetime="2014-07-08T13:10:05.000Z" itemprop="datePublished">7月 8 2014</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2014/06/04/Leetcode-Reverse Words in a String/" title="Leetcode | Reverse Words in a String | 抛砖引玉" itemprop="url">
-  
-    <h1 itemprop="name">Leetcode | Reverse Words in a String | 抛砖引玉</h1>
-    
-     
-           <p itemprop="description" >Reverse Words in a String  Total Accepted: 10990 Total Submissions: 79751Given an input string, reverse the string word by word.
-For example</p>
-        
-    
-    <time datetime="2014-06-04T02:05:05.000Z" itemprop="datePublished">6月 4 2014</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2014/05/12/Leetcode-Insertion Sort List/" title="Leetcode | Insertion Sort List" itemprop="url">
-  
-    <h1 itemprop="name">Leetcode | Insertion Sort List</h1>
-    
-     
-           <p itemprop="description" >Insertion Sort List  Total Accepted: 11143 Total Submissions: 45047
-Sort a linked list using insertion sort.
-这题目比较简单，基本代码一看就明白，试试便知。
-1
-2
-3
-4</p>
-        
-    
-    <time datetime="2014-05-12T02:10:17.000Z" itemprop="datePublished">5月 12 2014</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2014/04/22/C++中三种继承类的成员继承关系/" title="C++中三种继承类的成员继承关系" itemprop="url">
-  
-    <h1 itemprop="name">C++中三种继承类的成员继承关系</h1>
-    
-     
-           <p itemprop="description" >继承是C++中一个很好的特性，它能够从已有的类派生出新的类，而继承类继承了原有类（称为基类）的特征。继承类有三种，公有继承、保护继承、私有继承。使用公有继承，基类的公有成员将成为继承类的公有成员，保护成员称为继承类的保护成员，基类的私有部分也将成为继承类的一部分，但只能通过基类的</p>
-        
-    
-    <time datetime="2014-04-22T12:07:18.000Z" itemprop="datePublished">4月 22 2014</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2014/04/18/C++类中static成员变量及函数使用小结/" title="C++类中static成员变量及函数使用小结" itemprop="url">
-  
-    <h1 itemprop="name">C++类中static成员变量及函数使用小结</h1>
-    
-     
-           <p itemprop="description" >在C++中，static成员属于整个类而不是某个对象。不管类创建了多少对象，static成员只存储一份供所有对象使用。在使用static成员时，对于它的声明、初始化和使用经常感到困惑，在此结合例子说明，希望能加深读者对于static成员的理解。类中static成员有两种，一是st</p>
-        
-    
-    <time datetime="2014-04-18T04:51:28.000Z" itemprop="datePublished">4月 18 2014</time>
   </a>
 </section>
 
@@ -248,9 +271,9 @@ Sort a linked list using insertion sort.
 		
 			<li><a href="/tags/TCPIP/" title="TCP/IP">TCP/IP<sup>1</sup></a></li>
 		
-			<li><a href="/tags/Tech/" title="Tech">Tech<sup>9</sup></a></li>
+			<li><a href="/tags/Tech/" title="Tech">Tech<sup>16</sup></a></li>
 		
-			<li><a href="/tags/c++/" title="c++">c++<sup>6</sup></a></li>
+			<li><a href="/tags/c++/" title="c++">c++<sup>13</sup></a></li>
 		
 		</ul>
 </div>

@@ -1,0 +1,469 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Effective C++(四)接口设计与声明 | LinEvan&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="LinEvan">
+    
+    <meta name="description" content="条款18:让接口容易被正确使用，不易被误用
+
+请记住：
+好的接口很容易被正确使用，不容易被误用。
+“促进正确使用”的办法包括接口的一致性，以及与内置类型的行为兼容
+“阻止误用”的办法包括建立新类型、限制类型上的操作，束缚对象值，以及消除客户的资源管理责任
+tr1::shared_ptr支持定制型删除">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="LinEvan&#39;s blog" title="LinEvan&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="LinEvan&#39;s blog">LinEvan&#39;s blog</a></h1>
+				<h2 class="blog-motto">Stay hungry stay foolish</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/09/07/Effective C++(四)接口设计与声明/" title="Effective C++(四)接口设计与声明" itemprop="url">Effective C++(四)接口设计与声明</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://yoursite.com" title="LinEvan">LinEvan</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-09-07T07:08:33.000Z" itemprop="datePublished">9月 7 2014</time>
+    更新日期:<time datetime="2014-09-07T07:20:47.000Z" itemprop="dateModified">9月 7 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+		</div>
+		
+		<ol>
+<li><p>条款18:让接口容易被正确使用，不易被误用</p>
+<ul>
+<li>请记住：<ul>
+<li>好的接口很容易被正确使用，不容易被误用。</li>
+<li>“促进正确使用”的办法包括接口的一致性，以及与内置类型的行为兼容</li>
+<li>“阻止误用”的办法包括建立新类型、限制类型上的操作，束缚对象值，以及消除客户的资源管理责任</li>
+<li>tr1::shared_ptr支持定制型删除器。这可防范DLL问题，可被用来自动解除互斥锁等等。</li>
+</ul>
+</li>
+<li>许多客户端错误可以因为导入新类型而获得预防。令day, month, year称为成熟且经充分锻炼的classes并封装其内数据，比简单实用上述的struct好。办法之一是利用enum表现月份，但enums不具备我们希望拥有的类型安全性。比较安全的解法是预先定义所有有效的Months。预防客户端的另一个错误是，限制类型内什么事可做，什么事不能做，常见的限制是加上const。</li>
+<li>除非有好理由，否则应该尽量令你的types的行为与内置types一直。</li>
+<li>避免无端与内置类型不兼容，真正的理由是为了提供行为一致的接口。</li>
+<li>tr1::shared_ptr允许当智能指针被建立起来的指定一个资源释放函数绑定于智能指针身上。</li>
+<li>返回一个“将getRidOfInvestment绑定为删除器”的tr1::shared_ptr。tr1::shared_ptr提供的某个构造函数接受两个实参：一个是被管理的指针，另一个是引用次数为0时将被调用的“删除器”<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="built_in">std</span>::tr1::<span class="built_in">shared_ptr</span><Investment> createInvestment()
+{
+    <span class="built_in">std</span>::tr1::<span class="built_in">shared_ptr</span><Investment> reVal( <span class="keyword">static_cast</span><Investment *><span class="number">0</span>, getRidOfInvestment);
+    reVal = ...;
+    <span class="keyword">return</span> retVal;
+}
+</pre></td></tr></table></figure><br>“将原始指针传给pInv构造函数”会比“先将pInv初始化为null再对它做一次赋值操作”为佳。</li>
+<li>tr1::shared_ptr有一个特别好的性质是：它会自动使用它的“每个指针专属的删除器”，因而消除另一个潜在的客户错误：所谓的“cross-DLL problem”。这个问题发生于“对象在动态连接程序库（DLL）中被new创建，却在另一个DLL内被delete销毁”。tr1::shared_ptr没有这个问题，因为它缺省的删除器是来自“tr1::shared_ptr诞生所在的那个DLL”的delete。</li>
+<li>最常见的tr1::shared_ptr实现品来自Boost。Boost的tr1::shared_ptr是原始指针的两倍大。它比原始指针大且慢，而且使用辅助动态内存。</li>
+</ul>
+</li>
+<li><p>条款19：设计class犹如设计type</p>
+<ul>
+<li>当你定义一个新的class，也就定义了一个新type。</li>
+<li>新type的对象应该如何被创建和销毁</li>
+<li>对象的初始化和对象的赋值该有什么样的差别</li>
+<li>新type的对象如果被pass by value，这意味着什么</li>
+<li>什么是新type的“合法值”</li>
+<li>你的新type需要配合某个继承图系吗？</li>
+<li>你的新type需要什么样的转换</li>
+<li>什么样的操作符和函数对此新type而言是合理的</li>
+<li>什么样的标准函数应该驳回</li>
+<li>谁该取用新type的成员</li>
+<li>什么是新type的“未声明接口”</li>
+<li>你的新type有那么一般化？</li>
+</ul>
+</li>
+<li><p>条款20：宁以pass-by-reference-to-const替换pass-by-value</p>
+<ul>
+<li>请记住：<ul>
+<li>尽量以pass-by-reference-to-const替换pass-by-value。前者通常比较高效，并可避免切割问题（slicing problem）</li>
+<li>以上规则并不适用于内置类型，以及STL的迭代器和函数对象。对它们而言，pass-by-value往往比较适当。</li>
+</ul>
+</li>
+<li>参数的传递成本是n次构造函数和n次析构函数</li>
+<li>pass-by-reference-to-const，这种传递方式的效率高得多：没有任何构造函数或析构函数被调用，因为没有任何新对象被创建</li>
+<li>以by-reference方式传递参数也可以避免slicing（对象切割）问题。当一个derived class对象以by value方式传递并被视为一个base class对象，base class的copy构造函数会被调用，而“造成次对象的行为像个derived class对象”的那些特化性质全被切掉了，仅仅留下一个base class对象。</li>
+<li>如果窥视C++编译器的底层，你会发现，reference往往以指针实现出来，因此pass by reference通常意味真正传递的是指针。</li>
+</ul>
+</li>
+<li><p>条款21：必须返回对象时，别妄想返回其reference</p>
+<ul>
+<li>请记住：绝不要返回pointer或reference指向一个local stack对象，或返回reference指向一个heap-allocated对象，或返回pointer或reference指向一个local static对象而有可能同时需要多个这样的对象。条款4已经为“在单线程环境中合理返回reference指向一个local static对象”提供了一份设计实例</li>
+<li>所谓的reference只是个名称，代表某个既有对象。因为它一定是某物的另一个名称。</li>
+<li>函数创建新对象的途径有二：在stack空间或在heap空间创建之。</li>
+<li>一个“必须返回新对象”的函数的正确写法是：就让那个函数返回一个新对象。</li>
+</ul>
+</li>
+<li><p>条款22：将成员变量声明为private</p>
+<ul>
+<li>请记住：<ul>
+<li>切记将成员变量声明为private，这可赋予客户访问数据的一致性、可细微划分访问控制、允诺约束条件获得保证，并提供class作者以充分的实现弹性</li>
+<li>protected并不比public更具封装性。</li>
+</ul>
+</li>
+<li>protected成员变量就像public成员变量一样缺乏封装性。其实只有两种访问权限：private（提供封装）和其他（不提供封装）</li>
+</ul>
+</li>
+<li><p>条款23：宁以non-member、non-friend替换member函数</p>
+<ul>
+<li>请记住：宁可拿non-member、non-friend函数替换member函数。这样做可以增加封装性、包裹弹性和机能扩充性。</li>
+<li>推崇封装的原因：它使我们能够改变事物而只影响有限客户。愈少代码可以看到数据（也就是访问它），愈多的数据可被封装，而我们也就愈能自由地改变对象数据。愈多函数可以访问它，数据的封装性就愈低。</li>
+<li>导致较大封装性的是non-member、non-friend函数，因为它并不增加“能够访问class内之private成分”的函数数量</li>
+<li>namespace和classes不同，前者可跨越多个源代码文件而后者不能。</li>
+<li>分离它们的最直接做法就是将书签相关便利函数声明于一个头文件，将cookie相关便利函数声明于另一个头文件，再将打印相关便利函数声明于第三个头文件。将所有便利函数放在多个头文件内但隶属同一个命名空间，意味客户可以轻松扩展这一组便利函数。</li>
+</ul>
+</li>
+<li><p>条款24：若所有参数皆需类型转换，请为此采用non-member函数</p>
+<ul>
+<li>请记住：如果你需要为某个函数的所有参数（包括被this指针所指的那个隐喻参数）进行类型转换，那么这个函数必须是个non-menber</li>
+<li>只有当参数被列于参数列内，这个参数才是隐式类型转换的合法参与者。地位相当于“被调用之成员函数所隶属的那个对象”——即this对象——那个隐喻参数，绝不是隐式转换的合法参与者。</li>
+</ul>
+</li>
+<li><p>条款25：考虑写出一个不抛出异常的swap函数</p>
+<ul>
+<li>请记住：<ul>
+<li>当std::swap对你的类型效率不高时，提供一个swap成员函数，并确定这个函数不抛出异常</li>
+<li>如果你提供一个member swap，也该提供一个non-member swap用来调用前者。对于classes（而非templates），也请特化std::swap</li>
+<li>调用swap时应针对std::swap使用using声明式，然后调用swap并且不带任何“命名空间资格修饰”</li>
+<li>为“用户定义类型”进行std templates全特化是好的，但千万不要尝试在std内加入某些对std而言全新的东西。</li>
+</ul>
+</li>
+<li>所谓swap两对象值，意思是将两对象的值彼此赋予对方。缺省情况下，swap动作可有标准程序库提供的swap算法完成。</li>
+<li>“以指针指向一个对象，内含真正数据”那种类型，这是所谓的“pimpl手法(pointer to implementation)”</li>
+<li>一旦要置换两个Widget对象值，我们需要做的是置换其pImp指针。</li>
+<li>通常我们不能够（不允许）改变std命名空间内的任何东西，但可以为标准templates制造特化版本，使它专属于我们自己的classes。</li>
+<li>任何地点的任何代码如果打算置换两个Widget对象，因而调用swap，C++的名称查找法则（更具体地说是所谓argument-dependent lookup或koening lookup法则）会找到Widget的专属版本。</li>
+<li>C++的名称查找法则确保将找到global作用域或T所在之命名空间内的任何T专属的swap。</li>
+<li>首先，如果swap的缺省实现码对你的class或class template提供可接受的效率，你不需要额外做任何事。其次，如果swap缺省实现版的效率不足。你可以这样做：<ul>
+<li>1.提供一个public swap成员函数，让它高效的置换你的类型的两个对象值。这个函数绝不该抛出异常</li>
+<li>2.在你的class或template所在的命名空间内提供一个non-member swap，并令它调用上述swap成员函数。</li>
+<li>如果你正编写一个class，为你的class特化std::swap。并令它调用你的swap成员函数</li>
+<li>最后，如果你调用swap，请确定包含一个using声明式，以便std::swap在你的函数内曝光可见，然后不加任何namespace修饰符，赤裸裸地调用swap</li>
+</ul>
+</li>
+<li>成员版的swap绝不可抛出异常。这一约束只施行于成员版！不可施行于非成员版，因为swap缺省版本是以copy构造函数和copy assignment操作符为基础，而一般情况下两者都允许抛出异常</li>
+</ul>
+</li>
+</ol>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Tech/">Tech</a><a href="/tags/c++/">c++</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2014/09/07/Effective C++(四)接口设计与声明/" data-title="Effective C++(四)接口设计与声明 | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/09/07/Effective C++(三)资源管理/" title="Effective C++(三)资源管理">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  Effective C++(三)资源管理</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/09/07/Effective C++(六)继承与面向对象设计/"  title="Effective C++(六)继承与面向对象设计">
+ <strong>NEXT:</strong><br/> 
+ <span>Effective C++(六)继承与面向对象设计
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/STL/" title="STL">STL<sup>1</sup></a></li>
+		
+			<li><a href="/tags/TCPIP/" title="TCP/IP">TCP/IP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Tech/" title="Tech">Tech<sup>16</sup></a></li>
+		
+			<li><a href="/tags/c++/" title="c++">c++<sup>13</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+      <li><a href="http://www.linkedin.com/profile/view?id=130233431&trk=nav_responsive_tab_profile_pic" target="_blank" title="Hexo">LinkedIn</a></li>		  
+      <li><a href="http://blog.csdn.net/hustLinEvan" target="_blank" title="YangJian">CSDN</a></li>
+      <li><a href="http://music.163.com/#/user/home?id=9764968" target="_blank" title="Hexo">网易云音乐</a></li>
+      <li><a href="http://www.douban.com/people/63180864/" target="_blank" title="Hexo">豆瓣</a></li>	  
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1811833191" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/linevan" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		
+		<a href="http://yoursite.com" target="_blank" title="LinEvan">LinEvan</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"linevan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+<div id="totop" style="position:fixed;bottom:150px;right:50px;cursor: pointer;">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+<script src="/js/totop.js"></script>
+  </body>
+</html>

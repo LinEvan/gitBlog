@@ -1,0 +1,499 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Effective C++(三)资源管理 | LinEvan&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="LinEvan">
+    
+    <meta name="description" content="内存是必须管理的众多资源之一，其他常见的资源还包括文件描述起、互斥锁、图形界面中的字型和笔刷、数据库连接、以及网络sockets。
+
+以对象管理资源
+
+请记住：
+为防止资源泄露，请使用RAII对象，它们在构造函数中获得资源并在析构函数中释放资源
+两个常被使用的RAII classes分别是tr1::">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="LinEvan&#39;s blog" title="LinEvan&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="LinEvan&#39;s blog">LinEvan&#39;s blog</a></h1>
+				<h2 class="blog-motto">Stay hungry stay foolish</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/09/07/Effective C++(三)内存与资源管理/" title="Effective C++(三)资源管理" itemprop="url">Effective C++(三)资源管理</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://yoursite.com" title="LinEvan">LinEvan</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-09-07T07:08:33.000Z" itemprop="datePublished">9月 7 2014</time>
+    更新日期:<time datetime="2014-09-07T07:16:33.000Z" itemprop="dateModified">9月 7 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+		</div>
+		
+		<p>内存是必须管理的众多资源之一，其他常见的资源还包括文件描述起、互斥锁、图形界面中的字型和笔刷、数据库连接、以及网络sockets。</p>
+<ol>
+<li><p>以对象管理资源</p>
+<ul>
+<li>请记住：<ul>
+<li>为防止资源泄露，请使用RAII对象，它们在构造函数中获得资源并在析构函数中释放资源</li>
+<li>两个常被使用的RAII classes分别是tr1::shared_ptr和auto_ptr。前者通常是较佳选择，因为其copy行为比较直观。若选择auto_ptr，复制动作会使它指向null。</li>
+</ul>
+</li>
+<li>把资源放进对象内，我们便可倚赖C++的“析构函数自动调用机制”确保资源被释放<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre>Investment * createInvestment();
+<span class="keyword">void</span> f()
+{
+    Investment * pInv = createInvestment();
+    <span class="keyword">delete</span> pInv;
+}
+</pre></td></tr></table></figure><br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+</pre></td><td class="code"><pre><span class="tag">void</span> <span class="tag">f</span>()
+<span class="rules">{
+    <span class="rule"><span class="attribute">std</span>:<span class="value">:auto_ptr<Investment> <span class="function">pInv(<span class="function">createInvestment()</span>)</span></span></span>;
+<span class="rule">}</span></span>
+</pre></td></tr></table></figure></li>
+<li>“以对象管理资源”有两个关键的想法：<ul>
+<li>获得资源后立刻放进管理对象。“以对象管理资源”的观念常被称为“资源取得时机便是初始化时机（Resource Acquisition Is Initialization;RAII）”。每一笔资源都在获得的同时立刻被放进管理对象中。</li>
+<li>管理对象运用析构函数确保资源被释放。无论控制流如何离开区块，一旦对象被销毁（例如当对象离开作用域）其析构函数自然会被自动调用，于是资源被释放。如果资源释放动作可能导致抛出异常，事情变得有点棘手。</li>
+</ul>
+</li>
+<li>别让多个auto_ptr同时指向同一对象。如果对象会被删除一次以上，则会产生未定义行为。auto_ptr有一个不寻常的性质：若通过copy构造函数或copy assignment操作符复制它们，它们会变成null，而复制所得的指针将取得资源的唯一拥有权！“受auto_ptrs管理的资源必须绝对没有一个以上的auto_ptr同时指向它”，意味auto_ptr并非管理动态分配资源的神兵利器。</li>
+<li>auto_ptr的替代方案是“引用计数型智慧指针”（reference-counting smart pointer;RCSP)。所谓的RCSP也是个智能指针，持续跟踪共有多少对象指向某笔资源，并在无人指向它时自动删除该资源。</li>
+<li>tr1::shared_ptr。tr1::shared_ptr的复制行为“一如预期”<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre>void f()
+{
+    <span class="symbol">std:</span><span class="symbol">:tr1</span><span class="symbol">:</span><span class="symbol">:shared_ptr<Investment></span> pInv1(createInvestment());
+    <span class="symbol">std:</span><span class="symbol">:tr1</span><span class="symbol">:</span><span class="symbol">:shared_ptr<Investment></span> pInv2(pInv1);
+    pInv1 = pInv2;
+}
+</pre></td></tr></table></figure></li>
+<li>auto_ptr和tr1::shared_ptr两者都在其析构函数内做delete而不是delete[]动作。</li>
+</ul>
+</li>
+<li><p>条款14：在资源管理类中小心copying行为</p>
+<ul>
+<li>请记住：<ul>
+<li>复制RAII对象必须一并复制它所管理的资源，所以资源的copying行为决定RAII对象的copying行为</li>
+<li>普遍而常见的RAII class copying行为是：抑制copying、施行引用计数法。不过其他行为也都可能被实现</li>
+</ul>
+</li>
+<li>Mutex的互斥器对象。假设lock和unlock函数：<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre></td><td class="code"><pre>void <span class="operator"><span class="keyword">lock</span>(Mutex *pm);</span>
+void unlock(Mutex *pm);
+//class <span class="operator"><span class="keyword">Lock</span>
+class <span class="keyword">Lock</span>{
+<span class="keyword">public</span>:
+    explicit <span class="keyword">Lock</span>(Mutex *pm):mutexPtr(pm)
+    {
+        <span class="keyword">lock</span>(mutexPtr);</span>
+    }
+    ~<span class="operator"><span class="keyword">Lock</span>(){ unlock(mutexPtr);</span> }
+private:
+    Mutex *mutexPtr;
+}
+//客户对<span class="operator"><span class="keyword">Lock</span>使用
+Mutex m;</span>
+<span class="operator"><span class="keyword">Lock</span> m1(&m);</span>
+</pre></td></tr></table></figure></li>
+<li>当一个RAII对象被复制，会发生什么事？<ul>
+<li>禁止复制。根据条款6告诉你：将copying操作声明为private。</li>
+<li>对底层资源祭出“引用计数法”。tr1::shared_ptr的缺省行为是“当引用次数为0时删除其所指物”。当我们用上一个Mutex，我们想要做的释放动作是解除锁定而非删除。幸运的是tr1::shared_ptr允许指定所谓的“删除器(deleter)”，那是一个函数或函数对象，当引用次数为0时便被调用（此机能并不存在于auto_ptr+它总是将其指针删除）。删除器将tr1::shared_ptr构造函数而言是可有可无的第二参数。<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="code"><pre><span class="tag">class</span> <span class="tag">Lock</span><span class="rules">{
+<span class="rule"><span class="attribute">public</span>:<span class="value">
+    explicit <span class="function">Lock(Mutex *pm)</span> : <span class="function">mutexPtr(pm, unlock)</span>
+    {
+        <span class="function">lock(mutexPtr.<span class="function">get()</span>)</span></span></span>;
+    <span class="rule">}</span></span>
+<span class="tag">private</span>:
+    <span class="tag">std</span><span class="pseudo">::tr1</span><span class="pseudo">::shared_ptr</span><<span class="tag">Mutex</span>> <span class="tag">mutexPtr</span>;
+};
+</pre></td></tr></table></figure></li>
+<li>复制底部资源。</li>
+<li>转移底部资源的拥有权。这是auto_ptr的复制意义。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>条款15：在资源管理类中提供对原始资源的访问</p>
+<ul>
+<li>请记住：<ul>
+<li>APIs往往要求访问原始资源，所以每一个RAII class应该提供一个“取得其所管理之资源”的办法</li>
+<li>对原始资源的访问可能经由显式转换或隐式转换。一般而言，显式转换比较安全，但隐式转换对客户比较方便。</li>
+</ul>
+</li>
+<li>取得原始资源。有显式转换和隐式转换。tr1::shared_ptr和auto_ptr都提供一个get成员函数，用来执行显式转换，也就是它会返回智能指针内部的原始指针（的复件）。<code>int days = daysHeld(pInv.get());</code>就像所有智能指针一样，tr1::shared_ptr和auto_ptr也重载了指针取值操作符，它们允许隐式转换至底部原始指针</li>
+</ul>
+</li>
+<li><p>条款16：成对使用new和delete时要采取相同形式 </p>
+<ul>
+<li>请记住：如果你在new表达式中使用[]，必须在相应的delete表达式中也使用[]。如果在new表达式中不使用[]，一定不要在相应的delete表达式中使用[]</li>
+<li>当你使用new动态生成一个对象。有两件事发生。第一，内存被分配出来。第二，针对此内存会有一个构造函数调用。当你使用delete，有两件事发生：针对此内存会有一个析构函数被调用，然后内存才被释放。</li>
+<li>因为单一对象的内存布局一般而言不同于数组的内存布局。数组的所用内存通常还包括“数组大小”的记录，以便delete知道需要调用多少次析构函数。</li>
+<li>最好尽量不要对数组形式做typedefs动作。因为C++标准程序库含有string, vector等templates，可将数组的需求降至几乎为零。</li>
+</ul>
+</li>
+<li><p>条款17：以独立语句将newed对象置入智能指针</p>
+<ul>
+<li>请记住：以独立语句将newed对象存储于智能指针内。如果不这样做，一旦异常被抛出，有可能导致难以察觉的资源泄露。</li>
+<li>processWidget( std::tr1::shared_ptr<widget>(new Widget), priority() ); 避免这类问题的办法很简单：使用分离语句，分别写出(1)创建Widget(2)将它置入一个智能指针内，然后再把那个智能指针传给processWidget。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="symbol">std:</span><span class="symbol">:tr1</span><span class="symbol">:</span><span class="symbol">:shared_ptr<Widget></span> pw( new <span class="constant">Widget</span> );
+processWidget( pw, priority() );
+</pre></td></tr></table></figure><br>因为编译器对于“跨越语句的各项操作”没有重新排列的自由（只有在语句内它才拥有那个自由度）。</widget></li>
+</ul>
+</li>
+</ol>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Tech/">Tech</a><a href="/tags/c++/">c++</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2014/09/07/Effective C++(三)内存与资源管理/" data-title="Effective C++(三)资源管理 | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/09/07/Effective C++(七)模板与泛型编程/" title="Effective C++(七)模板与泛型编程">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  Effective C++(七)模板与泛型编程</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/09/07/Effective C++(二)构造析构赋值运算/"  title="Effective C++(二)构造析构赋值运算">
+ <strong>NEXT:</strong><br/> 
+ <span>Effective C++(二)构造析构赋值运算
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/STL/" title="STL">STL<sup>1</sup></a></li>
+		
+			<li><a href="/tags/TCPIP/" title="TCP/IP">TCP/IP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Tech/" title="Tech">Tech<sup>16</sup></a></li>
+		
+			<li><a href="/tags/c++/" title="c++">c++<sup>13</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+      <li><a href="http://www.linkedin.com/profile/view?id=130233431&trk=nav_responsive_tab_profile_pic" target="_blank" title="Hexo">LinkedIn</a></li>		  
+      <li><a href="http://blog.csdn.net/hustLinEvan" target="_blank" title="YangJian">CSDN</a></li>
+      <li><a href="http://music.163.com/#/user/home?id=9764968" target="_blank" title="Hexo">网易云音乐</a></li>
+      <li><a href="http://www.douban.com/people/63180864/" target="_blank" title="Hexo">豆瓣</a></li>	  
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1811833191" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/linevan" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		
+		<a href="http://yoursite.com" target="_blank" title="LinEvan">LinEvan</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"linevan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+<div id="totop" style="position:fixed;bottom:150px;right:50px;cursor: pointer;">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+<script src="/js/totop.js"></script>
+  </body>
+</html>
