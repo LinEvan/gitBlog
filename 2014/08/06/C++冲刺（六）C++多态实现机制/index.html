@@ -4,13 +4,12 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>通过GitHub和Hexo搭建个人博客遇到的问题 | LinEvan&#39;s blog</title>
+    <title>C++冲刺（五）C++多态实现机制 | LinEvan&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="LinEvan">
     
-    <meta name="description" content="网上一搜教程一大堆，很多已经写得很好了，我就不凑这个热闹了。推荐一篇博文：如何搭建一个独立博客——简明Github Pages与Hexo教程，讲得相当详细，博主也是根据这篇博文搭建的，一天轻松搞定个人博客。本文就谈谈我在搭建博客遇到的一些问题，如果你没遇到最好，遇到了希望对你有帮助。
-问题1 god">
+    <meta name="description" content="编译系统为每个包含虚函数的类包括它的子类都创建一个虚函数表，称为vftable，这是一个指针数组，存放每个虚函数的入口地址，供该类的所有对象共享。在每个类对象中放置称为vfptr的虚表指针，指向所属类的虚函数表。当通过指针调用虚函数时，编译器通过vfptr，在其所指的虚函数表中查找函数入口地址，从而">
     
     
     
@@ -69,15 +68,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/03/17/通过GitHub和Hexo搭建个人博客遇到的问题/" title="通过GitHub和Hexo搭建个人博客遇到的问题" itemprop="url">通过GitHub和Hexo搭建个人博客遇到的问题</a>
+      <a href="/2014/08/06/C++冲刺（六）C++多态实现机制/" title="C++冲刺（五）C++多态实现机制" itemprop="url">C++冲刺（五）C++多态实现机制</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://yoursite.com" title="LinEvan">LinEvan</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-03-17T14:24:09.000Z" itemprop="datePublished">3月 17 2014</time>
-    更新日期:<time datetime="2014-07-22T13:22:27.000Z" itemprop="dateModified">7月 22 2014</time>
+    <time datetime="2014-08-06T08:05:43.000Z" itemprop="datePublished">8月 6 2014</time>
+    更新日期:<time datetime="2014-09-07T11:48:17.000Z" itemprop="dateModified">9月 7 2014</time>
     
   </p>
 </header>
@@ -86,43 +85,19 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#问题1_godaddy问题"><span class="toc-number">1.</span> <span class="toc-text">问题1 godaddy问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题2_搭建本地hexo博客时，访问localhost:4000显示乱码"><span class="toc-number">2.</span> <span class="toc-text">问题2  搭建本地hexo博客时，访问localhost:4000显示乱码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题3_搭建成功后，刚开始可以访问，过一段时间又无法登陆"><span class="toc-number">3.</span> <span class="toc-text">问题3 搭建成功后，刚开始可以访问，过一段时间又无法登陆</span></a></li></ol>
+		
 		</div>
 		
-		<p>网上一搜教程一大堆，很多已经写得很好了，我就不凑这个热闹了。推荐一篇博文：<a href="http://cnfeat.com/2014/05/10/2014-05-11-how-to-build-a-blog/" target="_blank" rel="external">如何搭建一个独立博客——简明Github Pages与Hexo教程</a>，讲得相当详细，博主也是根据这篇博文搭建的，一天轻松搞定个人博客。<br>本文就谈谈我在搭建博客遇到的一些问题，如果你没遇到最好，遇到了希望对你有帮助。</p>
-<h3 id="问题1_godaddy问题">问题1 godaddy问题</h3>
-<p>Q：通过优惠通道登陆godaddy网站在支付时没有支付宝，或者网站选择显示文字为中文也没有支付宝。怎么破？<br>A: 清理浏览器cookies，直接登陆godaddy官网，显示文字改为英文，在付款时输入优惠码，比如CJCNEW2，即可得到优惠。不同的优惠码价格不一样。</p>
-<h3 id="问题2_搭建本地hexo博客时，访问localhost:4000显示乱码">问题2  搭建本地hexo博客时，访问localhost:4000显示乱码</h3>
-<p>Q: 搭建时执行了如下命令：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-</pre></td><td class="code"><pre>npm install hexo -g
-hexo init blog
-hexo g
-hexo <span class="keyword">server</span>
-</pre></td></tr></table></figure><br>A: 查了hexo官网，才知道少敲了npm install命令<br><figure class="highlight"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-</pre></td><td class="code"><pre>npm install hexo -g
-hexo init blog
-hexo g
-npm install   <span class="comment">//就是你了。。。。</span>
-hexo <span class="keyword">server</span>
-</pre></td></tr></table></figure>
-
-<h3 id="问题3_搭建成功后，刚开始可以访问，过一段时间又无法登陆">问题3 搭建成功后，刚开始可以访问，过一段时间又无法登陆</h3>
-<p>Q: 绑定域名与GitHub Pages时我使用方法一：直接在github的Repository的根目录下面新建CNAME文件，刚开始可以访问。但本地没有创建CNAME文件，当我将本地文件deploy到github时CNAME文件会被删除，导致无法访问。<br>A: 本地创建CNAME文件（注意没有后缀），然后放到source下通过hexo命令传到github上。</p>
+		<p>编译系统为每个包含虚函数的类包括它的子类都创建一个虚函数表，称为vftable，这是一个指针数组，存放每个虚函数的入口地址，供该类的所有对象共享。在每个类对象中放置称为vfptr的虚表指针，指向所属类的虚函数表。当通过指针调用虚函数时，编译器通过vfptr，在其所指的虚函数表中查找函数入口地址，从而实现动态多态性.<br>在多重继承下，如果派生类的多个基类含有虚函数，编译系统会为它创建多个虚函数表。该类的每个对象均含多个虚表指针！</p>
+<p>insight c++ object models：<br><img src="/img/pages/c++/多态机制01.jpg" alt="多态机制01"><br><img src="/img/pages/c++/多态机制02.jpg" alt="多态机制02"></p>
+<p>总结：<br>1、每一个类都有虚表；<br>2、虚表可以继承，如果子类没有重新虚函数，那么子类虚表中仍然会有该函数的地址，只不过这个地址指向的是基类的虚函数实现。如果基类3个虚函数，那么基类的虚表中就有3项（虚函数的地址），派生类也会有虚表，至少有3项，如果重写了相应的虚函数，那么虚表的中的地址就会改变，指向自身的虚函数实现。如果派生类有自己的虚函数，那么虚函数表中就会添加该项。<br>3、派生类的虚表中虚函数的地址排列顺序和基类的虚表中虚函数地址排列顺序相同。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Tech/">Tech</a>
+  <span></span> <a href="/tags/Tech/">Tech</a><a href="/tags/c++/">c++</a>
   </div>
 
 
@@ -130,7 +105,7 @@ hexo <span class="keyword">server</span>
 
 <div class="article-share" id="share">
 
-  <div data-url="http://yoursite.com/2014/03/17/通过GitHub和Hexo搭建个人博客遇到的问题/" data-title="通过GitHub和Hexo搭建个人博客遇到的问题 | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
+  <div data-url="http://yoursite.com/2014/08/06/C++冲刺（六）C++多态实现机制/" data-title="C++冲刺（五）C++多态实现机制 | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
   </div>
 
 </div>
@@ -139,19 +114,11 @@ hexo <span class="keyword">server</span>
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2014/04/18/C++类中static成员变量及函数使用小结/" title="C++类中static成员变量及函数使用小结">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  C++类中static成员变量及函数使用小结</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2014/03/01/hello-world/"  title="Hello World">
+<a href="/2014/08/05/C++冲刺（五）C和C++内存机制/"  title="C++冲刺（五）C/C++内存机制">
  <strong>NEXT:</strong><br/> 
- <span>Hello World
+ <span>C++冲刺（五）C/C++内存机制
 </span>
 </a>
 </div>
@@ -168,7 +135,7 @@ hexo <span class="keyword">server</span>
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#问题1_godaddy问题"><span class="toc-number">1.</span> <span class="toc-text">问题1 godaddy问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题2_搭建本地hexo博客时，访问localhost:4000显示乱码"><span class="toc-number">2.</span> <span class="toc-text">问题2  搭建本地hexo博客时，访问localhost:4000显示乱码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题3_搭建成功后，刚开始可以访问，过一段时间又无法登陆"><span class="toc-number">3.</span> <span class="toc-text">问题3 搭建成功后，刚开始可以访问，过一段时间又无法登陆</span></a></li></ol>
+  
   </div>
 
 <div id="asidepart">
