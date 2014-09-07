@@ -1,0 +1,382 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>C++冲刺（五）C/C++内存机制 | LinEvan&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="LinEvan">
+    
+    <meta name="description" content="（一）C内存机制
+
+栈(Stack)： 位于函数内的局部变量（包括函数实参），由编译器负责分配释放，函数结束，栈变量失效。
+
+堆(Heap) ： 由程序员用malloc()/calloc()/realloc()分配空间，free()释放所申请的空间。如果程序员忘记free()，则会造成内存泄漏，程序">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="LinEvan&#39;s blog" title="LinEvan&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="LinEvan&#39;s blog">LinEvan&#39;s blog</a></h1>
+				<h2 class="blog-motto">Stay hungry stay foolish</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/08/05/C++冲刺（五）C和C++内存机制/" title="C++冲刺（五）C/C++内存机制" itemprop="url">C++冲刺（五）C/C++内存机制</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://yoursite.com" title="LinEvan">LinEvan</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-08-05T08:05:43.000Z" itemprop="datePublished">8月 5 2014</time>
+    更新日期:<time datetime="2014-09-07T08:17:58.000Z" itemprop="dateModified">9月 7 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+		</div>
+		
+		<p>（一）C内存机制</p>
+<ol>
+<li>栈(Stack)：<pre><code> 位于函数内的局部变量（包括函数实参），由编译器负责分配释放，函数结束，栈变量失效。
+</code></pre></li>
+<li>堆(Heap) ：<pre><code> 由程序员用<span class="built_in">malloc</span>()/<span class="built_in">calloc</span>()/realloc()分配空间，<span class="built_in">free</span>()释放所申请的空间。如果程序员忘记<span class="built_in">free</span>()，则会造成内存泄漏，程序结束时可能会由操作系统回收，也许就一直占用着直至关机。
+</code></pre></li>
+<li>全局区/静态区(Global Static Area)： <pre><code> 全局变量和静态变量存放区，程序一经编译好，该区域便存在。并且在<span class="keyword">C</span>语言中初始化的全局变量和静态变量和未初始化的放在相邻的两个区域（在<span class="keyword">C</span>++中，由于编译器会给全局变量和静态变量自动初始化赋值，所以没有区分了）。由于全局变量一直占据内存空间且不易维护，推荐少用。程序结束时释放。 
+</code></pre></li>
+<li>C风格字符串常量存储区：<pre><code> 专门存放字符串常量的地方，程序结束时释放。
+</code></pre></li>
+<li>程序代码区：<pre><code> 存放程序二进制代码的区域。
+</code></pre></li>
+</ol>
+<p><img src="/img/pages/c++/C&&C++内存机制png" alt="C&&C++内存机制">    </p>
+<pre><code>-<span class="ruby"> 文本段包含程序的指令。链接器把指令直接从文件拷贝到内存中。
+</span>-<span class="ruby"> 数据段包含经过初始化的全局和静态变量以及它们的值。<span class="constant">BBS</span>段的大小从可执行文件中得到，然后链接器得到这个大小的内存块，紧跟在数据块之后。当这个内存区进入程序的地址空间后全部清零。包括数据段和<span class="constant">BBS</span>段的整个区段此时通常统称为数据区。在任何进程中数据段是最大的段。
+</span>-<span class="ruby"> 堆栈是用于保存局部变量、临时数据、传递到函数中的参数。</span>
+</code></pre><p>堆。用于动态分配的内存。调用malloc函数</p>
+<pre><code><span class="deletion">- 虚拟空间的最低部分未被映射，它位于进程的地址空间内，但并未赋予物理地址，所以任何对它的引用都是非法的。典型情况下，它是从地址零开始的几K字节。它用于捕捉使用空指针和小整型值的指针引用内存的情况。</span>
+</code></pre><p>（二）C++内存机制</p>
+<ol>
+<li>栈(Stack)： <pre><code> 位于函数内的局部变量（包括函数实参），由编译器负责分配释放，函数结束，栈变量失效。
+</code></pre></li>
+<li>堆(Heap)： <pre><code> 这里与C不同的是，该堆是由<span class="keyword">new</span>申请的内存，由<span class="keyword">delete</span>负责释放。
+</code></pre></li>
+<li>自由存储区(Free Storage)： <pre><code> 由程序员用<span class="built_in">malloc</span>()/<span class="built_in">calloc</span>()/realloc()分配空间，由<span class="built_in">free</span>()释放。如果程序员忘记<span class="built_in">free</span>()了，则会造成内存泄漏，程序结束时可能会有操作系统回收，也许就一直占用着直至关机。
+ 与C的堆机制对应。
+</code></pre></li>
+<li>全局区/静态区(Global Static Area)： <pre><code>  <span class="comment">全局变量和静态变量存放区，程序一经编译好，该区域便存在。在C</span><span class="literal">+</span><span class="literal">+</span><span class="comment">中，由于编译器会给全局变量和静态变量自动初始化赋值，所以没有区分初始化和未初始化变量。由于全局变量一直占据内存空间且不易维护，推荐少用。程序结束时释放。</span>
+</code></pre></li>
+<li>常量存储区：<pre><code>   这是一块比较特殊的存储区，专门存储不能修改的常量（如果采用非正常手段更改，当然也是可以的）。
+</code></pre></li>
+</ol>
+<p>（三）堆和栈的区别</p>
+<p>主要的区别由以下几点：<br>　　1、管理方式不同；<br>　　2、空间大小不同；<br>　　3、能否产生碎片不同；<br>　　4、生长方向不同；<br>　　5、分配方式不同；<br>　　6、分配效率不同；</p>
+<p>　　管理方式：对于栈来讲，是由编译器自动管理，无需我们手工控制；对于堆来说，释放工作由程序员控制，容易产生memory leak。</p>
+<p>　　空间大小：一般来讲在 32 位系统下，堆内存可以达到4G的空间，从这个角度来看堆内存几乎是没有什么限制的。但是对于栈来讲，一般都是有一定的空间大小的，例如，在VC6下面，默认的栈空间大小是1M（好像是，记不清楚了）。当然，我们可以修改：打开工程，依次操作菜单如下：Project->Setting->Link，在 Category 中选中 Output，然后在 Reserve 中设定堆栈的最大值和 commit。注意：reserve 最小值为 4Byte；commit 是保留在虚拟内存的页文件里面，它设置的较大会使栈开辟较大的值，可能增加内存的开销和启动时间。</p>
+<p>　　碎片问题：对于堆来讲，频繁的 new/delete 势必会造成内存空间的不连续，从而造成大量的碎片，使程序效率降低。对于栈来讲，则不会存在这个问题，因为栈是先进后出的队列，他们是如此的一一对应，以至于永远都不可能有一个内存块从栈中间弹出，在他弹出之前，在他上面的后进的栈内容已经被弹出，详细的可以参考数据结构，这里我们就不再一一讨论了。</p>
+<p>　　生长方向：对于堆来讲，生长方向是向上的，也就是向着内存地址增加的方向；对于栈来讲，它的生长方向是向下的，是向着内存地址减小的方向增长。</p>
+<p>　　分配方式：堆都是动态分配的，没有静态分配的堆。栈有2种分配方式：静态分配和动态分配。静态分配是编译器完成的，比如局部变量的分配。动态分配由 malloc 函数进行分配，但是栈的动态分配和堆是不同的，他的动态分配是由编译器进行释放，无需我们手工实现。</p>
+<p>　　分配效率：栈是机器系统提供的数据结构，计算机会在底层对栈提供支持：分配专门的寄存器存放栈的地址，压栈出栈都有专门的指令执行，这就决定了栈的效率比较高。堆则是 C/C++ 函数库提供的，它的机制是很复杂的，例如为了分配一块内存，库函数会按照一定的算法（具体的算法可以参考数据结构/操作系统）在堆内存中搜索可用的足够大小的空间，如果没有足够大小的空间（可能是由于内存碎片太多），就有可能调用系统功能去增加程序数据段的内存空间，这样就有机会分到足够大小的内存，然后进行返回。显然，堆的效率比栈要低得多。</p>
+<p>　　从这里我们可以看到，堆和栈相比，由于大量 new/delete 的使用，容易造成大量的内存碎片；由于没有专门的系统支持，效率很低；由于可能引发用户态和核心态的切换，内存的申请，代价变得更加昂贵。所以栈在程序中是应用最广泛的，就算是函数的调用也利用栈去完成，函数调用过程中的参数，返回地址，EBP 和局部变量都采用栈的方式存放。所以，我们推荐大家尽量用栈，而不是用堆。<br>　　虽然栈有如此众多的好处，但是由于和堆相比不是那么灵活，有时候分配大量的内存空间，还是用堆好一些。<br>　　无论是堆还是栈，都要防止越界现象的发生（除非你是故意使其越界），因为越界的结果要么是程序崩溃，要么是摧毁程序的堆、栈结构，产生以想不到的结果,就算是在你的程序运行过程中。<br>　　对了，还有一件事，如果有人把堆栈合起来说，那它的意思是栈。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Tech/">Tech</a><a href="/tags/c++/">c++</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2014/08/05/C++冲刺（五）C和C++内存机制/" data-title="C++冲刺（五）C/C++内存机制 | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2014/08/04/C++冲刺（四）字节对齐问题详解/"  title="C++冲刺（四）字节对齐问题详解">
+ <strong>NEXT:</strong><br/> 
+ <span>C++冲刺（四）字节对齐问题详解
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/STL/" title="STL">STL<sup>1</sup></a></li>
+		
+			<li><a href="/tags/TCPIP/" title="TCP/IP">TCP/IP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Tech/" title="Tech">Tech<sup>20</sup></a></li>
+		
+			<li><a href="/tags/c++/" title="c++">c++<sup>17</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+      <li><a href="http://www.linkedin.com/profile/view?id=130233431&trk=nav_responsive_tab_profile_pic" target="_blank" title="Hexo">LinkedIn</a></li>		  
+      <li><a href="http://blog.csdn.net/hustLinEvan" target="_blank" title="YangJian">CSDN</a></li>
+      <li><a href="http://music.163.com/#/user/home?id=9764968" target="_blank" title="Hexo">网易云音乐</a></li>
+      <li><a href="http://www.douban.com/people/63180864/" target="_blank" title="Hexo">豆瓣</a></li>	  
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1811833191" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/linevan" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		
+		<a href="http://yoursite.com" target="_blank" title="LinEvan">LinEvan</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"linevan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+<div id="totop" style="position:fixed;bottom:150px;right:50px;cursor: pointer;">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+<script src="/js/totop.js"></script>
+  </body>
+</html>

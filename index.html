@@ -67,6 +67,52 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
+    <a href="/2014/08/05/C++冲刺（五）C和C++内存机制/" title="C++冲刺（五）C/C++内存机制" itemprop="url">
+  
+    <h1 itemprop="name">C++冲刺（五）C/C++内存机制</h1>
+    
+     
+           <p itemprop="description" >（一）C内存机制
+
+栈(Stack)： 位于函数内的局部变量（包括函数实参），由编译器负责分配释放，函数结束，栈变量失效。
+
+堆(Heap) ： 由程序员用malloc()/calloc()/realloc()分配空间，free()释放所申请的空间。如果程序员忘记free()，则</p>
+        
+    
+    <time datetime="2014-08-05T08:05:43.000Z" itemprop="datePublished">8月 5 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2014/08/04/C++冲刺（四）字节对齐问题详解/" title="C++冲刺（四）字节对齐问题详解" itemprop="url">
+  
+    <h1 itemprop="name">C++冲刺（四）字节对齐问题详解</h1>
+    
+     
+           <p itemprop="description" >一、什么是字节对齐,为什么要对齐?    现代计算机中内存空间都是按照byte划分的，从理论上讲似乎对任何类型的变量的访问可以从任何地址开始，但实际情况是在访问特定类型变量的时候经常在特 定的内存地址访问，这就需要各种类型数据按照一定的规则在空间上排列，而不是顺序的一个接一个的排</p>
+        
+    
+    <time datetime="2014-08-04T08:05:43.000Z" itemprop="datePublished">8月 4 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2014/08/03/C++冲刺（三）运算符优先级/" title="C++冲刺（三）运算符优先级" itemprop="url">
+  
+    <h1 itemprop="name">C++冲刺（三）运算符优先级</h1>
+    
+     
+           <p itemprop="description" >优先级最高的是数组下标、函数调用、操作符各结构成员操作符。（如 ()[] -&gt; .）      单目运算符的优先级仅次于前述运算符。类型转换也是单目运算（如！~ ++ — - （type）   &amp; sizeof）。单目运算符是自右至左，如p++解释为*（p++）      双目运</p>
+        
+    
+    <time datetime="2014-08-03T08:05:43.000Z" itemprop="datePublished">8月 3 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
     <a href="/2014/08/02/C++冲刺（二）内置类型转换/" title="C++冲刺（二）内置类型转换" itemprop="url">
   
     <h1 itemprop="name">C++冲刺（二）内置类型转换</h1>
@@ -179,66 +225,9 @@ Sort a linked list using insertion sort.
   </a>
 </section>
 
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2014/05/07/Effective-C++(八)定制new与delete/" title="Effective C++(八)定制new和delete" itemprop="url">
-  
-    <h1 itemprop="name">Effective C++(八)定制new和delete</h1>
-    
-     
-           <p itemprop="description" >定制new和delete
-STL容器所使用的heap内存是由容器所拥有的分配器对象（allocator ojects）管理，不是被new和delete直接管理。
-
-条款49：了解new-handler的行为
-
-请记住：
-set_new_handler允许客户指定一个函数，在内存分</p>
-        
-    
-    <time datetime="2014-05-07T07:55:55.000Z" itemprop="datePublished">5月 7 2014</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2014/05/07/Effective C++(七)模板与泛型编程/" title="Effective C++(七)模板与泛型编程" itemprop="url">
-  
-    <h1 itemprop="name">Effective C++(七)模板与泛型编程</h1>
-    
-     
-           <p itemprop="description" >条款41：了解隐式接口和编译器多态
-
-请记住：
-classes和Templates都支持隐式接口（interfaces）和多态（polymorphism）
-对classes而言接口是显式的，以函数签名为中心。多态则是通过virtual函数发生于运行期
-对templates参数而言</p>
-        
-    
-    <time datetime="2014-05-07T07:20:33.000Z" itemprop="datePublished">5月 7 2014</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2014/05/07/Effective C++(六)继承与面向对象设计/" title="Effective C++(六)继承与面向对象设计" itemprop="url">
-  
-    <h1 itemprop="name">Effective C++(六)继承与面向对象设计</h1>
-    
-     
-           <p itemprop="description" >vitual函数意味“接口必须被继承”，non-virtual函数意味“接口和实现都必须被继承”
-
-条款32：确定你的public继承塑模出is-a关系
-
-请记住：“public继承”意味is-a。适用于base classes身上的每一件事情一定也适用于derived clas</p>
-        
-    
-    <time datetime="2014-05-07T07:16:33.000Z" itemprop="datePublished">5月 7 2014</time>
-  </a>
-</section>
-
 
   <nav id="page-nav" class="clearfix">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
   </nav>
 
 </div>
@@ -261,9 +250,9 @@ classes和Templates都支持隐式接口（interfaces）和多态（polymorphism
 		
 			<li><a href="/tags/TCPIP/" title="TCP/IP">TCP/IP<sup>1</sup></a></li>
 		
-			<li><a href="/tags/Tech/" title="Tech">Tech<sup>17</sup></a></li>
+			<li><a href="/tags/Tech/" title="Tech">Tech<sup>20</sup></a></li>
 		
-			<li><a href="/tags/c++/" title="c++">c++<sup>14</sup></a></li>
+			<li><a href="/tags/c++/" title="c++">c++<sup>17</sup></a></li>
 		
 		</ul>
 </div>
