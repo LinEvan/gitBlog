@@ -67,18 +67,38 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/2014/09/07/Effective C++(三)资源管理/" title="Effective C++(三)资源管理" itemprop="url">
+    <a href="/2014/09/07/Effective-C++(八)定制new与delete/" title="Effective C++(八)定制new和delete" itemprop="url">
+  
+    <h1 itemprop="name">Effective C++(八)定制new和delete</h1>
+    
+     
+           <p itemprop="description" >定制new和delete
+STL容器所使用的heap内存是由容器所拥有的分配器对象（allocator ojects）管理，不是被new和delete直接管理。
+
+条款49：了解new-handler的行为
+
+请记住：
+set_new_handler允许客户指定一个函数，在内存分</p>
+        
+    
+    <time datetime="2014-09-07T07:55:26.000Z" itemprop="datePublished">9月 7 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2014/09/07/Effective C++(三)内存与资源管理/" title="Effective C++(三)资源管理" itemprop="url">
   
     <h1 itemprop="name">Effective C++(三)资源管理</h1>
     
      
            <p itemprop="description" >内存是必须管理的众多资源之一，其他常见的资源还包括文件描述起、互斥锁、图形界面中的字型和笔刷、数据库连接、以及网络sockets。
 
-条款13：以对象管理资源
+以对象管理资源
 
 请记住：
 为防止资源泄露，请使用RAII对象，它们在构造函数中获得资源并在析构函数中释放资源
-两个常被使用的RAII </p>
+两个常被使用的RAII class</p>
         
     
     <time datetime="2014-09-07T07:08:33.000Z" itemprop="datePublished">9月 7 2014</time>
@@ -87,18 +107,17 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/2014/09/07/Effective C++(四)接口设计与声明/" title="Effective C++(四)接口设计与声明" itemprop="url">
+    <a href="/2014/09/07/Effective C++(七)模板与泛型编程/" title="Effective C++(七)模板与泛型编程" itemprop="url">
   
-    <h1 itemprop="name">Effective C++(四)接口设计与声明</h1>
+    <h1 itemprop="name">Effective C++(七)模板与泛型编程</h1>
     
      
-           <p itemprop="description" >条款18:让接口容易被正确使用，不易被误用
+           <p itemprop="description" >条款41：了解隐式接口和编译器多态
 
 请记住：
-好的接口很容易被正确使用，不容易被误用。
-“促进正确使用”的办法包括接口的一致性，以及与内置类型的行为兼容
-“阻止误用”的办法包括建立新类型、限制类型上的操作，束缚对象值，以及消除客户的资源管理责任
-tr1::shared_</p>
+classes和Templates都支持隐式接口（interfaces）和多态（polymorphism）
+对classes而言接口是显式的，以函数签名为中心。多态则是通过virtual函数发生于运行期
+对templates参数而言</p>
         
     
     <time datetime="2014-09-07T07:08:33.000Z" itemprop="datePublished">9月 7 2014</time>
@@ -142,17 +161,18 @@ tr1::shared_</p>
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/2014/09/07/Effective C++(七)模板与泛型编程/" title="Effective C++(七)模板与泛型编程" itemprop="url">
+    <a href="/2014/09/07/Effective C++(四)接口设计与声明/" title="Effective C++(四)接口设计与声明" itemprop="url">
   
-    <h1 itemprop="name">Effective C++(七)模板与泛型编程</h1>
+    <h1 itemprop="name">Effective C++(四)接口设计与声明</h1>
     
      
-           <p itemprop="description" >条款41：了解隐式接口和编译器多态
+           <p itemprop="description" >条款18:让接口容易被正确使用，不易被误用
 
 请记住：
-classes和Templates都支持隐式接口（interfaces）和多态（polymorphism）
-对classes而言接口是显式的，以函数签名为中心。多态则是通过virtual函数发生于运行期
-对templates参数而言</p>
+好的接口很容易被正确使用，不容易被误用。
+“促进正确使用”的办法包括接口的一致性，以及与内置类型的行为兼容
+“阻止误用”的办法包括建立新类型、限制类型上的操作，束缚对象值，以及消除客户的资源管理责任
+tr1::shared_</p>
         
     
     <time datetime="2014-09-07T07:08:33.000Z" itemprop="datePublished">9月 7 2014</time>
@@ -161,18 +181,18 @@ classes和Templates都支持隐式接口（interfaces）和多态（polymorphism
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/2014/09/07/Effective C++(三)内存与资源管理/" title="Effective C++(三)资源管理" itemprop="url">
+    <a href="/2014/09/07/Effective C++(三)资源管理/" title="Effective C++(三)资源管理" itemprop="url">
   
     <h1 itemprop="name">Effective C++(三)资源管理</h1>
     
      
            <p itemprop="description" >内存是必须管理的众多资源之一，其他常见的资源还包括文件描述起、互斥锁、图形界面中的字型和笔刷、数据库连接、以及网络sockets。
 
-以对象管理资源
+条款13：以对象管理资源
 
 请记住：
 为防止资源泄露，请使用RAII对象，它们在构造函数中获得资源并在析构函数中释放资源
-两个常被使用的RAII class</p>
+两个常被使用的RAII </p>
         
     
     <time datetime="2014-09-07T07:08:33.000Z" itemprop="datePublished">9月 7 2014</time>
@@ -206,26 +226,6 @@ classes和Templates都支持隐式接口（interfaces）和多态（polymorphism
            <p itemprop="description" >导读
 
 std::size_t，这表示类型size_t位于命名空间std内。继承自C的符号有可能存在于global作用域或std内，甚或两者兼具，取决于哪个头文件被含入。size_t只是一个typedef，是C++计算个数时用的某种不带正负号(unsigned)类型。它也是vec</p>
-        
-    
-    <time datetime="2014-09-07T06:55:26.000Z" itemprop="datePublished">9月 7 2014</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2014/09/07/Effective-C++(八)定制new与delete/" title="Effective C++(八)定制new和delete" itemprop="url">
-  
-    <h1 itemprop="name">Effective C++(八)定制new和delete</h1>
-    
-     
-           <p itemprop="description" >定制new和delete
-STL容器所使用的heap内存是由容器所拥有的分配器对象（allocator ojects）管理，不是被new和delete直接管理。
-
-条款49：了解new-handler的行为
-
-请记住：
-set_new_handler允许客户指定一个函数，在内存分</p>
         
     
     <time datetime="2014-09-07T06:55:26.000Z" itemprop="datePublished">9月 7 2014</time>
