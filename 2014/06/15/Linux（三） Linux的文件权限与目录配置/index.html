@@ -1,0 +1,475 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Linux（三）Linux的文件权限与目录配置 | LinEvan&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="LinEvan">
+    
+    <meta name="description" content="Linux 用户身份与群组记录的文件。在我们Linux系统当中，默认的情况下，所有的系统上的账号与一般身份使用者，还有那个root的相关信息， 都是记录在/etc/passwd这个文件内的。至于个人的密码则是记录在/etc/shadow这个文件下。 此外，Linux所有的组名都纪录在/etc/gro">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="LinEvan&#39;s blog" title="LinEvan&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="LinEvan&#39;s blog">LinEvan&#39;s blog</a></h1>
+				<h2 class="blog-motto">Stay hungry stay foolish</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/06/15/Linux（三） Linux的文件权限与目录配置/" title="Linux（三）Linux的文件权限与目录配置" itemprop="url">Linux（三）Linux的文件权限与目录配置</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://yoursite.com" title="LinEvan">LinEvan</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-06-15T12:16:49.000Z" itemprop="datePublished">6月 15 2014</time>
+    更新日期:<time datetime="2014-09-07T12:57:04.000Z" itemprop="dateModified">9月 7 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+		</div>
+		
+		<ol>
+<li>Linux 用户身份与群组记录的文件。在我们Linux系统当中，默认的情况下，所有的系统上的账号与一般身份使用者，还有那个root的相关信息， 都是记录在/etc/passwd这个文件内的。至于个人的密码则是记录在/etc/shadow这个文件下。 此外，Linux所有的组名都纪录在/etc/group内！</li>
+<li>Linux文件属性<br><img src="./1404386070560.png" alt="ls -al"><ul>
+<li>第一栏代表这个文件的类型与权限(permission)<ul>
+<li>第一个字符代表这个文件是『目录、文件或链接文件等等』<ul>
+<li>当为[ d ]则是目录，例如上表档名为『.gconf』的那一行；</li>
+<li>当为[ - ]则是文件，例如上表档名为『install.log』那一行；</li>
+<li>若是[ l ]则表示为连结档(link file)；</li>
+<li>若是[ b ]则表示为装置文件里面的可供储存的接口设备(可随机存取装置)；</li>
+<li>若是[ c ]则表示为装置文件里面的串行端口设备，例如键盘、鼠标(一次性读取装置)。</li>
+</ul>
+</li>
+<li>接下来的字符中，以三个为一组，且均为『rwx』 的三个参数的组合。其中，[ r ]代表可读(read)、[ w ]代表可写(write)、[ x ]代表可执行(execute)。 要注意的是，这三个权限的位置不会改变，如果没有权限，就会出现减号[ - ]而已。<ul>
+<li>第一组为『文件拥有者的权限』，以『install.log』那个文件为例， 该文件的拥有者可以读写，但不可执行；</li>
+<li>第二组为『同群组的权限』；</li>
+<li>第三组为『其他非本群组的权限』。<br>目录与文件的权限意义并不相同，这是因为目录与文件所记录的数据内容不相同所致。 由于目录与文件的权限意义非常的重要</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>第二栏表示有多少档名连结到此节点(i-node)<br>每个文件都会将他的权限与属性记录到文件系统的i-node中，不过，我们使用的目录树却是使用文件名来记录， 因此每个档名就会连结到一个i-node啰！这个属性记录的，就是有多少不同的档名连结到相同的一个i-node号码去就是了。</li>
+<li>第三栏表示这个文件(或目录)的『拥有者账号』</li>
+<li>第四栏表示这个文件的所属群组<br>在Linux系统下，你的账号会附属于一个或多个的群组中。</li>
+<li>第五栏为这个文件的容量大小，默认单位为bytes；</li>
+<li>第六栏为这个文件的建档日期或者是最近的修改日期：<br>这一栏的内容分别为日期(月/日)及时间。如果这个文件被修改的时间距离现在太久了，那么时间部分会仅显示年份而已。 如果想要显示完整的时间格式，可以利用ls的选项，亦即：『ls -l —full-time』就能够显示出完整的时间格式了！</li>
+<li>第七栏为这个文件的档名<br>这个字段就是档名了。比较特殊的是：如果档名之前多一个『 . 』，则代表这个文件为『隐藏档』</li>
+</ul>
+</li>
+<li>Linux文件权限的重要性<br> 最大的用途是在『数据安全性』上面的。<ul>
+<li>系统保护的功能</li>
+<li>团队开发软件或数据共享的功能</li>
+<li>未将权限设定妥当的危害：很多。。。</li>
+</ul>
+</li>
+<li>如何改变文件属性与权限<br>chgrp ：改变文件所属群组<br>chown ：改变文件拥有者<br>chmod ：改变文件的权限, SUID, SGID, SBIT等等的特性<ul>
+<li>改变所属群组, chgrp<br>请记得，要被改变的组名必须要在/etc/group文件内存在才行，否则就会显示错误！<br><img src="./1404386681351.png" alt="Alt text"></li>
+<li>改变文件拥有者, chown<br>要注意的是， 用户必须是已经存在系统中的账号，也就是在/etc/passwd 这个文件中有纪录的用户名称才能改变。chown的用途还满多的，他还可以顺便直接修改群组的名称呢！此外，如果要连目录下的所有次目录或文件同时更改文件拥有者的话，直接加上 -R 的选项即可！<br><img src="./1404386803099.png" alt="Alt text"><br>chown也可以使用『chown user.group file』，亦即在拥有者与群组间加上小数点『.』。chown也能单纯的修改所属群组呢！ 例如『chown .sshd install.log』就是修改群组～<br>由于复制行为(cp)会复制执行者的属性与权限，如果要修改或查看，所以你就必须要将这个文件的拥有者与群组修改一下！</li>
+<li>改变权限, chmod<br>文件权限的改变使用的是chmod这个指令，但是，权限的设定方法有两种， 分别可以使用数字或者是符号来进行权限的变更。<ul>
+<li>数字类型改变文件权限<br>各权限的分数对照表如下：r:4，w:2，x:1，每种身份(owner/group/others)各自的三个权限(r/w/x)分数是需要累加的，例如当权限为： [-rwxrwx—-] 分数则是：owner = rwx = 4+2+1 = 7，group = rwx = 4+2+1 = 7，others= —- = 0+0+0 = 0<br><img src="./1404387385767.png" alt="Alt text"><br><img src="./1404387396258.png" alt="Alt text"></li>
+<li>符号类型改变文件权限<br>(1)user (2)group (3)others藉由u, g, o来代表，a 则代表 all 亦即全部的身份！<br><img src="./1404387500000.png" alt="Alt text"><br>一个文件的权限成为『-rwxr-xr-x』时：<br><img src="./1404387584927.png" alt="Alt text"><br>我只想要增加.bashrc这个文件的每个人均可写入的权限：<br><img src="./1404387618728.png" alt="Alt text"><br>如果是要将权限去掉而不更动其他已存在的权限呢：<br><img src="./1404387686083.png" alt="Alt text"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>目录与文件之权限意义<ul>
+<li>权限对文件的重要性<br>文件是实际含有数据的地方，包括一般文本文件、数据库内容文件、二进制可执行文件(binary program)等等。 因此，权限对于文件来说，他的意义是这样的：<br>1) r (read)：可读取此一文件的实际内容，如读取文本文件的文字内容等；<br>2) w (write)：可以编辑、新增或者是修改该文件的内容(但不含删除该文件)；<br>3) x (execute)：该文件具有可以被系统执行的权限。<br>在Linux底下，我们的文件是否能被执行，则是藉由是否具有『x』这个权限来决定的！跟档名是没有绝对的关系的！<br>当你对一个文件具有w权限时，你可以具有写入/编辑/新增/修改文件的内容的权限， 但并不具备有删除该文件本身的权限！对于文件的rwx来说， 主要都是针对『文件的内容』而言，与文件档名的存在与否没有关系喔！因为文件记录的是实际的数据嘛！</li>
+<li>权限对目录的重要性<br>文件是存放实际数据的所在，那么目录主要是储存啥玩意啊？目录主要的内容在记录文件名列表，文件名与目录有强烈的关连啦！<br>1) r (read contents in directory)<br>表示具有读取目录结构列表的权限，所以当你具有读取(r)一个目录的权限时，表示你可以查询该目录下的文件名数据。 所以你就可以利用 ls 这个指令将该目录的内容列表显示出来！<br>2) w (modify contents of directory)<br>这个可写入的权限对目录来说，是很了不起的！ 因为他表示你具有异动该目录结构列表的权限，也就是底下这些权限：(1)建立新的文件与目录；(2)删除已经存在的文件与目录(不论该文件的权限为何！)(3)将已存在的文件或目录进行更名；(4)搬移该目录内的文件、目录位置。总之，目录的w权限就与该目录底下的文件名异动有关就对了啦！<br>3) x (access directory)<br>目录不可以被执行，目录的x代表的是用户能否进入该目录成为工作目录的用途！ 所谓的工作目录(work directory)就是你目前所在的目录啦！<br>如果你在某目录下不具有x的权限， 那么你就无法切换到该目录下，也就无法执行该目录下的任何指令，即使你具有该目录的r的权限。<br>要开放目录给任何人浏览时，应该至少也要给予r及x的权限，但w权限不可随便给！<br><img src="./1404388327995.png" alt="Alt text"><br><img src="./1404388336115.png" alt="Alt text"><br>只有r确实可以让用户读取目录的文件名列表，不过详细的信息却还是读不到的， 同时也不能将该目录变成工作目录(用 cd 进入该目录之意)。<br><img src="./1404388347058.png" alt="Alt text"><br>x 在目录当中是与『能否进入该目录』有关， 至于那个 w 则具有相当重要的权限，因为他可以让使用者删除、更新、新建文件或目录， 是个很重要的参数啊！</li>
+</ul>
+</li>
+<li>Linux文件种类与扩展名<br>任何装置在Linux底下都是文件， 不仅如此，连数据沟通的接口也有专属的文件在负责～<br>文件种类： 除了常见的一般文件(-)与目录文件(d)之外，还有哪些种类的文件类型呢？<ul>
+<li>正规文件(regular file )<ul>
+<li>纯文本档(ASCII)：这是Linux系统中最多的一种文件类型啰， 称为纯文本档是因为内容为我们人类可以直接读到的数据，例如数字、字母等等。 几乎只要我们可以用来做为设定的文件都属于这一种文件类型。 </li>
+<li>二进制文件(binary)：我们的系统其实仅认识且可以执行二进制文件(binary file)吧</li>
+<li>数据格式文件(data)： 有些程序在运作的过程当中会读取某些特定格式的文件，那些特定格式的文件可以被称为数据文件 (data file)。</li>
+</ul>
+</li>
+<li>目录(directory)</li>
+<li>连结档(link)<br>就是类似Windows系统底下的快捷方式啦！ 第一个属性为[l] (英文L的小写)</li>
+<li>设备与装置文件(device)<br>与系统周边及储存等相关的一些文件， 通常都集中在/dev这个目录之下！通常又分为两种：<ul>
+<li>区块(block)设备档：就是一些储存数据， 以提供系统随机存取的接口设备，举例来说，硬盘与软盘等就是啦！ 你可以随机的在硬盘的不同区块读写，这种装置就是成组设备啰！你可以自行查一下/dev/sda看看， 会发现第一个属性为[ b ]</li>
+<li>字符(character)设备文件：亦即是一些串行端口的接口设备， 例如键盘、鼠标等等！这些设备的特色就是『一次性读取』的，不能够截断输出。 </li>
+</ul>
+</li>
+<li>数据接口文件(sockets)：既然被称为数据接口文件， 想当然尔，这种类型的文件通常被用在网络上的数据承接了。我们可以启动一个程序来监听客户端的要求， 而客户端就可以透过这个socket来进行数据的沟通了。第一个属性为 [ s ]， 最常在/var/run这个目录中看到这种文件类型了。</li>
+<li>数据输送文件(FIFO, pipe)：FIFO也是一种特殊的文件类型，他主要的目的在解决多个程序同时存取一个文件所造成的错误问题。 FIFO是first-in-first-out的缩写。第一个属性为[p] 。</li>
+</ul>
+</li>
+<li>Linux文件扩展名<br> Linux的文件是没有所谓的『扩展名』的。<br> 可以被执行跟可以执行成功是不一样的～这个x代表这个文件具有可执行的能力， 但是能不能执行成功，当然就得要看该文件的内容啰～不过我们仍然希望可以藉由扩展名来了解该文件是什么东西，所以， 通常我们还是会以适当的扩展名来表示该文件是什么种类的。底下有数种常用的扩展名：<ul>
+<li><code>*.sh</code> ： 脚本或批处理文件 (scripts)，因为批处理文件为使用shell写成的，所以扩展名就编成 .sh ；</li>
+<li><code>*Z, *.tar, *.tar.gz, *.zip, *.tgz：</code>经过打包的压缩文件。这是因为压缩软件分别为 gunzip, tar 等等的，由于不同的压缩软件，而取其相关的扩展名啰！    </li>
+<li><code>*.html, *.php</code>：网页相关文件，分别代表 HTML 语法与 PHP 语法的网页文件啰！ .html 的文件可使用网页浏览器来直接开启，至于 .php 的文件， 则可以透过 client 端的浏览器来 server 端浏览，以得到运算后的网页结果呢！</li>
+<li>基本上，Linux系统上的文件名真的只是让你了解该文件可能的用途而已， 真正的执行与否仍然需要权限的规范才行！</li>
+</ul>
+</li>
+<li>Linux文件长度限制<br>在Linux底下，使用预设的Ext2/Ext3文件系统时，针对文件的档名长度限制为：<br>1) 单一文件或目录的最大容许文件名为 255 个字符；<br>2) 包含完整路径名称及目录 (/) 之完整档名为 4096 个字符。</li>
+<li>Linux文件名的限制<br>你在设定Linux底下的文件名时， 最好可以避免一些特殊字符比较好！例如底下这些：* ? > < ; & ! [ ] | \ ‘ “ ` ( ) { }。因为这些符号在文字接口下，是有特殊意义的！最好也避免将文件档名的开头以 - 或 + 来命名啊！</li>
+<li>Linux目录配置<ul>
+<li>Linux目录配置的依据—FHS (Filesystem Hierarchy Standard)<br>将目录定义成为四种交互作用的形态，用表格来说有点像底下这样：<br><img src="./1404389705877.png" alt="Alt text"><ul>
+<li>可分享的：可以分享给其他系统挂载使用的目录，所以包括执行文件与用户的邮件等数据， 是能够分享给网络上其他主机挂载用的目录；</li>
+<li>不可分享的：自己机器上面运作的装置文件或者是与程序有关的socket文件等， 由于仅与自身机器有关，所以当然就不适合分享给其他主机了。</li>
+<li>不变的：有些数据是不会经常变动的，跟随着distribution而不变动。 例如函式库、文件说明文件、系统管理员所管理的主机服务配置文件等等；</li>
+<li>可变动的：经常改变的数据，例如登录文件、一般用户可自行收受的新闻组等。<br>事实上，FHS针对目录树架构仅定义出三层目录底下应该放置什么数据而已，分别是底下这三个目录的定义：</li>
+<li>/ (root, 根目录)：与开机系统有关；</li>
+<li>/usr (unix software resource)：与软件安装/执行有关；</li>
+<li>/var (variable)：与系统运作过程有关。</li>
+</ul>
+</li>
+<li>根目录 (/) 的意义与内容<br>根目录也与开机/还原/系统修复等动作有关。由于系统开机时需要特定的开机软件、核心文件、开机所需程序、 函式库等等文件数据，若系统出现错误时，根目录也必须要包含有能够修复文件系统的程序才行。因此FHS标准建议：根目录(/)所在分割槽应该越小越好， 且应用程序所安装的软件最好不要与根目录放在同一个分割槽内，保持根目录越小越好。 如此不但效能较佳，根目录所在的文件系统也较不容易发生问题。因此FHS定义出根目录(/)底下应该要有底下这些次目录的存在才好：<br><img src="./1404390521676.png" alt="Alt text"><br><img src="./1404390552294.png" alt="Alt text"><br>事实上FHS针对根目录所定义的标准就仅有上面的咚咚，底下是几个在Linux当中也是非常重要的目录喔：<br><img src="./1404390580420.png" alt="Alt text"><br>除了这些目录的内容之外，另外要注意的是，因为根目录与开机有关，开机过程中仅有根目录会被挂载， 其他分割槽则是在开机完成之后才会持续的进行挂载的行为。就是因为如此，因此根目录下与开机过程有关的目录， 就不能够与根目录放到不同的分割槽去！那哪些目录不可与根目录分开呢？有底下这些：<br>1) /etc：配置文件<br>2) /bin：重要执行档<br>3) /dev：所需要的装置文件<br>4) /lib：执行档所需的函式库与核心所需的模块<br>5) /sbin：重要的系统执行文件</li>
+<li>/usr 的意义与内容<br>usr是Unix Software Resource的缩写， 也就是『Unix操作系统软件资源』所放置的目录，而不是用户的数据啦！<br>因为是所有系统默认的软件(distribution发布者提供的软件)都会放置到/usr底下，因此这个目录有点类似Windows 系统的『C:\Windows\ + C:\Program files\』这两个目录的综合体，系统刚安装完毕时，这个目录会占用最多的硬盘容量。<br><img src="./1404390810958.png" alt="Alt text"></li>
+<li>/var 的意义与内容<br>如果/usr是安装时会占用较大硬盘容量的目录，那么/var就是在系统运作后才会渐渐占用硬盘容量的目录。 因为/var目录主要针对常态性变动的文件，包括缓存(cache)、登录档(log file)以及某些软件运作所产生的文件， 包括程序文件(lock file, run file)，或者例如MySQL数据库的文件等等。常见的次目录有：<br><img src="./1404391072284.png" alt="Alt text"></li>
+</ul>
+</li>
+<li>目录树(directory tree)<br>『目录树(directory tree)』 主要的特性有：<br>1）目录树的启始点为根目录 (/, root)；<br>2）每一个目录不止能使用本地端的 partition 的文件系统，也可以使用网络上的 filesystem 。举例来说， 可以利用 Network File System (NFS) 服务器挂载某特定目录等。<br>3）每一个文件在此目录树中的文件名(包含完整路径)都是独一无二的。<br>如果我们将整个目录树以图标的方法来显示，并且将较为重要的文件数据列出来的话，那么目录树架构有点像这样：<br><img src="./1404391550543.png" alt="Alt text"></li>
+<li>绝对路径与相对路径<br>根据档名写法的不同，也可将所谓的路径(path)定义为绝对路径(absolute)与相对路径(relative)。<br>1).  ：代表当前的目录，也可以使用 ./ 来表示；<br>2).. ：代表上一层目录，也可以 ../ 来代表。<br>『./』代表『本目录』的意思，所以『./run.sh』代表『执行本目录下， 名为run.sh的文件』</li>
+<li>重点回顾：<ul>
+<li>Linux的每个文件中，依据权限分为使用者、群组与其他人三种身份；</li>
+<li>群组最有用的功能之一，就是当你在团队开发资源的时候，且每个账号都可以有多个群组的支持；</li>
+<li>利用ls -l显示的文件属性中，第一个字段是文件的权限，共有十个位，第一个位是文件类型， 接下来三个为一组共三组，为使用者、群组、其他人的权限，权限有r,w,x三种；</li>
+<li>更改文件的群组支持可用chgrp，修改文件的拥有者可用chown，修改文件的权限可用chmod</li>
+<li>chmod修改权限的方法有两种，分别是符号法与数字法，数字法中r,w,x分数为4,2,1；</li>
+<li>对文件来讲，权限的效能为：<ul>
+<li>r：可读取此一文件的实际内容，如读取文本文件的文字内容等；</li>
+<li>w：可以编辑、新增或者是修改该文件的内容(但不含删除该文件)；</li>
+<li>x：该文件具有可以被系统执行的权限。</li>
+</ul>
+</li>
+<li>对目录来说，权限的效能为：<ul>
+<li>r (read contents in directory)</li>
+<li>w (modify contents of directory)</li>
+<li>x (access directory)</li>
+</ul>
+</li>
+<li>要开放目录给任何人浏览时，应该至少也要给予r及x的权限，但w权限不可随便给；</li>
+<li>Linux档名的限制为：单一文件或目录的最大容许文件名为 255 个字符；包含完整路径名称及目录 (/) 之完整档名为 4096 个字符</li>
+<li>根据FHS的官方文件指出， 他们的主要目的是希望让使用者可以了解到已安装软件通常放置于那个目录下</li>
+<li>FHS订定出来的四种目录特色为：shareable, unshareable, static, variable等四类；</li>
+<li>FHS所定义的三层主目录为：/, /var, /usr三层而已；</li>
+<li>有五个目录不可与根目录放在不同的partition，分别为/etc, /bin, /lib, /dev, /sbin五个。</li>
+</ul>
+</li>
+<li>课后题<ul>
+<li>请说明/bin与/usr/bin目录所放置的执行文件有何不同之处？<br>/bin主要放置在开机时，以及进入单人维护模式后还能够被使用的指令，至于/usr/bin则是大部分软件提供的指令放置处。</li>
+<li>请说明/bin与/sbin目录所放置的执行文件有何不同之处？<br>/bin放置的是一般用户惯用的指令，至于/sbin则是系统管理员才会使用到的指令。不过/bin与/sbin都与开机、单人维护模式有关。 更多的执行档会被放置到/usr/bin及/usr/sbin底下。</li>
+<li>试说明为何根目录要小一点比较好？另外在分割时，为什么/home, /usr, /var, /tmp最好与根目录放到不同的分割槽？ 试说明可能的原因为何(由目录放置数据的内容谈起)？<br>根据FHS的说明，越小的/可以放置的较为集中且读取频率较不频繁，可避免较多的错误。 至于/home(用户家目录), /usr(软件资源), /var(变动幅度较大的数据), /tmp(系统暂存，数据莫名)中， 因为数据量较大或者是读取频率较高，或者是不明的使用情况较多，因此建议不要与根目录放在一起， 也会有助于系统安全。</li>
+<li>Linux 传统的文件系统为何？此外，常用的 Journaling 文件格式有哪些？<br>传统文件格式为：ext2,<br>Journaling 有 ext3 及 Reiserfs 等</li>
+<li>请问底下的目录与主要放置什么数据：/etc/, /etc/init.d, /boot, /usr/bin, /bin, /usr/sbin, /sbin, /dev, /var/log<br>/etc/：几乎系统的所有配置文件案均在此，尤其 passwd,shadow<br>/etc/init.d：系统开机的时候加载服务的 scripts 的摆放地点<br>/boot：开机配置文件，也是预设摆放核心 vmlinuz 的地方<br>/usr/bin, /bin：一般执行档摆放的地方<br>/usr/sbin, /sbin：系统管理员常用指令集<br>/dev：摆放所有系统装置文件的目录<br>/var/log：摆放系统注册表文件的地方</li>
+</ul>
+</li>
+</ol>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Linux/">Linux</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2014/06/15/Linux（三） Linux的文件权限与目录配置/" data-title="Linux（三）Linux的文件权限与目录配置 | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/06/16/Linux（四）Linux文件与目录管理/" title="Linux（六）Linux文件与目录管理">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  Linux（六）Linux文件与目录管理</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/06/14/Linux（二）Linux使用和man page/"  title="Linux（二）Linux使用和man page">
+ <strong>NEXT:</strong><br/> 
+ <span>Linux（二）Linux使用和man page
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>6</sup></a></li>
+		
+			<li><a href="/tags/STL/" title="STL">STL<sup>1</sup></a></li>
+		
+			<li><a href="/tags/TCPIP/" title="TCP/IP">TCP/IP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Tech/" title="Tech">Tech<sup>20</sup></a></li>
+		
+			<li><a href="/tags/c++/" title="c++">c++<sup>18</sup></a></li>
+		
+			<li><a href="/tags/数据结构/" title="数据结构">数据结构<sup>7</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+      <li><a href="http://www.linkedin.com/profile/view?id=130233431&trk=nav_responsive_tab_profile_pic" target="_blank" title="Hexo">LinkedIn</a></li>		  
+      <li><a href="http://blog.csdn.net/hustLinEvan" target="_blank" title="YangJian">CSDN</a></li>
+      <li><a href="http://music.163.com/#/user/home?id=9764968" target="_blank" title="Hexo">网易云音乐</a></li>
+      <li><a href="http://www.douban.com/people/63180864/" target="_blank" title="Hexo">豆瓣</a></li>	  
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1811833191" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/linevan" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		
+		<a href="http://yoursite.com" target="_blank" title="LinEvan">LinEvan</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"linevan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+<div id="totop" style="position:fixed;bottom:150px;right:50px;cursor: pointer;">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+<script src="/js/totop.js"></script>
+  </body>
+</html>

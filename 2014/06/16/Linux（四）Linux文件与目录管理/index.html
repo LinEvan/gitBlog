@@ -1,0 +1,491 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Linux（六）Linux文件与目录管理 | LinEvan&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="LinEvan">
+    
+    <meta name="description" content="目录的相关操作在所有目录底下都会存在的两个目录，分别是『.』与『..』 
+cd (变换目录)
+pwd (显示目前所在的目录)pwd是Print Working Directory的缩写，也就是显示目前所在目录的命令
+mkdir (创建新目录)
+rmdir (删除『空』的目录)被删除的目录里面必定不能">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="LinEvan&#39;s blog" title="LinEvan&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="LinEvan&#39;s blog">LinEvan&#39;s blog</a></h1>
+				<h2 class="blog-motto">Stay hungry stay foolish</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/06/16/Linux（四）Linux文件与目录管理/" title="Linux（六）Linux文件与目录管理" itemprop="url">Linux（六）Linux文件与目录管理</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://yoursite.com" title="LinEvan">LinEvan</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-06-16T12:16:49.000Z" itemprop="datePublished">6月 16 2014</time>
+    更新日期:<time datetime="2014-09-07T12:57:44.000Z" itemprop="dateModified">9月 7 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+		</div>
+		
+		<ol>
+<li>目录的相关操作<br><img src="./1404395758668.png" alt="Alt text"><br>在所有目录底下都会存在的两个目录，分别是『.』与『..』 <ul>
+<li>cd (变换目录)<br><img src="./1404396093647.png" alt="Alt text"></li>
+<li>pwd (显示目前所在的目录)<br><img src="./1404396056472.png" alt="Alt text"><br>pwd是Print Working Directory的缩写，也就是显示目前所在目录的命令</li>
+<li>mkdir (创建新目录)<br><img src="./1404396193079.png" alt="Alt text"></li>
+<li>rmdir (删除『空』的目录)<br><img src="./1404396287564.png" alt="Alt text"><br>被删除的目录里面必定不能存在其他的目录或文件！那如果要将所有目录下的东西都杀掉呢？！ 这个时候就必须使用『 rm -r test 』</li>
+</ul>
+</li>
+<li>关於运行档路径的变量： $PATH<br> 命令ls完整档名为：/bin/ls(这是绝对路径)。输入『ls』，系统会依照PATH的配置去每个PATH定义的目录下搜寻档名为ls的可运行档， 如果在PATH定义的目录中含有多个档名为ls的可运行档，那么先搜寻到的同名命令先被运行！<br><img src="./1404397132098.png" alt="Alt text"><br>PATH(一定是大写)这个变量的内容是由一堆目录所组成的，每个目录中间用冒号(:)来隔开， 每个目录是有『顺序』之分的。<br>我们使用『绝对路径』也可以运行到该命令的！（ifconfig的是放置到/sbin底下，而由上表的结果中我们可以发现vbird的PATH并没有配置/sbin， 所以默认无法运行。可以使用『/sbin/ifconfig eth0』来运行这个命令喔！）<br>为了安全起见，不建议将『.』加入PATH的搜寻目录中。<ul>
+<li>不同身份使用者默认的PATH不同，默认能够随意运行的命令也不同(如root与vbird)；</li>
+<li>PATH是可以修改的，所以一般使用者还是可以透过修改PATH来运行某些位於/sbin或/usr/sbin下的命令来查询；</li>
+<li>使用绝对路径或相对路径直接指定某个命令的档名来运行，会比搜寻PATH来的正确；</li>
+<li>命令应该要放置到正确的目录下，运行才会比较方便；</li>
+<li>本目录(.)最好不要放到PATH当中。</li>
+</ul>
+</li>
+<li>文件与目录管理<ul>
+<li>文件与目录的检视： ls<br><img src="./1404397570250.png" alt="Alt text"><br>当你只有下达 ls 时，默认显示的只有：非隐藏档的档名、 以档名进行排序及档名代表的颜色显示如此而已。<br><img src="./1404397715973.png" alt="Alt text"><br>为此，很多 distribution 在默认的情况中， 已经将 ll (L 的小写) 配置成为 ls -l 的意思了！</li>
+<li>复制、删除与移动： cp, rm, mv<ul>
+<li>cp (复制文件或目录)<br><img src="./1404397978026.png" alt="Alt text"><br><img src="./1404398103394.png" alt="Alt text"><br>在默认的条件中， cp 的来源档与目的档的权限是不同的，目的档的拥有者通常会是命令操作者本身。因此当我们在进行备份的时候，某些需要特别注意的特殊权限文件， 例如密码档 (/etc/shadow) 以及一些配置档，就不能直接以 cp 来复制，而必须要加上 -a 或者是 -p 等等可以完整复制文件权限的选项才行！<br><img src="./1404398351283.png" alt="Alt text"><br>范例四可有趣了！使用 -l 及 -s 都会创建所谓的连结档(link file)，但是这两种连结档却有不一样的情况。这是怎么一回事啊？ 那个 -l 就是所谓的实体连结(hard link)，至於 -s 则是符号连结(symbolic link)， 简单来说，bashrc_slink 是一个『捷径』，这个捷径会连结到bashrc去！至於bashrc_hlink文件与bashrc的属性与权限完全一模一样，与尚未进行连结前的差异则是第二栏的link数由1变成2了！<br><img src="./1404398496929.png" alt="Alt text"><br>例题：你能否使用vbird的身份，完整的复制/var/log/wtmp文件到/tmp底下，并更名为vbird_wtmp呢？<br><img src="./1404436895511.png" alt="Alt text"><br>由於vbird的身份并不能随意修改文件的拥有者与群组，因此虽然能够复制wtmp的相关权限与时间等属性， 但是与拥有者、群组相关的，原本vbird身份无法进行的动作，即使加上 -a 选项，也是无法达成完整复制权限的！<br>由於 cp 有种种的文件属性与权限的特性，所以，在复制时，你必须要清楚的了解到：<br>1) 是否需要完整的保留来源文件的资讯？<br>2) 来源文件是否为连结档 (symbolic link file)？<br>3) 来源档是否为特殊的文件，例如 FIFO, socket 等？<br>4) 来源档是否为目录？</li>
+<li>rm (移除文件或目录)<br><img src="./1404437389055.png" alt="Alt text"><br>通常在Linux系统下，为了怕文件被误杀，所以很多 distributions 都已经默认加入 -i 这个选项了！不过，使用『 rm -r 』这个命令之前，请千万注意了，因为该目录或文件『肯定』会被 root 杀掉！因为系统不会再次询问你是否要砍掉呦！</li>
+<li>mv (移动文件与目录，或更名)<br><img src="./1404437562229.png" alt="Alt text"><br>在 Linux 才有的命令当中，有个 rename，可以用来更改大量文件的档名，你可以利用 man rename 来查阅一下，也是挺有趣的命令喔！</li>
+</ul>
+</li>
+<li>取得路径的文件名称与目录名称<br><img src="./1404437684390.png" alt="Alt text"></li>
+</ul>
+</li>
+<li>文件内容查阅<br>cat  由第一行开始显示文件内容<br>tac  从最后一行开始显示，可以看出 tac 是 cat 的倒著写！<br>nl   显示的时候，顺道输出行号！<br>more 一页一页的显示文件内容<br>less 与 more 类似，但是比 more 更好的是，他可以往前翻页！<br>head 只看头几行<br>tail 只看尾巴几行<br>od   以二进位的方式读取文件内容！<ul>
+<li>直接检视文件内容<br>直接查阅一个文件的内容可以使用 cat/tac/nl 这几个命令啊！<ul>
+<li>cat (concatenate)<br><img src="./1404440101519.png" alt="Alt text"><br>cat 是 Concatenate （连续）的简写， 主要的功能是将一个文件的内容连续的印出在萤幕上面！</li>
+<li>tac (反向列示)<br><img src="./1404440167008.png" alt="Alt text"></li>
+<li>nl (添加行号列印)<br><img src="./1404440187602.png" alt="Alt text"></li>
+</ul>
+</li>
+<li>可翻页检视<br>前面提到的 nl 与 cat, tac 等等，都是一次性的将数据一口气显示到萤幕上面，那有没有可以进行一页一页翻动的命令？<ul>
+<li>more (一页一页翻动)<br><img src="./1404440243559.png" alt="Alt text"><br>1) 空白键 (space)：代表向下翻一页；<br>2) Enter  ：代表向下翻『一行』；<br>3) /字串  ：代表在这个显示的内容当中，向下搜寻『字串』这个关键字；<br>4) :f            ：立刻显示出档名以及目前显示的行数；<br>5) q             ：代表立刻离开 more ，不再显示该文件内容。<br>6) b 或 [ctrl]-b ：代表往回翻页，不过这动作只对文件有用，对管线无用。</li>
+<li>less (一页一页翻动)<br><img src="./1404440334578.png" alt="Alt text"><br>1) 空白键    ：向下翻动一页；<br>2) [pagedown]：向下翻动一页；<br>3) [pageup]  ：向上翻动一页；<br>4) /字串     ：向下搜寻『字串』的功能；<br>5) ?字串     ：向上搜寻『字串』的功能；<br>6) n         ：重复前一个搜寻 (与 / 或 ? 有关！)<br>7) N         ：反向的重复前一个搜寻 (与 / 或 ? 有关！)<br>8) q         ：离开 less 这个程序；<br>man这个命令就是呼叫 less 来显示说明文件的内容的！ </li>
+</ul>
+</li>
+<li>数据撷取<br>取出前面 (head) 与取出后面 (tail) 文字的功能,要注意的是， head 与 tail 都是以『行』为单位来进行数据撷取！<ul>
+<li>head (取出前面几行)<br><img src="./1404440430940.png" alt="Alt text"><br>那个 -n 选项后面的参数较有趣，如果接的是负数，例如上面范例的-n -100时，代表列前的所有行数， 但不包括后面100行。</li>
+<li>tail (取出后面几行)<br><img src="./1404440475903.png" alt="Alt text"><br>范例一:当下达『tail -n +100 /etc/man.config』 代表该文件从100行以后都会被列出来<br>至於范例二中，由於/var/log/messages随时会有数据写入，你想要让该文件有数据写入时就立刻显示到萤幕上， 就利用 -f 这个选项</li>
+</ul>
+</li>
+<li>非纯文字档： od<br><img src="./1404440577198.png" alt="Alt text"><br>可以将 data file 或者是 binary file 的内容数据给他读出来喔！ 虽然读出的来数值默认是使用非文字档，亦即是 16 进位的数值来显示的， 不过，我们还是可以透过 -t c 的选项与参数来将数据内的字节以 ASCII 类型的字节来显示。</li>
+<li>修改文件时间或建置新档： touch<br>三个时间的意义是什么呢：<br>1) modification time (mtime)<br>当该文件的『内容数据』变更时，就会升级这个时间！内容数据指的是文件的内容，而不是文件的属性或权限喔！<br>2) status time (ctime)<br>当该文件的『状态 (status)』改变时，就会升级这个时间，举例来说，像是权限与属性被更改了，都会升级这个时间啊。<br>3) access time (atime)<br>当『该文件的内容被取用』时，就会升级这个读取时间 (access)。举例来说，我们使用 cat 去读取 /etc/man.config ， 就会升级该文件的 atime 了。<br><img src="./1404441872137.png" alt="Alt text"><br>在默认的情况下，ls 显示出来的是该文件的 mtime ，也就是这个文件的内容上次被更动的时间。文件的时间是很重要的，因为，如果文件的时间误判的话，可能会造成某些程序无法顺利的运行。那么万一我发现了一个文件来自未来，该如何让该文件的时间变成『现在』的时刻呢？ 很简单啊！就用『touch』这个命令即可！    <img src="./1404441918235.png" alt="Alt text"><br>至於分号『 ; 』则代表连续命令的下达啦！你可以在一行命令当中写入多重命令， 这些命令可以『依序』运行。至於运行的结果当中，我们可以发现数据的内容与属性是被复制过来的，因此文件内容时间(mtime)与原本文件相同。 但是由於这个文件是刚刚被创建的，因此状态(ctime)与读取时间就便呈现在的时间啦！<br><img src="./1404441983572.png" alt="Alt text"><br>透过 touch 这个命令，我们可以轻易的修订文件的日期与时间。并且也可以创建一个空的文件喔！ 不过，要注意的是，即使我们复制一个文件时，复制所有的属性，但也没有办法复制 ctime 这个属性的。 ctime 可以记录这个文件最近的状态 (status) 被改变的时间。<br>touch 这个命令最常被使用的情况是：<br>1) 创建一个空的文件；<br>2) 将某个文件日期修订为目前 (mtime 与 atime)</li>
+</ul>
+</li>
+<li>文件与目录的默认权限与隐藏权限<ul>
+<li>文件默认权限：umask<br>umask 就是指定 『目前使用者在创建文件或目录时候的权限默认值』.<br><img src="./1404443620789.png" alt="Alt text"><br>查阅的方式有两种，一种可以直接输入 umask ，就可以看到数字型态的权限配置分数， 一种则是加入 -S (Symbolic) 这个选项，就会以符号类型的方式来显示出权限了！怎么 umask 会有四组数字啊？第一组是特殊权限用的。<br>在默认权限的属性上，目录与文件是不一样的。从第六章我们知道 x 权限对於目录是非常重要的！ 但是一般文件的创建则不应该有运行的权限，因为一般文件通常是用在於数据的记录嘛！当然不需要运行的权限了。 因此，默认的情况如下：<br>1）若使用者创建为『文件』则默认『没有可运行( x )权限』，亦即只有 rw 这两个项目，也就是最大为 666 分，默认权限如下：<br>-rw-rw-rw-<br>2） 若使用者创建为『目录』，则由於 x 与是否可以进入此目录有关，因此默认为所有权限均开放，亦即为 777 分，默认权限如下：<br>drwxrwxrwx<ul>
+<li>要注意的是，umask 的分数指的是『该默认值需要减掉的权限！』<br><img src="./1404443741079.png" alt="Alt text"></li>
+<li>umask的利用与重要性：专题制作<br><img src="./1404443844842.png" alt="Alt text"><br>这个 umask 对於新建文件与目录的默认权限是很有关系的！</li>
+<li>在默认的情况中， root 的 umask 会拿掉比较多的属性，root 的 umask 默认是 022 ， 这是基於安全的考量啦～至於一般身份使用者，通常他们的 umask 为 002 ，亦即保留同群组的写入权力！ 其实，关於默认 umask 的配置可以参考 /etc/bashrc 这个文件的内容，不过，不建议修改该文件</li>
+</ul>
+</li>
+<li>文件隐藏属性<br>不过要先强调的是，底下的chattr命令只能在Ext2/Ext3的文件系统上面生效， 其他的文件系统可能就无法支持这个命令了。<ul>
+<li>chattr (配置文件隐藏属性)<br><img src="./1404454893444.png" alt="Alt text"><br>个人认为最重要的当属 +i 与 +a 这个属性了。+i 可以让一个文件无法被更动。如果是 log file 这种的登录档，就更需要 +a 这个可以添加，但是不能修改旧有的数据与删除的参数了！</li>
+<li>lsattr (显示文件隐藏属性)<br><img src="./1404454954772.png" alt="Alt text"></li>
+</ul>
+</li>
+<li>文件特殊权限： SUID, SGID, SBIT<br><img src="./1404455995512.png" alt="Alt text"><br>还有其他的特殊权限(s 跟 t)<ul>
+<li>Set UID<br>当 s 这个标志出现在文件拥有者的 x 权限上时，此时就被称为 Set UID，简称为 SUID 的特殊权限。基本上SUID有这样的限制与功能：<br>1）SUID 权限仅对二进位程序(binary program)有效；<br>2）运行者对於该程序需要具有 x 的可运行权限；<br>3）本权限仅在运行该程序的过程中有效 (run-time)；<br>4）运行者将具有该程序拥有者 (owner) 的权限。<br><img src="./1404456154037.png" alt="Alt text"><br>可以使用你自己的帐号输入『passwd』这个命令，一般使用者当然可以修改自己的密码了！<br>因为 cat 不具有 SUID 的权限，所以 vbird 运行 『cat /etc/shadow』 时，是不能读取 /etc/shadow 的。<br>另外，SUID 仅可用在binary program 上， 不能够用在 shell script 上面！这是因为 shell script 只是将很多的 binary 运行档叫进来运行而已！所以 SUID 的权限部分，还是得要看 shell script 呼叫进来的程序的配置， 而不是 shell script 本身。当然，SUID 对於目录也是无效的～这点要特别留意。</li>
+<li>Set GID<br>当 s 标志在文件拥有者的 x 项目为 SUID，那 s 在群组的 x 时则称为 Set GID, SGID。<br><img src="./1404456377923.png" alt="Alt text"><br>与 SUID 不同的是，SGID 可以针对文件或目录来配置！如果是对文件来说， SGID 有如下的功能：<br>1) SGID 对二进位程序有用；<br>2) 程序运行者对於该程序来说，需具备 x 的权限；<br>3) 运行者在运行的过程中将会获得该程序群组的支持！<br><img src="./1404456446819.png" alt="Alt text"><br>与 SUID 非常的类似，若我使用 vbird 这个帐号去运行 locate 时，那 vbird 将会取得 slocate 群组的支持， 因此就能够去读取 mlocate.db 啦！<br>除了 binary program 之外，事实上 SGID 也能够用在目录上，这也是非常常见的一种用途！ 当一个目录配置了 SGID 的权限后，他将具有如下的功能：<br>1) 使用者若对於此目录具有 r 与 x 的权限时，该使用者能够进入此目<br>2) 使用者在此目录下的有效群组(effective group)将会变成该目录的群<br>3) 用途：若使用者在此目录下具有 w 的权限(可以新建文件)，则使用者所创建的新文件，该新文件的群组与此目录的群组相同。</li>
+<li>Sticky Bit<br>这个 Sticky Bit, SBIT 目前只针对目录有效，对於文件已经没有效果了。 SBIT 对於目录的作用是：<br>1) 当使用者对於此目录具有 w, x 权限，亦即具有写入的权限时；<br>2) 当使用者在该目录下创建文件或目录时，仅有自己与 root 才有权力删除该文件<br>换句话说：当甲这个使用者於 A 目录是具有群组或其他人的身份，并且拥有该目录 w 的权限， 这表示『甲使用者对该目录内任何人创建的目录或文件均可进行 “删除/更名/搬移” 等动作。』 不过，如果将 A 目录加上了 SBIT 的权限项目时， 则甲只能够针对自己创建的文件或目录进行删除/更名/移动等动作，而无法删除他人的文件。<br>举例来说，我们的 /tmp 本身的权限是『drwxrwxrwt』， 在这样的权限内容下，任何人都可以在 /tmp 内新增、修改文件，但仅有该文件/目录创建者与 root 能够删除自己的目录或文件。</li>
+<li>SUID/SGID/SBIT 权限配置<br>那么如果在这三个数字之前再加上一个数字的话，最前面的那个数字就代表这几个权限了！<br>1) 4 为 SUID<br>2) 2 为 SGID<br>3) 1 为 SBIT<br><img src="./1404456961791.png" alt="Alt text"><br>怎么会出现大写的 S 与 T 呢？因为 s 与 t 都是取代 x 这个权限的，但是你有没有发现阿，我们是下达 7666 喔！也就是说， user, group 以及 others 都没有 x 这个可运行的标志( 因为 666 嘛 )，所以，这个 S, T 代表的就是『空的』啦！<br>而除了数字法之外，你也可以透过符号法来处理喔！其中 SUID 为 u+s ，而 SGID 为 g+s ，SBIT 则是 o+t 罗！来看看如下的范例：<br><img src="./1404457002655.png" alt="Alt text"></li>
+</ul>
+</li>
+<li>观察文件类型：file<br>如果你想要知道某个文件的基本数据，例如是属於 ASCII 或者是 data 文件，或者是 binary ， 且其中有没有使用到动态函式库 (share library) 等等的资讯，就可以利用 file 这个命令来检阅喔！<br><img src="./1404457153482.png" alt="Alt text"></li>
+</ul>
+</li>
+<li>命令与文件的搜寻<ul>
+<li>命令档名的搜寻<ul>
+<li>which (寻找『运行档』)<br><img src="./1404457607152.png" alt="Alt text"><br>这个命令是根据『PATH』这个环境变量所规范的路径，去搜寻『运行档』的档名～ 所以，重点是找出『运行档』而已！且 which 后面接的是『完整档名』喔！若加上 -a 选项，则可以列出所有的可以找到的同名运行档，而非仅显示第一个而已！<br>最后一个范例最有趣，怎么 cd 这个常用的命令竟然找不到啊！为什么呢？这是因为 cd 是『bash 内建的命令』啦！我们可以透过 type 这个命令喔！ </li>
+</ul>
+</li>
+<li>文件档名的搜寻<ul>
+<li>whereis (寻找特定文件)<br><img src="./1404457686430.png" alt="Alt text"><br>find 是很强大的搜寻命令，但时间花用的很大！<br>为何搜寻的速度会比 find 快这么多？ 其实那也没有什么！这是因为 Linux 系统会将系统内的所有文件都记录在一个数据库文件里面， 而当使用 whereis 或者是底下要说的 locate 时，都会以此数据库文件的内容为准， 因此，有的时后你还会发现使用这两个运行档时，会找到已经被杀掉的文件！ 而且也找不到最新的刚刚创建的文件呢！这就是因为这两个命令是由数据库当中的结果去搜寻文件的所在啊！</li>
+<li>locate<br><img src="./1404458216357.png" alt="Alt text"><br>这个 locate 的使用更简单，直接在后面输入『文件的部分名称』后，就能够得到结果。<br>你会发现使用 locate 来寻找数据的时候特别的快， 这是因为 locate 寻找的数据是由『已创建的数据库 /var/lib/mlocate/』 里面的数据所搜寻到的，所以不用直接在去硬盘当中存取数据，那么有什么限制呢？就是因为他是经由数据库来搜寻的，而数据库的创建默认是在每天运行一次 (每个 distribution 都不同，CentOS 5.x 是每天升级数据库一次！)，所以当你新创建起来的文件， 却还在数据库升级之前搜寻该文件，那么 locate 会告诉你『找不到！』呵呵！因为必须要升级数据库呀！<br>那能否手动升级数据库哪？当然可以啊！升级 locate 数据库的方法非常简单，直接输入『 updatedb 』就可以了！<br>1) updatedb：根据 /etc/updatedb.conf 的配置去搜寻系统硬盘内的档名，并升级 /var/lib/mlocate 内的数据库文件；<br>2) locate：依据 /var/lib/mlocate 内的数据库记载，找出使用者输入的关键字档名。</li>
+<li>find<br><img src="./1404458350968.png" alt="Alt text"><br><img src="./1404458626586.png" alt="Alt text"><br>由图5.2.1我们可以清楚的知道：<br>1) +4代表大於等於5天前的档名：ex> find /var -mtime +4<br>2) -4代表小於等於4天内的文件档名：ex> find /var -mtime -4<br>3) 4则是代表4-5那一天的文件档名：ex> find /var -mtime 4<br><img src="./1404458808805.png" alt="Alt text"><br><img src="./1404459018982.png" alt="Alt text"><br>find 本来就会搜寻次目录<br><img src="./1404459065827.png" alt="Alt text"><br>find 的特殊功能就是能够进行额外的动作(action)。我们将范例八的例子以图解来说明如下：<br><img src="./1404459275851.png" alt="Alt text"><br>该范例中特殊的地方有 {} 以及 \; 还有 -exec 这个关键字，这些东西的意义为：<br>1) {} 代表的是『由 find 找到的内容』，如上图所示，find 的结果会被放置到 {} 位置中；<br>2) -exec 一直到 \; 是关键字，代表 find 额外动作的开始 (-exec) 到结束 (\;) ，在这中间的就是 find 命令内的额外动作。 在本例中就是『 ls -l {} 』罗！<br>3) 因为『 ; 』在 bash 环境下是有特殊意义的，因此利用反斜线来跳脱。        Find 还可以利用万用字节来找寻档名呢:<br><img src="./1404459390023.png" alt="Alt text"><br>不但可以指定搜寻的目录(连同次目录)，并且可以利用额外的选项与参数来找到最正确的档名！</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>极重要！权限与命令间的关系<ul>
+<li>让使用者能进入某目录成为『可工作目录』的基本权限为何：<ul>
+<li>可使用的命令：例如 cd 等变换工作目录的命令；</li>
+<li>目录所需权限：使用者对这个目录至少需要具有 x 的权限</li>
+<li>额外需求：如果使用者想要在这个目录内利用 ls 查阅档名，则使用者对此目录还需要 r 的权限。</li>
+</ul>
+</li>
+<li>使用者在某个目录内读取一个文件的基本权限为何？<ul>
+<li>可使用的命令：例如本章谈到的 cat, more, less等等</li>
+<li>目录所需权限：使用者对这个目录至少需要具有 x 权限；</li>
+<li>文件所需权限：使用者对文件至少需要具有 r 的权限才行！</li>
+</ul>
+</li>
+<li>让使用者可以修改一个文件的基本权限为何？<ul>
+<li>可使用的命令：例如 nano 或未来要介绍的 vi 编辑器等；</li>
+<li>目录所需权限：使用者在该文件所在的目录至少要有 x 权限；</li>
+<li>文件所需权限：使用者对该文件至少要有 r, w 权限</li>
+</ul>
+</li>
+<li>让一个使用者可以创建一个文件的基本权限为何？<ul>
+<li>目录所需权限：使用者在该目录要具有 w,x 的权限，重点在 w 啦！</li>
+</ul>
+</li>
+<li>让使用者进入某目录并运行该目录下的某个命令之基本权限为何？<ul>
+<li>目录所需权限：使用者在该目录至少要有 x 的权限；</li>
+<li>文件所需权限：使用者在该文件至少需要有 x 的权限</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>重点回顾<ul>
+<li>特殊目录有：., .., -, ~, ~account需要注意；</li>
+<li>与目录相关的命令有：cd, mkdir, rmdir, pwd 等重要命令；</li>
+<li>rmdir 仅能删除空目录，要删除非空目录需使用『 rm -r 』命令；</li>
+<li>使用者能使用的命令是依据 PATH 变量所规定的目录去搜寻的；</li>
+<li>不同的身份(root 与一般用户)系统默认的 PATH 并不相同。差异较大的地方在於 /sbin, /usr/sbin ；</li>
+<li>ls 可以检视文件的属性，尤其 -d, -a, -l 等选项特别重要！</li>
+<li>文件的复制、删除、移动可以分别使用：cp, rm , mv等命令来操作；</li>
+<li>检查文件的内容(读档)可使用的命令包括有：cat, tac, nl, more, less, head, tail, od 等</li>
+<li>cat -n 与 nl 均可显示行号，但默认的情况下，空白行会不会编号并不相</li>
+<li>touch 的目的在修改文件的时间参数，但亦可用来创建空文件；</li>
+<li>一个文件记录的时间参数有三种，分别是 access time(atime), status time (ctime), modification time(mtime)，ls 默认显示的是 mtime。</li>
+<li>除了传统的rwx权限之外，在Ext2/Ext3文件系统中，还可以使用chattr与lsattr配置及观察隐藏属性。 常见的包括只能新增数据的 +a 与完全不能更动文件的 +i 属性。</li>
+<li>新建文件/目录时，新文件的默认权限使用 umask 来规范。默认目录完全权限为drwxrwxrwx， 文件则为-rw-rw-rw-。</li>
+<li>文件具有SUID的特殊权限时，代表当使用者运行此一binary程序时，在运行过程中使用者会暂时具有程序拥有者的权限</li>
+<li>目录具有SGID的特殊权限时，代表使用者在这个目录底下新建的文件之群组都会与该目录的群组名称相同。</li>
+<li>目录具有SBIT的特殊权限时，代表在该目录下使用者创建的文件只有自己与root能够删除！</li>
+<li>观察文件的类型可以使用 file 命令来观察；</li>
+<li>搜寻命令的完整档名可用 which 或 type ，这两个命令都是透过 PATH 变量来搜寻档名；</li>
+<li>搜寻文件的完整档名可以使用 whereis 或 locate 到数据库文件去搜寻，而不实际搜寻文件系统；</li>
+<li>利用 find 可以加入许多选项来直接查询文件系统，以获得自己想要知道的档名。</li>
+</ul>
+</li>
+<li>课后题<ul>
+<li>找出 /etc 底下，文件大小介於 50K 到 60K 之间的文件，并且将权限完整的列出 (ls -l)：<br>find /etc -size +50k -a -size -60k -exec ls -l {} \;<br>注意到 -a ，那个 -a 是 and 的意思，为符合两者才算成功</li>
+</ul>
+</li>
+</ol>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Linux/">Linux</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2014/06/16/Linux（四）Linux文件与目录管理/" data-title="Linux（六）Linux文件与目录管理 | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/06/18/Linux（五）Linux磁盘与文件系统管理/" title="Linux（五）Linux磁盘与文件系统管理">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  Linux（五）Linux磁盘与文件系统管理</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/06/15/Linux（三） Linux的文件权限与目录配置/"  title="Linux（三）Linux的文件权限与目录配置">
+ <strong>NEXT:</strong><br/> 
+ <span>Linux（三）Linux的文件权限与目录配置
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>6</sup></a></li>
+		
+			<li><a href="/tags/STL/" title="STL">STL<sup>1</sup></a></li>
+		
+			<li><a href="/tags/TCPIP/" title="TCP/IP">TCP/IP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Tech/" title="Tech">Tech<sup>20</sup></a></li>
+		
+			<li><a href="/tags/c++/" title="c++">c++<sup>18</sup></a></li>
+		
+			<li><a href="/tags/数据结构/" title="数据结构">数据结构<sup>7</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+      <li><a href="http://www.linkedin.com/profile/view?id=130233431&trk=nav_responsive_tab_profile_pic" target="_blank" title="Hexo">LinkedIn</a></li>		  
+      <li><a href="http://blog.csdn.net/hustLinEvan" target="_blank" title="YangJian">CSDN</a></li>
+      <li><a href="http://music.163.com/#/user/home?id=9764968" target="_blank" title="Hexo">网易云音乐</a></li>
+      <li><a href="http://www.douban.com/people/63180864/" target="_blank" title="Hexo">豆瓣</a></li>	  
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1811833191" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/linevan" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		
+		<a href="http://yoursite.com" target="_blank" title="LinEvan">LinEvan</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"linevan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+<div id="totop" style="position:fixed;bottom:150px;right:50px;cursor: pointer;">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+<script src="/js/totop.js"></script>
+  </body>
+</html>
