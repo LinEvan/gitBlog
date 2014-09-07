@@ -4,18 +4,13 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Effective C++(八)定制new和delete | LinEvan&#39;s blog</title>
+    <title>C++冲刺（一）内置数据类型大小 | LinEvan&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="LinEvan">
     
-    <meta name="description" content="定制new和delete
-STL容器所使用的heap内存是由容器所拥有的分配器对象（allocator ojects）管理，不是被new和delete直接管理。
-
-条款49：了解new-handler的行为
-
-请记住：
-set_new_handler允许客户指定一个函数，在内存分配无法获得满足时被调">
+    <meta name="description" content="整型从最小到最大依次是：bool, char, signed char, unsigned char, short, unsigned short, int, unsigned int, long ,unsigned long。浮点型有float、double和long double。
+C++确保了">
     
     
     
@@ -74,15 +69,15 @@ set_new_handler允许客户指定一个函数，在内存分配无法获得满�
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/05/07/Effective-C++(八)定制new与delete/" title="Effective C++(八)定制new和delete" itemprop="url">Effective C++(八)定制new和delete</a>
+      <a href="/2014/08/01/C++冲刺（一）内置数据类型大小/" title="C++冲刺（一）内置数据类型大小" itemprop="url">C++冲刺（一）内置数据类型大小</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://yoursite.com" title="LinEvan">LinEvan</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-05-07T07:55:55.000Z" itemprop="datePublished">5月 7 2014</time>
-    更新日期:<time datetime="2014-09-07T07:53:06.000Z" itemprop="dateModified">9月 7 2014</time>
+    <time datetime="2014-08-01T07:59:42.000Z" itemprop="datePublished">8月 1 2014</time>
+    更新日期:<time datetime="2014-09-07T08:05:32.000Z" itemprop="dateModified">9月 7 2014</time>
     
   </p>
 </header>
@@ -91,75 +86,12 @@ set_new_handler允许客户指定一个函数，在内存分配无法获得满�
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#定制new和delete"><span class="toc-number">1.</span> <span class="toc-text">定制new和delete</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#杂项讨论"><span class="toc-number">2.</span> <span class="toc-text">杂项讨论</span></a></li></ol>
+		
 		</div>
 		
-		<h1 id="定制new和delete">定制new和delete</h1>
-<p>STL容器所使用的heap内存是由容器所拥有的分配器对象（allocator ojects）管理，不是被new和delete直接管理。</p>
-<ol>
-<li><p>条款49：了解new-handler的行为</p>
-<ul>
-<li>请记住：<ul>
-<li>set_new_handler允许客户指定一个函数，在内存分配无法获得满足时被调用</li>
-<li>Nothrow new是一个颇为局限的工具，因为它只适用于内存分配；后继的构造函数调用还是可能抛出异常</li>
-<li>当operator new无法满足某一内存分配需求时，它会抛出异常。以前它会返回一个null指针。当operator new抛出异常以反映一个未获满足的内存需求之前，它会先调用一个客户指定的错误处理函数，一个所谓的new-handler。为了指定这个“用以处理内存不足”的函数，客户必须调用set_new_handler，那是声明于<new>的一个标准程序库函数 </new></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>条款50：了解new和delete的合理替换时机</p>
-<ul>
-<li>请记住：有很多理由需要写个自定的new和delete，包括改善效能、对heap运用错误进行调试、收集heap使用信息</li>
-</ul>
-</li>
-<li>条款51：编写new和delete时需固守常规<ul>
-<li>请记住：<ul>
-<li>operator new应该包含一个无穷循环，并在其中尝试分配内存，如果它无法满足内存需求，就该调用new-handler。它也应该有能力处理0 bytes申请。Class专属版本则还应该处理“比正确大小更大的（错误）申请”</li>
-<li>operater delete应该在收到null指针时不做任何事。Class专属版本则还应该处理“比正确大小更大的（错误）申请”</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>条款52：写了placement new也要写placement delete<ul>
-<li>请记住：<ul>
-<li>当你写一个placement operator new，请确定也写出了对应的placement operator delete。如果没有这样做，你的程序可能会发生隐微而时断时续的内存泄露</li>
-<li>当你声明placement new和placement delete，请确定不要无意识地遮掩了它们的正常版本</li>
-</ul>
-</li>
-</ul>
-</li>
-</ol>
-<h1 id="杂项讨论">杂项讨论</h1>
-<ol>
-<li><p>条款53：不要轻忽编译器的警告</p>
-<ul>
-<li>请记住：<ul>
-<li>严肃对待编译器发出的警告信息。努力在你的编译器的最高经高级别下争取“无任何警告”的荣誉</li>
-<li>不要过度倚赖编译器的报警能力，因为不同的编译器对待事物的态度并不相同。一旦移植到另一个编译器上，你原本倚赖的警告信息有可能消失</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>条款54：让自己熟悉包括TR1在内的标准程序库</p>
-<ul>
-<li>请记住：<ul>
-<li>C++标准程序库的主要技能由STL、iostream、locals组成。并包含C99标准程序库</li>
-<li>TR1添加了智能指针、一般化函数指针、hash-based容器、正则表达式以及另外10个组件的支持</li>
-<li>TR1自身只是一份规范。为获得TR1的好处，你需要一份实物。一个好的实物来源于Boost</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>条款55：让自己熟悉Boost</p>
-<ul>
-<li>请记住：<ul>
-<li>Boost是一个社群，也是一个网站。致力于免费、源码开放、同僚复审的C++程序库开发。Boost在C++标准化过程中扮演深具影响力的角色</li>
-<li>Boost提供许多TR1组件实现品，以及其他许多程序库</li>
-</ul>
-</li>
-</ul>
-</li>
-</ol>
+		<p>整型从最小到最大依次是：bool, char, signed char, unsigned char, short, unsigned short, int, unsigned int, long ,unsigned long。<br>浮点型有float、double和long double。</p>
+<p>C++确保了char足够大，能够存储系统基本字符集中的任何成员，而wchar_t则可以存储系统扩展字符集中的任意成员，short至少为16位，而int至少与short一样长，long至少为32位，且至少和int一样长。<br>C++确保float不比double长，而double不比long long长。通常，float使用32位内存，double使用64位，long long 使用80~128。<br><img src="/img/pages/c++/内置数据类型大小01.png" alt="Alt text"></p>
+<p>32位系统：int和unsigned int都是4个字节。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -174,7 +106,7 @@ set_new_handler允许客户指定一个函数，在内存分配无法获得满�
 
 <div class="article-share" id="share">
 
-  <div data-url="http://yoursite.com/2014/05/07/Effective-C++(八)定制new与delete/" data-title="Effective C++(八)定制new和delete | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
+  <div data-url="http://yoursite.com/2014/08/01/C++冲刺（一）内置数据类型大小/" data-title="C++冲刺（一）内置数据类型大小 | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
   </div>
 
 </div>
@@ -184,18 +116,18 @@ set_new_handler允许客户指定一个函数，在内存分配无法获得满�
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/2014/05/12/Leetcode-Insertion Sort List/" title="Leetcode | Insertion Sort List">
+ <a href="/2014/09/07/1/" title="1">
   <strong>PREVIOUS:</strong><br/>
   <span>
-  Leetcode | Insertion Sort List</span>
+  1</span>
 </a>
 </div>
 
 
 <div class="next">
-<a href="/2014/05/07/Effective C++(七)模板与泛型编程/"  title="Effective C++(七)模板与泛型编程">
+<a href="/2014/07/29/C++联合容器set和map/"  title="C++联合容器set和map">
  <strong>NEXT:</strong><br/> 
- <span>Effective C++(七)模板与泛型编程
+ <span>C++联合容器set和map
 </span>
 </a>
 </div>
@@ -212,7 +144,7 @@ set_new_handler允许客户指定一个函数，在内存分配无法获得满�
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#定制new和delete"><span class="toc-number">1.</span> <span class="toc-text">定制new和delete</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#杂项讨论"><span class="toc-number">2.</span> <span class="toc-text">杂项讨论</span></a></li></ol>
+  
   </div>
 
 <div id="asidepart">
