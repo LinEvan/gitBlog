@@ -4,12 +4,12 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>数据结构（四）优先队列（堆） | LinEvan&#39;s blog</title>
+    <title>2014腾讯后开开发OFFER | LinEvan&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="LinEvan">
     
-    <meta name="description" content="优先队列是允许至少下列两种操作的数据结构：Insert（插入）以及DeleteMin（删除最小者），它的工作是找出、返回和删除优先队列中最小的元素。除了操作系统外，优先队列还有许多应用，比如堆排序、外部排序和贪婪算法。优先队列是通过二叉堆实现的，二叉堆可简称为堆。同二叉查找树一样，堆也有两个性质，即">
+    <meta name="description" content="19号腾讯HR面试结束后，我一直等到25号上午才接到HR电话，虽然等待的过程有点煎熬，但我还是如愿拿到了腾讯WXG后台的OFFER。至于百度的OFFER，因为我实在不想去北京也只能拒了。简单谈谈腾讯的招聘吧。4月份腾讯招实习生时，我投了后台开发，但由于准备不充分直接在笔试就跪了。经过几个月的准备，基">
     
     
     
@@ -68,15 +68,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/04/04/数据结构（四） 优先队列（堆）/" title="数据结构（四）优先队列（堆）" itemprop="url">数据结构（四）优先队列（堆）</a>
+      <a href="/2014/09/28/2014腾讯后开开发OFFER/" title="2014腾讯后开开发OFFER" itemprop="url">2014腾讯后开开发OFFER</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://yoursite.com" title="LinEvan">LinEvan</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-04-04T07:59:42.000Z" itemprop="datePublished">4月 4 2014</time>
-    更新日期:<time datetime="2014-09-09T13:00:53.000Z" itemprop="dateModified">9月 9 2014</time>
+    <time datetime="2014-09-28T13:55:37.000Z" itemprop="datePublished">9月 28 2014</time>
+    更新日期:<time datetime="2014-09-28T13:57:14.000Z" itemprop="dateModified">9月 28 2014</time>
     
   </p>
 </header>
@@ -88,259 +88,14 @@
 		
 		</div>
 		
-		<p>优先队列是允许至少下列两种操作的数据结构：Insert（插入）以及DeleteMin（删除最小者），它的工作是找出、返回和删除优先队列中最小的元素。除了操作系统外，优先队列还有许多应用，比如堆排序、外部排序和贪婪算法。<br>优先队列是通过二叉堆实现的，二叉堆可简称为堆。同二叉查找树一样，堆也有两个性质，即结构性和堆排序。<br>结构性：堆是一棵被完全填满的二叉树，有可能的例外是在底层，底层上的元素从左到右填入。这样的树称为完全二叉树。因为完全二叉树很有规律，所以它可以用一个数组表示而不需要指针。对于数组任一位置i上的元素，其左儿子在位置2i上，右儿子在左儿子后的单元（2i+1）中，它的父亲则为位置[i/2]。这种实现方法的唯一问题在于，最大的堆大小需要你事先估计。<br>堆序性：使操作被快速执行得性质是堆序性。对于每一个节点X，X的父亲中的关键字小于（或等于）X中的关键字。插入操作是通过上滤的策略将新元素在堆中上滤直到找到正确的位置，在实现时，我们采用的是把一个很小的值放到位置0处以使while循环得以终止，我们称之为标记。删除最小元操作是通过下滤策略来实现。注意：在实现时我们要避免直接交换操作。</p>
-<p>优先队列的实现代码：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
-78
-79
-80
-81
-82
-83
-84
-85
-86
-87
-88
-89
-</pre></td><td class="code"><pre><span class="comment">#include <stdio.h></span>
-<span class="comment">#include <stdlib.h></span>
-
-<span class="comment">#define MinData -1						//标识，比任何数据都小，假设所有的数据都大于0</span>
-typedef int ElementType;
-typedef struct HeapStruct *PriorityQueue;
-
-PriorityQueue Initialize(int MaxElements);
-void Destroy(PriorityQueue H);
-void Insert(ElementType X, PriorityQueue H);
-ElementType DeleteMin(PriorityQueue H);
-
-struct HeapStruct
-{
-	int Capacity;
-	int Size;
-	ElementType *Elements;
-};
-
-
-PriorityQueue Initialize(int MaxElements)
-{
-	PriorityQueue H;
-	
-	H = (PriorityQueue)malloc(sizeof(struct HeapStruct));
-	if(H == NULL)
-		return NULL;
-
-	H->Elements = (ElementType *)malloc((MaxElements+1) * sizeof(ElementType));
-	if(H->Elements == NULL)
-		return NULL;
-
-	H->Elements[0] = MinData;			//标识
-	H->Capacity = MaxElements;
-	H->Size = 0;
-
-	return H;
-}
-
-void Destroy(PriorityQueue H)
-{
-	if(H != NULL)
-	{
-		free(H->Elements);
-		free(H);
-	}
-}
-
-void Insert(ElementType X, PriorityQueue H)
-{
-	int i;
-
-	if(H->Size >= H->Capacity)
-		return;
-	//上滤过程
-	for(i = ++H->Size; H->Elements[i/2] > X; i/=2)	
-		H->Elements[i] = H->Elements[i/2];
-	//填入元素
-	H->Elements[i] = X;
-}
-
-ElementType DeleteMin(PriorityQueue H)
-{
-	ElementType minElement, LastElement;
-	int i, Child;
-
-	if(H->Size == 0)
-		return H->Elements[0];
-
-	minElement = H->Elements[1];
-	LastElement = H->Elements[H->Size--];
-
-	for(i = 1; i * 2 <= H->Size; i *= 2)
-	{
-		//从左右儿子中寻找更小的儿子
-		Child = i * 2;
-		if(Child < H->Size && H->Elements[Child+1] < H->Elements[Child])
-			Child++;
-		//下滤过程
-		if(H->Elements[Child] < LastElement)
-			H->Elements[i] = H->Elements[Child];
-		else
-			break;	
-	}
-	//填入元素
-	H->Elements[i] = LastElement;
-
-	return minElement;
-}
-</pre></td></tr></table></figure>
-
-<p>测试代码：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-</pre></td><td class="code"><pre>void <span class="keyword">print</span>(PriorityQueue H)
-{
-	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>; i <= H->Size; ++i)
-		<span class="keyword">printf</span>(<span class="string">"<span class="variable">%d</span> "</span>, H->Elements[i]);
-	<span class="keyword">printf</span>(<span class="string">"\n"</span>);
-}
-
-<span class="keyword">int</span> main()
-{
-	PriorityQueue H;
-
-	H = Initialize(<span class="number">10</span>);
-	<span class="keyword">if</span>(H == NULL)
-		<span class="keyword">return</span> <span class="number">0</span>;
-
-	<span class="keyword">printf</span>(<span class="string">"<span class="variable">%d</span>\n"</span>, DeleteMin(H));							<span class="regexp">//</span>队列空时删除最小元
-	<span class="keyword">int</span> element[<span class="number">10</span>] = {<span class="number">10</span>, <span class="number">5</span>, <span class="number">45</span>, <span class="number">14</span>, <span class="number">123</span>, <span class="number">22</span>, <span class="number">33</span>, <span class="number">55</span>, <span class="number">66</span>, <span class="number">177</span>};
-	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i<<span class="number">10</span>; ++i)
-		Insert(element[i], H);							<span class="regexp">//</span>填满队列
-	<span class="keyword">print</span>(H);												
-
-	Insert(<span class="number">20</span>, H);									<span class="regexp">//</span>队列满时插入元素
-	<span class="keyword">print</span>(H);
-
-	<span class="keyword">printf</span>(<span class="string">"<span class="variable">%d</span>\n"</span>, DeleteMin(H));							<span class="regexp">//</span>删除最小元
-	<span class="keyword">print</span>(H);
-
-	<span class="keyword">system</span>(<span class="string">"pause"</span>);
-	<span class="keyword">return</span> <span class="number">0</span>;
-}
-</pre></td></tr></table></figure>
-
-<p>一个堆所蕴含的关于序的信息很少，因此，若不对整个堆进行线性搜索，是没有办法找出任何特定的关键字的。<br>还有其他的堆操作：：<br>①DecreaseKey（降低关键字的值）：DecreaseKey(P, △， H)操作降低在位置P处的关键字的值，降值的幅度为正的量△。通过上滤来调整堆序性。该操作对系统管理程序时有用的：系统管理程序能够使它们的程序以最高的优先级来运行。<br>②IncreaseKey（增加关键字的值）：IncreaseKey(P, △， H)增加在位置P处的关键字的值，增值的幅度为正的量△，这可以通过下滤来完成。许多调度程序自动地降低正在过多地消耗CPU时间的进程的优先级。<br>③Delete（删除）：Delete(P, H)操作删除堆中位置P的节点。这通过首先执行DecreaseKey(P, ∞， H)，然后再执行DeleteMin（H）来完全。当一个进程被用户中止（而不是正常终止）时，它须从优先队列中除去。<br>④BuildHeap（构建堆）：BuildHeap(H)操作把从N个关键字作为输入并把它们放入空堆中。这可以使用N个相继的Insert操作来完成，由于每个Insert将花费O(1)平均时间以及O(log N)的最坏情形时间，因此该算法的总的运行时间则是O(N)。</p>
+		<p>19号腾讯HR面试结束后，我一直等到25号上午才接到HR电话，虽然等待的过程有点煎熬，但我还是如愿拿到了腾讯WXG后台的OFFER。至于百度的OFFER，因为我实在不想去北京也只能拒了。<br>简单谈谈腾讯的招聘吧。4月份腾讯招实习生时，我投了后台开发，但由于准备不充分直接在笔试就跪了。经过几个月的准备，基础牢固很多，但对于腾讯的笔试我还是没什么自信。腾讯考察的范围太广了，数据库、编译原理、设计模式、计算机基础、网络编程、操作系统基本什么都考，虽然考得不深，但有些考得也挺偏的，这么短的时间也没法准备。而且12号阿里面试，13号腾讯笔试，我既要准备面试又要准备笔试，相当的吃力。由于阿里第一面就跪了，所以后来就可以好好准备腾讯招聘了。<br>今年腾讯的笔试题很简单，25道选择题，还有3道大题，考察的大都是C++和网络编程，原题见<a href="http://www.itmian4.com/forum.php?mod=viewthread&tid=6221&extra=page%3D1%26filter%3Dtypeid%26typeid%3D1%26typeid%3D1。刚好C++和网络编程我比较擅长，所以很轻松就过了笔试。" target="_blank" rel="external">http://www.itmian4.com/forum.php?mod=viewthread&tid=6221&extra=page%3D1%26filter%3Dtypeid%26typeid%3D1%26typeid%3D1。刚好C++和网络编程我比较擅长，所以很轻松就过了笔试。</a>    16号进行一面。面试时间40分钟左右。刚进去他让我自我介绍，然后问我有没有拿到其他公司的OFFER，我说了拿了百度研发的OFFER。顿时感觉面试官精神一阵，然后他问我说：“那你应该更愿意去百度吧？”我笑笑说，我家是广东的，想回家。然后主要问了以下几个问题：<br>（1）比较擅长的是什么？我回答了C++和数据结构，很奇怪面试官也没具体问C++和数据的结构的知识。<br>（2）多线程与多进程的区别？哪个更好用，哪个更稳定？<br>（3）能不能设计一个框架来判定和避免僵尸进程。<br>（4）进程间通信的方式有哪些？然后问笔试题中进程间通信用哪个方式比较好？如果是在一个Linux服务器而不是分布式服务器上用哪些方式<br>（5）有没有开源项目经验，是否看过开源代码？<br>多线程和多进程了解得比较多，项目也都用过，所以问题不大。僵尸进程了解太浅，所以回答得不是很好，开源项目也怎么接触过。总体表现一般般，但由于我有丰富的项目经历，又有百度OFFER撑着，所以面试现场官直接说我可以过一面了。     18号进行二面。面试时间也是40分钟左右。我一进去本来想递简历给他，他笑笑说我这边有你的简历。我才知道腾讯是按照你填简历时报的Group来给你安排面试官，所以面试官都是定的，而且通知面试的时间跟你正式面试的时间差不多，有时还会提前面试，单从这一点就秒阿里几条街。阿里面试你不等个一两个小时他是不会让你面的，而且<br>面试官都是随意安排的，有时C++面试官来面Java，Java面试官来面C++。好了，回归主题：<br>（1）首先让自我介绍。中间打断我两次，问了Dian团队，还有华科的为什么要来东大，囧，早知道会问这问题了<br>（2）问static关键字（讲了作用于函数、变量，以及类的变量和成员函数的情况），面试官还问使用static有什么限制，刚开始没想出来，经提示才知道是可重入函数下static变量的互斥问题）<br>（3）问了TCP/IP四次握手，还有状态迁移图<br>（4）实现多线程时用了什么多线程库？有哪些多线程库<br>（5）IO实现的几种方式，说说特点（select、poll、epoll），还提到了线程池概念（惊群效应）<br>（6）实现一个算法：n个数组成圆圈，从第k个数开始数，到第m个数出列，然后从下一个开始再到第m个数出列，循环到所有数输出为止。面试官直接说用数组实现，很简单<br>二面很简单，基本都答上来，面试官很一直夸我基础扎实。二面面完我知道自己肯定能过。<br>19号下午进行HR面。面试官是个女HR，长得还挺漂亮的，名字就不说了，所以我的面试积极性一下子提升了不少。HR面基本什么都面，本科生活、研究生生活、家庭情况、感情经历（HR比较八卦，连为什么分手都问）、优缺点等等，聊得也比较开心，最终面了一个多小时，估计是当天面HR面最久的。面试完我感觉问题不大了，回来微信状态一查也改为“已完成所有面试”，然后开始等OFFER了。        总体来说，腾讯的笔试很基础，但考得比较广。技术面试主要也是考察语言基础、网络编程、操作系统、算法等等，对于项目考察得不多。HR面的话各个公司应该都差不多。比较想吐槽就是腾讯发OFFER很不干脆。阿里是当天面完，第二天就通知全部通过的人签两方；腾讯由于部门繁多，手续也很复杂，所以一直不给个信，微信状态也不靠谱，这个等待的过程很让人抓狂，希望腾讯能提前定好招人计划，不要搞什么备胎策略，发不发OFFER直接给个痛快话。       腾讯定了之后，我的求职也基本结束了，接下来好好练下lol，进了鹅厂带妹子撸。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/数据结构/">数据结构</a>
+  <span></span> <a href="/tags/求职/">求职</a>
   </div>
 
 
@@ -348,7 +103,7 @@ ElementType DeleteMin(PriorityQueue H)
 
 <div class="article-share" id="share">
 
-  <div data-url="http://yoursite.com/2014/04/04/数据结构（四） 优先队列（堆）/" data-title="数据结构（四）优先队列（堆） | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
+  <div data-url="http://yoursite.com/2014/09/28/2014腾讯后开开发OFFER/" data-title="2014腾讯后开开发OFFER | LinEvan&#39;s blog" data-tsina="1811833191" class="share clearfix">
   </div>
 
 </div>
@@ -357,19 +112,11 @@ ElementType DeleteMin(PriorityQueue H)
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2014/04/05/数据结构（五）二叉查找树/" title="数据结构（五）二叉查找树">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  数据结构（五）二叉查找树</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2014/04/03/数据结构（三）队列/"  title="数据结构（三）队列">
+<a href="/2014/08/25/2014百度研发内推电面经验1/"  title="2014百度研发内推电面经验">
  <strong>NEXT:</strong><br/> 
- <span>数据结构（三）队列
+ <span>2014百度研发内推电面经验
 </span>
 </a>
 </div>
